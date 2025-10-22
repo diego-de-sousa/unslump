@@ -218,6 +218,24 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           </button>
         </div>
 
+        <!-- Video Container -->
+        <div id="modal-video-container" class="mb-4 hidden">
+          <div class="aspect-video rounded-lg overflow-hidden shadow-md bg-slate-100 flex items-center justify-center">
+            <iframe
+              id="modal-video-iframe"
+              width="100%"
+              height="100%"
+              src=""
+              title="Video tutorial del ejercicio"
+              frameborder="0"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+
         <div class="space-y-3 sm:space-y-4">
           <div>
             <h3 class="font-bold text-sm sm:text-base text-slate-700 mb-1 flex items-center gap-2">
@@ -709,12 +727,14 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           const details = exerciseDetails[exerciseId];
 
           if (details) {
-            // Find exercise name
+            // Find exercise name and video URL
             let exerciseName = '';
+            let videoUrl = '';
             for (const phase of Object.values(workout)) {
               const exercise = phase.exercises.find(ex => ex.id === exerciseId);
               if (exercise) {
                 exerciseName = exercise.name;
+                videoUrl = exercise.videoUrl || '';
                 break;
               }
             }
@@ -724,18 +744,39 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             document.getElementById('modal-why').textContent = details.why;
             document.getElementById('modal-evidence').textContent = details.evidence;
             document.getElementById('modal-tips').textContent = details.tips;
+
+            // Handle video display
+            const videoContainer = document.getElementById('modal-video-container');
+            const videoIframe = document.getElementById('modal-video-iframe');
+
+            if (videoUrl) {
+              // Convert YouTube watch URL to embed URL
+              const videoId = videoUrl.includes('watch?v=')
+                ? videoUrl.split('watch?v=')[1].split('&')[0]
+                : videoUrl.split('/').pop();
+              const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+
+              videoIframe.src = embedUrl;
+              videoContainer.classList.remove('hidden');
+            } else {
+              videoContainer.classList.add('hidden');
+              videoIframe.src = '';
+            }
+
             document.getElementById('exercise-info-modal').classList.remove('hidden');
           }
         });
       });
 
       // Close info modal
-      document.getElementById('close-info-modal').addEventListener('click', () => {
+      const closeInfoModal = () => {
         document.getElementById('exercise-info-modal').classList.add('hidden');
-      });
-      document.getElementById('close-info-modal-btn').addEventListener('click', () => {
-        document.getElementById('exercise-info-modal').classList.add('hidden');
-      });
+        // Stop video playback by clearing the iframe src
+        document.getElementById('modal-video-iframe').src = '';
+      };
+
+      document.getElementById('close-info-modal').addEventListener('click', closeInfoModal);
+      document.getElementById('close-info-modal-btn').addEventListener('click', closeInfoModal);
 
       // References modal
       document.getElementById('show-references-btn').addEventListener('click', () => {

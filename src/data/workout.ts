@@ -11,6 +11,7 @@ export interface Exercise {
   reps: string;
   instructions: string;
   levels?: ExerciseLevels;
+  videoUrl?: string;
 }
 
 export interface Phase {
@@ -35,21 +36,24 @@ export const workout: Record<string, Phase> = {
         name: "Automasaje suboccipital",
         duration: 120,
         reps: "2 min/lado",
-        instructions: "Acostado, dedos en base del cráneo. Presión suave + pequeños asentimientos."
+        instructions: "Acostado, dedos en base del cráneo. Presión suave + pequeños asentimientos.",
+        videoUrl: "https://www.youtube.com/watch?v=PX5cE7Km6ZQ"
       },
       {
         id: "pectoral",
         name: "Liberación de pectoral",
         duration: 60,
         reps: "30-60 seg/lado",
-        instructions: "Contra pared con pelota o presión manual. Movimientos pequeños del brazo."
+        instructions: "Contra pared con pelota o presión manual. Movimientos pequeños del brazo.",
+        videoUrl: "https://www.youtube.com/watch?v=jdgKQomV8Gs"
       },
       {
         id: "trapecio",
         name: "Masaje trapecio superior",
         duration: 60,
         reps: "30-60 seg/lado",
-        instructions: "Con mano opuesta, presión deslizante sobre trapecio superior."
+        instructions: "Con mano opuesta, presión deslizante sobre trapecio superior.",
+        videoUrl: "https://www.youtube.com/watch?v=9Aa4H-OyydM"
       }
     ]
   },
@@ -69,7 +73,8 @@ export const workout: Record<string, Phase> = {
           principiante: "30 seg, menos profundidad",
           intermedio: "45 seg, profundidad media",
           avanzado: "60 seg, mayor profundidad"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=-X2OC0WFaAM"
       },
       {
         id: "hip-flexor",
@@ -81,7 +86,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Sin alcance brazo",
           intermedio: "Alcance moderado",
           avanzado: "Alcance máximo + inclinación"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=67rVjQuuLVc"
       },
       {
         id: "trapecio-stretch",
@@ -120,7 +126,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Acostado con dedos guía",
           intermedio: "Sentado contra pared",
           avanzado: "De pie sin apoyo"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=FXA1jNr2chw"
       },
       {
         id: "ytw",
@@ -132,7 +139,8 @@ export const workout: Record<string, Phase> = {
           principiante: "De pie contra pared",
           intermedio: "Prono, mantención 5 seg",
           avanzado: "Con mancuernas 1-2kg"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=Bjor8CnEL_w"
       },
       {
         id: "pull-aparts",
@@ -156,7 +164,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Solo brazo",
           intermedio: "Solo pierna",
           avanzado: "Brazo + pierna opuestos"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=wiFNA3sqjCA"
       },
       {
         id: "dead-bug",
@@ -168,7 +177,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Solo pierna",
           intermedio: "Brazo + pierna",
           avanzado: "Con banda elástica"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=LL2iFJhUroQ"
       },
       {
         id: "glute-bridge",
@@ -180,7 +190,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Peso corporal 3×15-25",
           intermedio: "Con banda rodillas",
           avanzado: "Una pierna 2-4×5-10"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=wNSpjvy4NqA"
       },
       {
         id: "clamshells",
@@ -233,7 +244,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Asistida (agarre mesa)",
           intermedio: "Peso corporal completa",
           avanzado: "Una pierna / búlgara"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=m9pMtbfYFQU"
       },
       {
         id: "reverse-lunge",
@@ -257,7 +269,8 @@ export const workout: Record<string, Phase> = {
           principiante: "Desde rodillas 20 seg",
           intermedio: "Piernas rectas 30-45 seg",
           avanzado: "Eleva pierna superior 60 seg"
-        }
+        },
+        videoUrl: "https://www.youtube.com/watch?v=zFBXownGs6U"
       },
       {
         id: "wall-angels",
