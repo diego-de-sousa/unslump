@@ -68,9 +68,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-    <!-- Service Worker Registration -->
-    <script is:inline>
-      if ('serviceWorker' in navigator) {
+    <!-- Service Worker Registration (only in production) -->
+    <script is:inline define:vars={{ isProd: import.meta.env.PROD }}>
+      if (isProd && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then(registration => console.log('SW registered:', registration))
