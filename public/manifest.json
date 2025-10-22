@@ -1,0 +1,27 @@
+{
+  "name": "Desatrófiate - Rutina de Ejercicios",
+  "short_name": "Desatrófiate",
+  "description": "25 minutos para contrarrestar las horas de ordenador y rescatar tu postura",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle"],
+  "lang": "es",
+  "dir": "ltr"
+}
