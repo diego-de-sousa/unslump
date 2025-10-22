@@ -12,6 +12,7 @@ export interface Exercise {
   instructions: string;
   levels?: ExerciseLevels;
   videoUrl?: string;
+  sets?: number; // Número de series para mostrar contador
 }
 
 export interface Phase {
@@ -119,9 +120,10 @@ export const workout: Record<string, Phase> = {
       {
         id: "chin-tucks",
         name: "Retracciones cervicales (chin tucks)",
-        duration: 10,
+        duration: 0,
         reps: "10×10-20 seg × 2 series",
         instructions: "Doble mentón - retrae cabeza horizontalmente. Evita activar esternocleidomastoideo.",
+        sets: 2,
         levels: {
           principiante: "Acostado con dedos guía",
           intermedio: "Sentado contra pared",
@@ -132,9 +134,10 @@ export const workout: Record<string, Phase> = {
       {
         id: "ytw",
         name: "Serie Y-T-W prona",
-        duration: 10,
+        duration: 0,
         reps: "10 reps × 3 series",
         instructions: "Boca abajo. Y: brazos 45°, T: brazos 90°, W: codos flexionados. Aprieta omóplatos.",
+        sets: 3,
         levels: {
           principiante: "De pie contra pared",
           intermedio: "Prono, mantención 5 seg",
@@ -148,6 +151,7 @@ export const workout: Record<string, Phase> = {
         duration: 0,
         reps: "10-15 reps × 2-3 series",
         instructions: "Banda a altura pecho, separa retrayendo escápulas.",
+        sets: 3,
         levels: {
           principiante: "Toalla enrollada",
           intermedio: "Banda ligera",
@@ -157,9 +161,10 @@ export const workout: Record<string, Phase> = {
       {
         id: "bird-dog",
         name: "Bird dog",
-        duration: 10,
+        duration: 0,
         reps: "10-15/lado × 2-3 series",
         instructions: "Cuatro apoyos. Extiende brazo y pierna opuestos. #1 para core profundo.",
+        sets: 3,
         levels: {
           principiante: "Solo brazo",
           intermedio: "Solo pierna",
@@ -170,9 +175,10 @@ export const workout: Record<string, Phase> = {
       {
         id: "dead-bug",
         name: "Dead bug",
-        duration: 10,
+        duration: 0,
         reps: "20 reps totales × 2-3 series",
         instructions: "Boca arriba. Baja brazo y pierna opuestos. Lumbar pegada al suelo.",
+        sets: 3,
         levels: {
           principiante: "Solo pierna",
           intermedio: "Brazo + pierna",
@@ -183,9 +189,10 @@ export const workout: Record<string, Phase> = {
       {
         id: "glute-bridge",
         name: "Puente de glúteos",
-        duration: 3,
+        duration: 0,
         reps: "15-25 reps × 3 series",
         instructions: "Retroversión pélvica, eleva caderas apretando glúteos. Mantén 2-3 seg.",
+        sets: 3,
         levels: {
           principiante: "Peso corporal 3×15-25",
           intermedio: "Con banda rodillas",
@@ -199,6 +206,7 @@ export const workout: Record<string, Phase> = {
         duration: 0,
         reps: "10-15/lado × 2-3 series",
         instructions: "De lado, banda sobre rodillas. Abre rodilla superior, pies juntos.",
+        sets: 3,
         levels: {
           principiante: "Mantención 30-60 seg",
           intermedio: "Con banda ligera",
@@ -218,21 +226,24 @@ export const workout: Record<string, Phase> = {
         name: "Cat-cow con respiración",
         duration: 0,
         reps: "10 reps × 2-3 series",
-        instructions: "Cuatro apoyos. VACA: inhala + arquea, GATO: exhala + redondea. Ciclo 10 seg."
+        instructions: "Cuatro apoyos. VACA: inhala + arquea, GATO: exhala + redondea. Ciclo 10 seg.",
+        sets: 3
       },
       {
         id: "thoracic-rotation",
         name: "Rotaciones torácicas (thread needle)",
         duration: 0,
         reps: "10-12/lado × 2-3 series",
-        instructions: "Cuatro apoyos, mano tras cabeza. Rota codo al techo, sigue con ojos."
+        instructions: "Cuatro apoyos, mano tras cabeza. Rota codo al techo, sigue con ojos.",
+        sets: 3
       },
       {
         id: "thoracic-extension",
         name: "Extensión torácica c/toalla",
         duration: 10,
         reps: "6-10 reps × 1-2 series",
-        instructions: "Boca arriba, toalla bajo omóplatos. Extiende lentamente hacia atrás."
+        instructions: "Boca arriba, toalla bajo omóplatos. Extiende lentamente hacia atrás.",
+        sets: 2
       },
       {
         id: "squats",
@@ -240,6 +251,7 @@ export const workout: Record<string, Phase> = {
         duration: 0,
         reps: "10-15 reps × 3 series",
         instructions: "Pies ancho hombros. Desciende con pecho elevado, rodillas alineadas.",
+        sets: 3,
         levels: {
           principiante: "Asistida (agarre mesa)",
           intermedio: "Peso corporal completa",
@@ -253,6 +265,7 @@ export const workout: Record<string, Phase> = {
         duration: 0,
         reps: "8-10/pierna × 2-3 series",
         instructions: "Paso atrás, baja rodilla trasera. Empuja con talón delantero.",
+        sets: 3,
         levels: {
           principiante: "Paso corto, apoyo pared",
           intermedio: "Paso completo sin apoyo",
@@ -265,6 +278,7 @@ export const workout: Record<string, Phase> = {
         duration: 30,
         reps: "15-60 seg/lado × 2-3 series",
         instructions: "De lado, codo bajo hombro. Cuerpo en línea recta.",
+        sets: 3,
         levels: {
           principiante: "Desde rodillas 20 seg",
           intermedio: "Piernas rectas 30-45 seg",
@@ -277,7 +291,8 @@ export const workout: Record<string, Phase> = {
         name: "Wall angels",
         duration: 0,
         reps: "10-15 reps × 2-3 series",
-        instructions: "Contra pared (cabeza, espalda, glúteos). Brazos W→Y manteniendo contacto."
+        instructions: "Contra pared (cabeza, espalda, glúteos). Brazos W→Y manteniendo contacto.",
+        sets: 3
       }
     ]
   }

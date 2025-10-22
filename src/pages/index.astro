@@ -23,9 +23,12 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
     <!-- Header (non-sticky) -->
     <div class="max-w-4xl mx-auto px-4">
       <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4">
-        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-          🧑‍💻 Desatrófiate
-        </h1>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="text-4xl sm:text-5xl">🧑‍💻</div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            Desatrófiate
+          </h1>
+        </div>
         <p class="text-sm sm:text-base text-slate-600 mb-4">
           25 minutos para contrarrestar las horas de ordenador y rescatar tu postura | Basada en 30+ estudios
         </p>
@@ -115,7 +118,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                   <div class="flex justify-between items-start gap-2 mb-2">
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center gap-2 mb-1">
-                        <h3 class="font-bold text-sm sm:text-base text-slate-800 flex-1 min-w-0 break-words">{exercise.name}</h3>
+                        <h3 class="font-bold text-lg sm:text-xl text-slate-800 flex-1 min-w-0 break-words">{exercise.name}</h3>
                         <button
                           class="info-btn p-1 hover:bg-blue-100 rounded-full transition-all flex-shrink-0"
                           data-exercise-id={exercise.id}
@@ -124,7 +127,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                           <Info size={16} class="text-blue-600" />
                         </button>
                       </div>
-                      <p class="text-xs sm:text-sm text-slate-600 mb-2">{exercise.reps}</p>
+                      <p class="text-sm sm:text-base font-semibold text-slate-700 mb-2">{exercise.reps}</p>
                       <p class="text-xs sm:text-sm text-slate-700">{exercise.instructions}</p>
 
                       {exercise.levels && (
@@ -176,6 +179,38 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                             <RotateCcw size={18} />
                           </button>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {exercise.sets && exercise.sets > 0 && (
+                    <div class="sets-counter mt-3 p-2 sm:p-3 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                      <div class="flex items-center justify-between gap-2">
+                        <div class="text-sm sm:text-base font-semibold text-indigo-900">
+                          Series completadas:
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <span class="current-set text-2xl sm:text-3xl font-bold text-indigo-700">0</span>
+                          <span class="text-lg sm:text-xl text-indigo-600">/</span>
+                          <span class="total-sets text-2xl sm:text-3xl font-bold text-indigo-700">{exercise.sets}</span>
+                        </div>
+                      </div>
+                      <div class="flex gap-2 mt-2">
+                        <button
+                          class="increment-set-btn flex-1 px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all font-medium text-sm"
+                          data-phase-id={phaseId}
+                          data-exercise-id={exercise.id}
+                          data-total-sets={exercise.sets}
+                        >
+                          + Serie
+                        </button>
+                        <button
+                          class="reset-set-btn px-3 py-2 bg-slate-400 text-white rounded-lg hover:bg-slate-500 transition-all text-sm"
+                          data-phase-id={phaseId}
+                          data-exercise-id={exercise.id}
+                        >
+                          <RotateCcw size={18} />
+                        </button>
                       </div>
                     </div>
                   )}
@@ -678,6 +713,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           if (
             e.target.closest('.info-btn') ||
             e.target.closest('.timer-container') ||
+            e.target.closest('.sets-counter') ||
             e.target.closest('.complete-btn')
           ) {
             return;
@@ -716,6 +752,63 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         btn.addEventListener('click', () => {
           const card = btn.closest('.exercise-card');
           resetTimer(card);
+        });
+      });
+
+      // Sets counter buttons
+      document.querySelectorAll('.increment-set-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('.exercise-card');
+          const counter = card.querySelector('.sets-counter');
+          const currentSetSpan = counter.querySelector('.current-set');
+          const totalSets = parseInt(btn.dataset.totalSets || '0');
+          const phaseId = btn.dataset.phaseId;
+          const exerciseId = btn.dataset.exerciseId;
+
+          let currentSet = parseInt(currentSetSpan.textContent || '0');
+          if (currentSet < totalSets) {
+            currentSet++;
+            currentSetSpan.textContent = currentSet;
+
+            // Visual feedback when all sets are completed
+            if (currentSet === totalSets) {
+              counter.classList.add('bg-green-50', 'border-green-300');
+              counter.classList.remove('bg-indigo-50', 'border-indigo-200');
+              btn.disabled = true;
+              btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+              // Auto-complete the exercise
+              toggleExerciseCompletion(phaseId, exerciseId);
+            }
+          }
+        });
+      });
+
+      document.querySelectorAll('.reset-set-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = btn.closest('.exercise-card');
+          const counter = card.querySelector('.sets-counter');
+          const currentSetSpan = counter.querySelector('.current-set');
+          const incrementBtn = card.querySelector('.increment-set-btn');
+          const phaseId = btn.dataset.phaseId;
+          const exerciseId = btn.dataset.exerciseId;
+          const key = `${phaseId}-${exerciseId}`;
+
+          currentSetSpan.textContent = '0';
+          counter.classList.remove('bg-green-50', 'border-green-300');
+          counter.classList.add('bg-indigo-50', 'border-indigo-200');
+
+          if (incrementBtn) {
+            incrementBtn.disabled = false;
+            incrementBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+
+          // Uncomplete the exercise if it was completed
+          if (completedExercises.has(key)) {
+            toggleExerciseCompletion(phaseId, exerciseId);
+          }
         });
       });
 
