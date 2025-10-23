@@ -2,7 +2,7 @@
   "name": "unslump! - Exercise Routine",
   "short_name": "unslump!",
   "description": "25-minute routine to counteract hours of computer work and rescue your posture",
-  "start_url": "/",
+  "start_url": "/en/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
@@ -22,6 +22,6 @@
     }
   ],
   "categories": ["health", "fitness", "lifestyle"],
-  "lang": "es",
+  "lang": "en",
   "dir": "ltr"
 }
