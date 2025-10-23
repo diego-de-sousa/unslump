@@ -18,7 +18,13 @@ export interface Exercise {
 export interface Phase {
   name: string;
   time: string;
-  color: string;
+  color: string; // Clase Tailwind para bg y border (backward compatibility)
+  colorPrimary: string; // Color principal (ej: indigo-600)
+  colorLight: string; // Color claro para fondos (ej: indigo-50)
+  colorBorder: string; // Color para bordes (ej: indigo-200)
+  colorPrimaryHex: string; // Valor hex del color principal
+  colorLightHex: string; // Valor hex del color claro
+  colorBorderHex: string; // Valor hex del color de borde
   description: string;
   exercises: Exercise[];
 }
@@ -29,7 +35,13 @@ export const workout: Record<string, Phase> = {
   fase1: {
     name: "FASE 1: INHIBIR",
     time: "3-4 min",
-    color: "bg-blue-100 border-blue-300",
+    color: "bg-indigo-50 border-indigo-200",
+    colorPrimary: "indigo-600",
+    colorLight: "indigo-50",
+    colorBorder: "indigo-200",
+    colorPrimaryHex: "#4f46e5",
+    colorLightHex: "#eef2ff",
+    colorBorderHex: "#c7d2fe",
     description: "Reducir actividad neural excesiva en músculos tensos mediante liberación miofascial",
     exercises: [
       {
@@ -61,7 +73,13 @@ export const workout: Record<string, Phase> = {
   fase2: {
     name: "FASE 2: ALARGAR",
     time: "4-5 min",
-    color: "bg-green-100 border-green-300",
+    color: "bg-teal-50 border-teal-200",
+    colorPrimary: "teal-500",
+    colorLight: "teal-50",
+    colorBorder: "teal-200",
+    colorPrimaryHex: "#14b8a6",
+    colorLightHex: "#f0fdfa",
+    colorBorderHex: "#99f6e4",
     description: "Estirar músculos acortados para restaurar rango de movimiento normal",
     exercises: [
       {
@@ -114,7 +132,13 @@ export const workout: Record<string, Phase> = {
   fase3: {
     name: "FASE 3: ACTIVAR",
     time: "8-10 min",
-    color: "bg-orange-100 border-orange-300",
+    color: "bg-orange-50 border-orange-200",
+    colorPrimary: "orange-500",
+    colorLight: "orange-50",
+    colorBorder: "orange-200",
+    colorPrimaryHex: "#f97316",
+    colorLightHex: "#fff7ed",
+    colorBorderHex: "#fed7aa",
     description: "Fortalecer músculos débiles de forma aislada para corregir desequilibrios",
     exercises: [
       {
@@ -218,7 +242,13 @@ export const workout: Record<string, Phase> = {
   fase4: {
     name: "FASE 4: INTEGRAR",
     time: "8-10 min",
-    color: "bg-purple-100 border-purple-300",
+    color: "bg-pink-50 border-pink-200",
+    colorPrimary: "pink-500",
+    colorLight: "pink-50",
+    colorBorder: "pink-200",
+    colorPrimaryHex: "#ec4899",
+    colorLightHex: "#fdf2f8",
+    colorBorderHex: "#fbcfe8",
     description: "Patrones de movimiento funcional multiarticular para aplicación a la vida diaria",
     exercises: [
       {

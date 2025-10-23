@@ -20,40 +20,43 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 ---
 
 <BaseLayout>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-4">
-    <!-- Header (non-sticky) -->
-    <div class="max-w-4xl mx-auto px-4">
-      <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4">
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <div class="text-4xl sm:text-5xl">🧑‍💻</div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              Desatrófiate!
-            </h1>
-          </div>
-          <button
-            id="show-onboarding-btn"
-            class="p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
-            title="Cómo usar la app"
-          >
-            <HelpCircle size={22} class="text-blue-700" />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Progress Bar (Sticky) -->
-    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md py-3 mb-4">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-20">
+    <!-- Progress Logo (Sticky) -->
+    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md py-4 sm:py-5 mb-4">
       <div class="max-w-4xl mx-auto px-4">
-        <div class="flex items-center justify-between text-xs sm:text-sm text-slate-600 mb-2">
-          <span class="font-medium">Progreso</span>
-          <span id="progress-text" class="font-semibold">0 / {totalExercises}</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-2 flex overflow-hidden">
-          <div id="progress-fase1" class="bg-blue-500 h-2 transition-all duration-300 first:rounded-l-full" style="width: 0%"></div>
-          <div id="progress-fase2" class="bg-green-500 h-2 transition-all duration-300" style="width: 0%"></div>
-          <div id="progress-fase3" class="bg-orange-500 h-2 transition-all duration-300" style="width: 0%"></div>
-          <div id="progress-fase4" class="bg-purple-500 h-2 transition-all duration-300 last:rounded-r-full" style="width: 0%"></div>
+        <div class="flex items-center justify-center">
+          <!-- Logo con efecto de llenado -->
+          <div id="progress-logo" class="flex items-center justify-center">
+            <!-- Exclamación inicial -->
+            <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">¡¡¡</span> -->
+
+            <!-- Fase 1: Des -->
+            <div class="letter-group" data-phase="fase1" style="position: relative; display: inline-block;">
+              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">des</span>
+              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #4f46e5; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">des</span>
+            </div>
+
+            <!-- Fase 2: atr -->
+            <div class="letter-group" data-phase="fase2" style="position: relative; display: inline-block;">
+              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">atr</span>
+              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #14b8a6; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">atr</span>
+            </div>
+
+            <!-- Fase 3: ófi -->
+            <div class="letter-group" data-phase="fase3" style="position: relative; display: inline-block;">
+              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">ófi</span>
+              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #f97316; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">ófi</span>
+            </div>
+
+            <!-- Fase 4: ate -->
+            <div class="letter-group" data-phase="fase4" style="position: relative; display: inline-block;">
+              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">ate</span>
+              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #ec4899; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">ate</span>
+            </div>
+
+            <!-- Exclamación final -->
+            <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">!!!</span> -->
+          </div>
         </div>
       </div>
     </div>
@@ -63,21 +66,24 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       <!-- Phases -->
       {Object.entries(workout).map(([phaseId, phase]) => (
         <div class="mb-4 phase-container" data-phase-id={phaseId}>
-          <div class="sticky top-[70px] z-[5] mb-2">
+          <div class="sticky top-[100px] z-[5] mb-2">
             <button
-              class="phase-toggle w-full border-2 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all shadow-lg"
-              class:list={[phase.color]}
+              class="phase-toggle w-full border-2 rounded-lg p-3 sm:p-4 hover:shadow-xl transition-all shadow-lg backdrop-blur-md"
+              style={`background: linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%); border-color: ${phase.colorBorderHex};`}
               data-phase-id={phaseId}
             >
-              <div class="flex justify-between items-center gap-2">
+              <div class="flex justify-between items-center gap-3">
                 <div class="text-left flex-1 min-w-0">
-                  <h2 class="text-lg sm:text-xl font-bold text-slate-800 truncate">{phase.name}</h2>
-                  <p class="text-xs sm:text-sm text-slate-600 line-clamp-2">{phase.time} • {phase.description}</p>
+                  <div class="flex items-end justify-between gap-3 mb-1">
+                    <h2 class="text-lg sm:text-2xl font-extrabold leading-tight" style={`color: ${phase.colorPrimaryHex};`}>{phase.name}</h2>
+                    <span class="text-sm sm:text-lg font-bold whitespace-nowrap leading-none" style={`color: ${phase.colorPrimaryHex};`}>{phase.time}</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-600/90 leading-relaxed">{phase.description}</p>
                 </div>
-                <div class="chevron-down flex-shrink-0">
+                <div class="chevron-down flex-shrink-0" style={`color: ${phase.colorPrimaryHex};`}>
                   <ChevronDown size={20} />
                 </div>
-                <div class="chevron-up hidden flex-shrink-0">
+                <div class="chevron-up hidden flex-shrink-0" style={`color: ${phase.colorPrimaryHex};`}>
                   <ChevronUp size={20} />
                 </div>
               </div>
@@ -97,20 +103,21 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                       <div class="flex items-center gap-2 mb-1">
                         <h3 class="font-bold text-lg sm:text-xl text-slate-800 flex-1 min-w-0 break-words">{exercise.name}</h3>
                         <button
-                          class="info-btn p-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
+                          class="info-btn p-2 border rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
+                          style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`}
                           data-exercise-id={exercise.id}
                           title="Más información"
                         >
-                          <Info size={20} class="text-blue-700" />
+                          <Info size={20} style={`color: ${phase.colorPrimaryHex};`} />
                         </button>
                       </div>
                       <p class="text-sm sm:text-base font-semibold text-slate-700 mb-2">{exercise.reps}</p>
                       <p class="text-xs sm:text-sm text-slate-700">{exercise.instructions}</p>
 
                       {exercise.levels && (
-                        <div class="level-info mt-2 p-2 bg-blue-100 rounded text-xs sm:text-sm" data-levels={JSON.stringify(exercise.levels)}>
-                          <span class="font-semibold text-blue-800">Intermedio:</span>{' '}
-                          <span class="text-blue-900 level-text">{exercise.levels.intermedio}</span>
+                        <div class="level-info mt-2 p-2 border rounded text-xs sm:text-sm" style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`} data-levels={JSON.stringify(exercise.levels)}>
+                          <span class="font-semibold" style={`color: ${phase.colorPrimaryHex};`}>Intermedio:</span>{' '}
+                          <span class="text-slate-800 level-text">{exercise.levels.intermedio}</span>
                         </div>
                       )}
                     </div>
@@ -125,14 +132,15 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                   </div>
 
                   {exercise.duration > 0 && (
-                    <div class="timer-container mt-3 p-2 sm:p-3 bg-slate-100 rounded-lg">
+                    <div class="timer-container mt-3 p-2 sm:p-3 border rounded-lg" style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`}>
                       <div class="flex items-center justify-between gap-2">
-                        <div class="timer-display text-xl sm:text-2xl font-bold text-slate-800">
+                        <div class="timer-display text-xl sm:text-2xl font-bold" style={`color: ${phase.colorPrimaryHex};`}>
                           {Math.floor(exercise.duration / 60)}:{(exercise.duration % 60).toString().padStart(2, '0')}
                         </div>
                         <div class="timer-controls flex gap-1.5 sm:gap-2">
                           <button
-                            class="start-timer-btn px-3 sm:px-4 py-1.5 sm:py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all font-medium text-xs sm:text-sm"
+                            class="start-timer-btn px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg hover:opacity-90 transition-all font-medium text-xs sm:text-sm shadow-md"
+                            style={`background-color: ${phase.colorPrimaryHex};`}
                             data-phase-id={phaseId}
                             data-exercise-id={exercise.id}
                             data-duration={exercise.duration}
@@ -140,12 +148,14 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                             Iniciar
                           </button>
                           <button
-                            class="pause-timer-btn hidden p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                            class="pause-timer-btn hidden p-1.5 sm:p-2 text-white rounded-lg hover:opacity-90 transition-all shadow-md"
+                            style={`background-color: ${phase.colorPrimaryHex};`}
                           >
                             <Pause size={18} />
                           </button>
                           <button
-                            class="play-timer-btn hidden p-1.5 sm:p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all"
+                            class="play-timer-btn hidden p-1.5 sm:p-2 text-white rounded-lg hover:opacity-90 transition-all shadow-md"
+                            style={`background-color: ${phase.colorPrimaryHex};`}
                           >
                             <Play size={18} />
                           </button>
@@ -161,20 +171,21 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                   )}
 
                   {exercise.sets && exercise.sets > 0 && (
-                    <div class="sets-counter mt-3 p-2 sm:p-3 bg-indigo-50 rounded-lg border-2 border-indigo-200">
+                    <div class="sets-counter mt-3 p-2 sm:p-3 rounded-lg border-2" style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`}>
                       <div class="flex items-center justify-between gap-2">
-                        <div class="text-sm sm:text-base font-semibold text-indigo-900">
+                        <div class="text-sm sm:text-base font-semibold" style={`color: ${phase.colorPrimaryHex};`}>
                           Series completadas:
                         </div>
                         <div class="flex items-center gap-2">
-                          <span class="current-set text-2xl sm:text-3xl font-bold text-indigo-700">0</span>
-                          <span class="text-lg sm:text-xl text-indigo-600">/</span>
-                          <span class="total-sets text-2xl sm:text-3xl font-bold text-indigo-700">{exercise.sets}</span>
+                          <span class="current-set text-2xl sm:text-3xl font-bold" style={`color: ${phase.colorPrimaryHex};`}>0</span>
+                          <span class="text-lg sm:text-xl opacity-70" style={`color: ${phase.colorPrimaryHex};`}>/</span>
+                          <span class="total-sets text-2xl sm:text-3xl font-bold" style={`color: ${phase.colorPrimaryHex};`}>{exercise.sets}</span>
                         </div>
                       </div>
                       <div class="flex gap-2 mt-2">
                         <button
-                          class="increment-set-btn flex-1 px-3 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-all font-medium text-sm"
+                          class="increment-set-btn flex-1 px-3 py-2 text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm shadow-md"
+                          style={`background-color: ${phase.colorPrimaryHex};`}
                           data-phase-id={phaseId}
                           data-exercise-id={exercise.id}
                           data-total-sets={exercise.sets}
@@ -323,7 +334,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         <div class="flex items-center justify-between gap-3 mb-4">
           <div class="flex items-center gap-3">
             <div class="text-3xl sm:text-4xl">🧑‍💻</div>
-            <h2 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h2 class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent" style="background-image: linear-gradient(to right, #4f46e5, #14b8a6, #f97316, #ec4899)">
               Desatrófiate!
             </h2>
           </div>
@@ -444,7 +455,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
         <div class="mt-4 p-3 bg-slate-100 rounded-lg">
           <p class="text-xs sm:text-sm text-slate-700 text-center">
-            💡 <strong>Consejo:</strong> Puedes volver a ver este tutorial en cualquier momento haciendo clic en el botón ❓ en la esquina superior derecha.
+            💡 <strong>Consejo:</strong> Puedes volver a ver este tutorial en cualquier momento haciendo clic en el botón "Ayuda" en el footer de la página.
           </p>
         </div>
 
@@ -464,14 +475,112 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         </button>
       </div>
     </div>
+
+    <!-- Footer con botón de ayuda -->
+    <div class="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-sm border-t border-slate-200 py-3">
+      <div class="max-w-4xl mx-auto px-4 flex justify-center">
+        <button
+          id="show-onboarding-btn"
+          class="flex items-center gap-2 px-4 py-2 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded-full transition-all shadow-sm hover:shadow-md text-sm font-medium text-blue-700"
+          title="Cómo usar la app"
+        >
+          <HelpCircle size={18} class="text-blue-700" />
+          <span class="hidden sm:inline">Ayuda</span>
+        </button>
+      </div>
+    </div>
   </div>
 
+  <style>
+    .letter-group {
+      letter-spacing: -0.02em;
+    }
+
+    .color-layer {
+      will-change: clip-path;
+    }
+
+    .base-layer {
+      display: inline-block;
+    }
+
+    /* Initial animation states */
+    #progress-logo,
+    .letter-group,
+    .phase-container,
+    #show-onboarding-btn {
+      opacity: 0;
+    }
+
+    /* Micro-interaction enhancements */
+    button, .exercise-card {
+      transition: transform 0.15s ease-out;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .exercise-card:active {
+      transform: scale(0.995);
+    }
+
+    /* Smooth hover effects */
+    .phase-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .complete-btn:hover:not(:disabled) {
+      transform: scale(1.1);
+    }
+
+    .info-btn:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+
+  <script>
+    import { animate, stagger, spring } from "motion";
+
+    // Expose Motion functions globally so the inline script can use them
+    (window as any).motionAnimate = animate;
+    (window as any).motionStagger = stagger;
+    (window as any).motionSpring = spring;
+  </script>
+
   <script is:inline define:vars={{ exerciseDetails, workout }}>
+    // Wait for Motion to be available
+    const waitForMotion = () => {
+      return new Promise((resolve) => {
+        if (window.motionAnimate) {
+          resolve();
+        } else {
+          setTimeout(() => waitForMotion().then(resolve), 50);
+        }
+      });
+    };
+
+    // Motion aliases (will be set after Motion loads)
+    let animate, stagger, spring;
+
     // App State
     let currentLevel = 'intermedio';
     let completedExercises = new Set();
     let activeTimer = null;
     let timerInterval = null;
+
+    // Color mapping for phases (Energía Progresiva palette)
+    const phaseColors = {
+      fase1: { border: 'border-indigo-400', bg: 'bg-indigo-50', btnBg: 'bg-indigo-600', text: 'text-white' },
+      fase2: { border: 'border-teal-400', bg: 'bg-teal-50', btnBg: 'bg-teal-500', text: 'text-white' },
+      fase3: { border: 'border-orange-400', bg: 'bg-orange-50', btnBg: 'bg-orange-500', text: 'text-white' },
+      fase4: { border: 'border-pink-400', bg: 'bg-pink-50', btnBg: 'bg-pink-500', text: 'text-white' }
+    };
 
     // Load state from localStorage
     const loadState = () => {
@@ -492,11 +601,12 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
               // Selector más específico para asegurar que encontramos la tarjeta del ejercicio
               const card = document.querySelector(`.exercise-card[data-phase-id="${phaseId}"][data-exercise-id="${exerciseId}"]`);
               if (card) {
-                card.classList.add('border-green-400', 'bg-green-50');
+                const colors = phaseColors[phaseId] || phaseColors.fase1;
+                card.classList.add(colors.border, colors.bg);
                 card.classList.remove('border-slate-200', 'bg-white');
                 const btn = card.querySelector('.complete-btn');
                 if (btn) {
-                  btn.classList.add('bg-green-500', 'text-white');
+                  btn.classList.add(colors.btnBg, colors.text);
                   btn.classList.remove('bg-slate-200', 'text-slate-500');
                 }
               }
@@ -520,16 +630,141 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       }));
     };
 
+    // Track which phases have already been celebrated
+    let celebratedPhases = new Set();
+
+    // Confetti desde una parte específica del logo
+    const celebratePhase = (phaseId) => {
+      const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
+      if (!letterGroup) return;
+
+      // Motion animation for the letter group
+      animate(
+        letterGroup,
+        { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0], y: [0, -10, 0] },
+        { duration: 0.8, easing: spring({ stiffness: 200, damping: 12 }) }
+      );
+
+      // Confetti celebration
+      if (typeof confetti !== 'undefined') {
+        const rect = letterGroup.getBoundingClientRect();
+        const originX = (rect.left + rect.width / 2) / window.innerWidth;
+        const originY = (rect.top + rect.height / 2) / window.innerHeight;
+
+        // Colores por fase
+        const phaseColorMap = {
+          fase1: ['#4f46e5', '#6366f1', '#818cf8'], // indigo
+          fase2: ['#14b8a6', '#2dd4bf', '#5eead4'], // teal
+          fase3: ['#f97316', '#fb923c', '#fdba74'], // orange
+          fase4: ['#ec4899', '#f472b6', '#f9a8d4']  // pink
+        };
+
+        const colors = phaseColorMap[phaseId] || phaseColorMap.fase1;
+
+        function fire(particleRatio, opts) {
+          confetti({
+            origin: { x: originX, y: originY },
+            colors,
+            angle: 270, // Disparar hacia abajo
+            particleCount: Math.floor(100 * particleRatio),
+            ...opts
+          });
+        }
+
+        // Explosión de confetti de la fase
+        fire(0.25, { spread: 26, startVelocity: 55 });
+        fire(0.2, { spread: 60 });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45 });
+      }
+    };
+
+    // Confetti espectacular final desde todas las partes del logo
+    const celebrateComplete = () => {
+      const phaseIds = ['fase1', 'fase2', 'fase3', 'fase4'];
+      const phaseColorMap = {
+        fase1: ['#4f46e5', '#6366f1', '#818cf8'],
+        fase2: ['#14b8a6', '#2dd4bf', '#5eead4'],
+        fase3: ['#f97316', '#fb923c', '#fdba74'],
+        fase4: ['#ec4899', '#f472b6', '#f9a8d4']
+      };
+
+      // Animate entire logo with spectacular motion
+      const logo = document.getElementById('progress-logo');
+      if (logo) {
+        animate(
+          logo,
+          {
+            scale: [1, 1.1, 1.05, 1],
+            rotate: [0, -2, 2, -1, 1, 0],
+            y: [0, -15, 0]
+          },
+          { duration: 1.2, easing: spring({ stiffness: 150, damping: 12 }) }
+        );
+      }
+
+      // Animate each letter group in sequence
+      const letterGroups = document.querySelectorAll('.letter-group');
+      animate(
+        letterGroups,
+        {
+          scale: [1, 1.2, 1],
+          y: [0, -20, 0],
+          rotate: [0, 360]
+        },
+        {
+          duration: 1,
+          delay: stagger(0.15),
+          easing: spring({ stiffness: 200, damping: 15 })
+        }
+      );
+
+      // Confetti celebration
+      if (typeof confetti !== 'undefined') {
+        phaseIds.forEach((phaseId, index) => {
+          setTimeout(() => {
+            const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
+            if (!letterGroup) return;
+
+            const rect = letterGroup.getBoundingClientRect();
+            const originX = (rect.left + rect.width / 2) / window.innerWidth;
+            const originY = (rect.top + rect.height / 2) / window.innerHeight;
+            const colors = phaseColorMap[phaseId];
+
+            function fire(particleRatio, opts) {
+              confetti({
+                origin: { x: originX, y: originY },
+                colors,
+                angle: 270, // Disparar hacia abajo
+                particleCount: Math.floor(200 * particleRatio),
+                ...opts
+              });
+            }
+
+            // Explosión espectacular por fase
+            fire(0.25, { spread: 40, startVelocity: 70 });
+            fire(0.2, { spread: 80 });
+            fire(0.35, { spread: 120, decay: 0.91, scalar: 0.9 });
+            fire(0.1, { spread: 140, startVelocity: 35, decay: 0.92, scalar: 1.3 });
+            fire(0.1, { spread: 140, startVelocity: 60 });
+
+            // Segunda ola más intensa
+            setTimeout(() => {
+              fire(0.2, { spread: 100, startVelocity: 65, decay: 0.9 });
+              fire(0.15, { spread: 120, startVelocity: 75, scalar: 1.2 });
+            }, 200);
+          }, index * 150); // Escalonar las explosiones
+        });
+      }
+    };
+
     // Update progress bar
     const updateProgress = () => {
       const total = Object.values(workout).reduce((sum, phase) => sum + phase.exercises.length, 0);
       const completed = completedExercises.size;
 
-      // Actualizar texto del contador
-      const progressText = document.getElementById('progress-text');
-      if (progressText) progressText.textContent = `${completed} / ${total}`;
-
-      // Actualizar cada segmento de fase
+      // Actualizar cada grupo de letras con clip-path
       ['fase1', 'fase2', 'fase3', 'fase4'].forEach(phaseId => {
         const phase = workout[phaseId];
         const phaseTotal = phase.exercises.length;
@@ -539,45 +774,63 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           completedExercises.has(`${phaseId}-${ex.id}`)
         ).length;
 
-        // Calcular el ancho del segmento (proporcional al total de ejercicios de la fase)
-        const segmentMaxWidth = (phaseTotal / total) * 100;
+        // Calcular el progreso de la fase (0-1)
+        const phaseProgress = phaseCompleted / phaseTotal;
 
-        // Calcular el progreso dentro de este segmento
-        const segmentProgress = (phaseCompleted / phaseTotal) * segmentMaxWidth;
+        // Calcular el porcentaje que queda oculto (de derecha a izquierda)
+        const hiddenPercent = 100 - (phaseProgress * 100);
 
-        const segment = document.getElementById(`progress-${phaseId}`);
-        if (segment) {
-          segment.style.width = `${segmentProgress}%`;
+        // Actualizar clip-path de la capa de color
+        const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
+        if (letterGroup) {
+          const colorLayer = letterGroup.querySelector('.color-layer');
+          if (colorLayer) {
+            colorLayer.style.clipPath = `inset(0 ${hiddenPercent}% 0 0)`;
+          }
+        }
+
+        // Celebrar si la fase se acaba de completar
+        if (phaseProgress === 1 && !celebratedPhases.has(phaseId)) {
+          celebratedPhases.add(phaseId);
+          setTimeout(() => {
+            celebratePhase(phaseId);
+
+            // Colapsar la fase automáticamente después del confetti
+            setTimeout(() => {
+              const container = document.querySelector(`.phase-container[data-phase-id="${phaseId}"]`);
+              if (container) {
+                const content = container.querySelector('.phase-content');
+                const chevronDown = container.querySelector('.chevron-down');
+                const chevronUp = container.querySelector('.chevron-up');
+                const toggleBtn = container.querySelector('.phase-toggle');
+                const phase = workout[phaseId];
+
+                if (content && chevronDown && chevronUp) {
+                  content.classList.add('hidden');
+                  chevronDown.classList.remove('hidden');
+                  chevronUp.classList.add('hidden');
+
+                  // Restaurar el estilo del botón a colapsado
+                  if (toggleBtn && phase) {
+                    toggleBtn.style.background = `linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%)`;
+                    toggleBtn.classList.remove('shadow-xl', 'ring-2');
+                    toggleBtn.classList.add('shadow-lg');
+                  }
+                }
+              }
+            }, 800); // Esperar a que termine el confetti
+          }, 300);
+        } else if (phaseProgress < 1 && celebratedPhases.has(phaseId)) {
+          // Si la fase ya no está completa, permitir celebrarla de nuevo
+          celebratedPhases.delete(phaseId);
         }
       });
 
-      // Celebrate completion with confetti!
+      // Celebrate completion with confetti espectacular!
       if (completed === total && completed > 0) {
         setTimeout(() => {
-          if (typeof confetti !== 'undefined') {
-            // Launch confetti from both sides
-            const count = 200;
-            const defaults = {
-              origin: { y: 0.7 }
-            };
-
-            function fire(particleRatio, opts) {
-              confetti({
-                ...defaults,
-                ...opts,
-                particleCount: Math.floor(count * particleRatio),
-                spread: 100,
-                startVelocity: 55,
-              });
-            }
-
-            fire(0.25, { spread: 26, startVelocity: 55 });
-            fire(0.2, { spread: 60 });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-            fire(0.1, { spread: 120, startVelocity: 45 });
-          }
-        }, 300);
+          celebrateComplete();
+        }, 400);
       }
     };
 
@@ -632,6 +885,9 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       pauseBtn.classList.remove('hidden');
       resetBtn.classList.remove('hidden');
 
+      // Animate timer start
+      animate(display, { scale: [1, 1.1, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+
       let timeLeft = duration;
       activeTimer = { card, timeLeft };
 
@@ -640,9 +896,23 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         activeTimer.timeLeft = timeLeft;
         display.textContent = formatTime(timeLeft);
 
+        // Pulse animation when time is running low (last 10 seconds)
+        if (timeLeft <= 10 && timeLeft > 0) {
+          animate(
+            display,
+            { scale: [1, 1.08, 1] },
+            { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
+          );
+        }
+
         if (timeLeft <= 0) {
+          // Completion animation
+          animate(
+            display,
+            { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] },
+            { duration: 0.6, easing: spring({ stiffness: 250, damping: 15 }) }
+          );
           stopTimer(card);
-          // Play sound or notification
         }
       }, 1000);
     };
@@ -718,6 +988,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
     const resetProgress = () => {
       if (confirm('¿Estás seguro de que quieres resetear todo el progreso?')) {
         completedExercises.clear();
+        celebratedPhases.clear();
 
         // Reset UI
         document.querySelectorAll('.exercise-card').forEach(card => {
@@ -741,7 +1012,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       if (!hasSeenOnboarding) {
         // Show onboarding modal after a short delay to let the page settle
         setTimeout(() => {
-          document.getElementById('onboarding-modal').classList.remove('hidden');
+          openModal('onboarding-modal');
         }, 500);
       }
     };
@@ -751,24 +1022,97 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       localStorage.setItem('desatrofiate-onboarding-shown', 'true');
     };
 
+    // Modal animation helpers
+    const openModal = (modalId) => {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      modal.classList.remove('hidden');
+      const content = modal.querySelector('.bg-white');
+
+      // Animate backdrop
+      animate(modal, { opacity: [0, 1] }, { duration: 0.2 });
+
+      // Animate modal content
+      if (content) {
+        animate(
+          content,
+          { opacity: [0, 1], scale: [0.95, 1], y: [20, 0] },
+          { duration: 0.3, delay: 0.1, easing: spring({ stiffness: 300, damping: 25 }) }
+        );
+      }
+    };
+
+    const closeModal = (modalId, callback) => {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      const content = modal.querySelector('.bg-white');
+
+      // Animate content out
+      if (content) {
+        animate(content, { opacity: [1, 0], scale: [1, 0.95], y: [0, 10] }, { duration: 0.2 });
+      }
+
+      // Animate backdrop out
+      animate(modal, { opacity: [1, 0] }, { duration: 0.2, delay: 0.1 }).finished.then(() => {
+        modal.classList.add('hidden');
+        if (callback) callback();
+      });
+    };
+
+    // Initial animations
+    const runInitialAnimations = () => {
+      // Animate logo entrance
+      const logo = document.getElementById('progress-logo');
+      if (logo) {
+        animate(
+          logo,
+          { opacity: [0, 1], y: [-20, 0] },
+          { duration: 0.8, easing: spring({ stiffness: 100, damping: 15 }) }
+        );
+      }
+
+      // Animate letter groups with stagger
+      const letterGroups = document.querySelectorAll('.letter-group');
+      animate(
+        letterGroups,
+        { opacity: [0, 1], scale: [0.8, 1] },
+        { duration: 0.6, delay: stagger(0.1, { start: 0.3 }), easing: spring({ stiffness: 200, damping: 20 }) }
+      );
+
+      // Animate phase containers with stagger
+      const phaseContainers = document.querySelectorAll('.phase-container');
+      animate(
+        phaseContainers,
+        { opacity: [0, 1], y: [30, 0] },
+        { duration: 0.5, delay: stagger(0.15, { start: 0.5 }), easing: [0.22, 1, 0.36, 1] }
+      );
+
+      // Animate help button in footer
+      const helpBtn = document.getElementById('show-onboarding-btn');
+      if (helpBtn) {
+        animate(
+          helpBtn,
+          { opacity: [0, 1], scale: [0.8, 1] },
+          { duration: 0.5, delay: 1.2, easing: spring({ stiffness: 200, damping: 15 }) }
+        );
+      }
+    };
+
     // Event Listeners
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for Motion to load and set aliases
+      await waitForMotion();
+      animate = window.motionAnimate;
+      stagger = window.motionStagger;
+      spring = window.motionSpring;
+
       loadState();
       checkOnboarding();
 
-      // Desplegar Fase 1 por defecto
-      const fase1Container = document.querySelector('.phase-container[data-phase-id="fase1"]');
-      if (fase1Container) {
-        const content = fase1Container.querySelector('.phase-content');
-        const chevronDown = fase1Container.querySelector('.chevron-down');
-        const chevronUp = fase1Container.querySelector('.chevron-up');
-
-        if (content && chevronDown && chevronUp) {
-          content.classList.remove('hidden');
-          chevronDown.classList.add('hidden');
-          chevronUp.classList.remove('hidden');
-        }
-      }
+      // Run initial animations after a short delay to let the page settle
+      setTimeout(runInitialAnimations, 100);
 
       // Reset button
       const resetBtn = document.getElementById('reset-progress-btn');
@@ -779,10 +1123,35 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       // Level buttons
       document.querySelectorAll('.level-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+          // Pulse animation on click
+          animate(
+            btn,
+            { scale: [1, 1.15, 1] },
+            { duration: 0.4, easing: spring({ stiffness: 300, damping: 20 }) }
+          );
+
           currentLevel = btn.dataset.level;
           updateLevelButtons();
           updateLevelInfo();
           saveState();
+
+          // Animate level info updates
+          document.querySelectorAll('.level-info').forEach(info => {
+            animate(info, { opacity: [0.6, 1], x: [-5, 0] }, { duration: 0.3 });
+          });
+        });
+
+        // Hover effect
+        btn.addEventListener('mouseenter', () => {
+          if (btn.dataset.level !== currentLevel) {
+            animate(btn, { scale: 1.05 }, { duration: 0.2 });
+          }
+        });
+
+        btn.addEventListener('mouseleave', () => {
+          if (btn.dataset.level !== currentLevel) {
+            animate(btn, { scale: 1 }, { duration: 0.2 });
+          }
         });
       });
 
@@ -794,10 +1163,66 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           const content = container.querySelector('.phase-content');
           const chevronDown = container.querySelector('.chevron-down');
           const chevronUp = container.querySelector('.chevron-up');
+          const isExpanded = !content.classList.contains('hidden');
 
-          content.classList.toggle('hidden');
-          chevronDown.classList.toggle('hidden');
-          chevronUp.classList.toggle('hidden');
+          // Get phase colors
+          const phase = workout[phaseId];
+
+          if (isExpanded) {
+            // Collapsing
+            const exerciseCards = content.querySelectorAll('.exercise-card');
+
+            // Animate cards out
+            animate(
+              exerciseCards,
+              { opacity: [1, 0], y: [0, -10] },
+              { duration: 0.2, delay: stagger(0.03, { from: 'first' }) }
+            ).finished.then(() => {
+              content.classList.add('hidden');
+            });
+
+            // Animate chevrons
+            animate(chevronUp, { opacity: [1, 0], rotate: [0, 90] }, { duration: 0.2 }).finished.then(() => {
+              chevronUp.classList.add('hidden');
+            });
+            animate(chevronDown, { opacity: [0, 1], rotate: [-90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
+              chevronDown.classList.remove('hidden');
+            });
+
+            // Update button style
+            if (phase) {
+              btn.style.background = `linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%)`;
+              btn.classList.remove('shadow-xl', 'ring-2');
+              btn.classList.add('shadow-lg');
+            }
+          } else {
+            // Expanding
+            content.classList.remove('hidden');
+            const exerciseCards = content.querySelectorAll('.exercise-card');
+
+            // Animate cards in
+            animate(
+              exerciseCards,
+              { opacity: [0, 1], y: [10, 0] },
+              { duration: 0.3, delay: stagger(0.05, { from: 'first', start: 0.1 }), easing: spring({ stiffness: 200, damping: 20 }) }
+            );
+
+            // Animate chevrons
+            animate(chevronDown, { opacity: [1, 0], rotate: [0, -90] }, { duration: 0.2 }).finished.then(() => {
+              chevronDown.classList.add('hidden');
+            });
+            animate(chevronUp, { opacity: [0, 1], rotate: [90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
+              chevronUp.classList.remove('hidden');
+            });
+
+            // Update button style
+            if (phase) {
+              btn.style.background = `linear-gradient(135deg, white 0%, ${phase.colorLightHex} 50%, ${phase.colorPrimaryHex}15 100%)`;
+              btn.classList.remove('shadow-lg');
+              btn.classList.add('shadow-xl', 'ring-2');
+              btn.style.setProperty('--tw-ring-color', phase.colorBorderHex);
+            }
+          }
         });
       });
 
@@ -809,22 +1234,38 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
         if (!card) return;
 
+        const colors = phaseColors[phaseId] || phaseColors.fase1;
+
         if (completedExercises.has(key)) {
+          // Uncomplete animation
           completedExercises.delete(key);
-          card.classList.remove('border-green-400', 'bg-green-50');
+          card.classList.remove(colors.border, colors.bg);
           card.classList.add('border-slate-200', 'bg-white');
           if (btn) {
-            btn.classList.remove('bg-green-500', 'text-white');
+            btn.classList.remove(colors.btnBg, colors.text);
             btn.classList.add('bg-slate-200', 'text-slate-500');
+            // Subtle scale animation
+            animate(btn, { scale: [1.2, 1] }, { duration: 0.3, easing: spring({ stiffness: 300, damping: 20 }) });
           }
+          // Card bounce back
+          animate(card, { scale: [0.98, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
         } else {
+          // Complete animation
           completedExercises.add(key);
-          card.classList.add('border-green-400', 'bg-green-50');
+          card.classList.add(colors.border, colors.bg);
           card.classList.remove('border-slate-200', 'bg-white');
           if (btn) {
-            btn.classList.add('bg-green-500', 'text-white');
+            btn.classList.add(colors.btnBg, colors.text);
             btn.classList.remove('bg-slate-200', 'text-slate-500');
+            // Celebratory pulse
+            animate(btn, { scale: [1, 1.3, 1] }, { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) });
           }
+          // Card success animation
+          animate(
+            card,
+            { scale: [1, 1.02, 1], y: [0, -4, 0] },
+            { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+          );
         }
 
         updateProgress();
@@ -906,15 +1347,31 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             currentSet++;
             currentSetSpan.textContent = currentSet;
 
+            // Animate counter increment
+            animate(
+              currentSetSpan,
+              { scale: [1, 1.4, 1], rotate: [0, 5, 0] },
+              { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+            );
+
+            // Pulse button feedback
+            animate(btn, { scale: [1, 0.95, 1] }, { duration: 0.3 });
+
             // Visual feedback when all sets are completed
             if (currentSet === totalSets) {
-              counter.classList.add('bg-green-50', 'border-green-300');
-              counter.classList.remove('bg-indigo-50', 'border-indigo-200');
+              // Celebration animation for completing all sets
+              animate(
+                counter,
+                { scale: [1, 1.05, 1], y: [0, -5, 0] },
+                { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+              );
+
+              counter.classList.add('ring-2', 'ring-green-400', 'shadow-lg');
               btn.disabled = true;
               btn.classList.add('opacity-50', 'cursor-not-allowed');
 
               // Auto-complete the exercise
-              toggleExerciseCompletion(phaseId, exerciseId);
+              setTimeout(() => toggleExerciseCompletion(phaseId, exerciseId), 300);
             }
           }
         });
@@ -931,9 +1388,15 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           const exerciseId = btn.dataset.exerciseId;
           const key = `${phaseId}-${exerciseId}`;
 
+          // Reset animation
+          animate(
+            currentSetSpan,
+            { scale: [1, 0.5, 1], rotate: [0, -180, -360] },
+            { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
+          );
+
           currentSetSpan.textContent = '0';
-          counter.classList.remove('bg-green-50', 'border-green-300');
-          counter.classList.add('bg-indigo-50', 'border-indigo-200');
+          counter.classList.remove('ring-2', 'ring-green-400', 'shadow-lg');
 
           if (incrementBtn) {
             incrementBtn.disabled = false;
@@ -951,6 +1414,14 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       document.querySelectorAll('.info-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
+
+          // Bounce animation on click
+          animate(
+            btn,
+            { scale: [1, 0.9, 1.1, 1], rotate: [0, -10, 10, 0] },
+            { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+          );
+
           const exerciseId = btn.dataset.exerciseId;
           const details = exerciseDetails[exerciseId];
 
@@ -991,16 +1462,17 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
               videoIframe.src = '';
             }
 
-            document.getElementById('exercise-info-modal').classList.remove('hidden');
+            openModal('exercise-info-modal');
           }
         });
       });
 
       // Close info modal
       const closeInfoModal = () => {
-        document.getElementById('exercise-info-modal').classList.add('hidden');
-        // Stop video playback by clearing the iframe src
-        document.getElementById('modal-video-iframe').src = '';
+        closeModal('exercise-info-modal', () => {
+          // Stop video playback by clearing the iframe src
+          document.getElementById('modal-video-iframe').src = '';
+        });
       };
 
       document.getElementById('close-info-modal').addEventListener('click', closeInfoModal);
@@ -1008,25 +1480,26 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
       // References modal
       document.getElementById('show-references-btn').addEventListener('click', () => {
-        document.getElementById('references-modal').classList.remove('hidden');
+        openModal('references-modal');
       });
 
       document.getElementById('close-references-modal').addEventListener('click', () => {
-        document.getElementById('references-modal').classList.add('hidden');
+        closeModal('references-modal');
       });
 
       document.getElementById('close-references-modal-btn').addEventListener('click', () => {
-        document.getElementById('references-modal').classList.add('hidden');
+        closeModal('references-modal');
       });
 
       // Onboarding modal
       document.getElementById('show-onboarding-btn').addEventListener('click', () => {
-        document.getElementById('onboarding-modal').classList.remove('hidden');
+        openModal('onboarding-modal');
       });
 
       const closeOnboardingModal = () => {
-        document.getElementById('onboarding-modal').classList.add('hidden');
-        markOnboardingAsSeen();
+        closeModal('onboarding-modal', () => {
+          markOnboardingAsSeen();
+        });
       };
 
       document.getElementById('close-onboarding-modal').addEventListener('click', closeOnboardingModal);
@@ -1036,11 +1509,8 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', (e) => {
           if (e.target === modal) {
-            modal.classList.add('hidden');
-            // Mark onboarding as seen if closing the onboarding modal
-            if (modal.id === 'onboarding-modal') {
-              markOnboardingAsSeen();
-            }
+            const callback = modal.id === 'onboarding-modal' ? markOnboardingAsSeen : undefined;
+            closeModal(modal.id, callback);
           }
         });
       });
