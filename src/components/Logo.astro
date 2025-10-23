@@ -1,0 +1,66 @@
+---
+interface Props {
+  size?: 'small' | 'medium' | 'large' | 'xl';
+  showProgress?: boolean;
+  id?: string;
+}
+
+const { size = 'large', showProgress = false, id } = Astro.props;
+
+// Tamaños responsive
+const sizeClasses = {
+  small: 'text-2xl sm:text-3xl',
+  medium: 'text-3xl sm:text-5xl',
+  large: 'text-5xl sm:text-8xl',
+  xl: 'text-6xl sm:text-9xl'
+};
+
+const textSize = sizeClasses[size];
+
+// Colores por fase
+const phases = [
+  { id: 'fase1', text: 'un', color: '#4f46e5', clipPath: 'inset(0 100% 0 0)' },
+  { id: 'fase2', text: 'sl', color: '#14b8a6', clipPath: 'inset(0 100% 0 0)' },
+  { id: 'fase3', text: 'um', color: '#f97316', clipPath: 'inset(0 100% 0 0)' },
+  { id: 'fase4', text: 'p!', color: '#ec4899', clipPath: 'inset(-10% 100% -10% 0)' }
+];
+---
+
+<div id={id} class="flex items-center justify-center">
+  {phases.map(phase => (
+    <div
+      class="letter-group"
+      data-phase={showProgress ? phase.id : undefined}
+      style="position: relative; display: inline-block;"
+    >
+      <span class={`base-layer logo-font ${textSize} text-slate-400`}>
+        {phase.text}
+      </span>
+      <span
+        class={`color-layer logo-font ${textSize}`}
+        style={`position: absolute; top: 0; left: 0; color: ${phase.color}; clip-path: ${showProgress ? phase.clipPath : 'inset(0 0 0 0)'}; transition: clip-path 0.5s ease;`}
+      >
+        {phase.text}
+      </span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .logo-font {
+    font-family: 'Barriecito', cursive;
+    font-weight: 400;
+  }
+
+  .letter-group {
+    letter-spacing: -0.02em;
+  }
+
+  .color-layer {
+    will-change: clip-path;
+  }
+
+  .base-layer {
+    display: inline-block;
+  }
+</style>
