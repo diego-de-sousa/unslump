@@ -1,7 +1,7 @@
 {
-  "name": "Desatrófiate - Rutina de Ejercicios",
-  "short_name": "Desatrófiate",
-  "description": "25 minutos para contrarrestar las horas de ordenador y rescatar tu postura",
+  "name": "unslump! - Exercise Routine",
+  "short_name": "unslump!",
+  "description": "25-minute routine to counteract hours of computer work and rescue your posture",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

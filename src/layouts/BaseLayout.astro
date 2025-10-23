@@ -1,4 +1,6 @@
 ---
+import '@fontsource/chicle/400.css';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -7,8 +9,8 @@ export interface Props {
 }
 
 const {
-  title = 'Desatrófiate - Rutina de ejercicios para trabajadores de oficina',
-  description = '25 minutos para contrarrestar las horas de ordenador y rescatar tu postura. Rutina basada en 30+ estudios científicos peer-reviewed.',
+  title = 'unslump! - Exercise routine for office workers',
+  description = '25 minutes to counteract hours of computer work and rescue your posture. Routine based on 30+ peer-reviewed scientific studies.',
   image = '/og-image.png',
   url = Astro.site?.toString() || 'https://desatrofiate.vercel.app'
 } = Astro.props;
@@ -53,10 +55,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="theme-color" content="#3b82f6" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Desatrófiate" />
+    <meta name="apple-mobile-web-app-title" content="unslump!" />
 
     <!-- Keywords -->
-    <meta name="keywords" content="ejercicios, postura, oficina, trabajo remoto, dolor espalda, ergonomía, rutina ejercicios, corrección postural" />
+    <meta name="keywords" content="exercises, posture, office, remote work, back pain, ergonomics, exercise routine, postural correction" />
 
     <!-- Fonts (if needed) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

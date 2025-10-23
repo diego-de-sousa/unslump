@@ -22,40 +22,62 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 <BaseLayout>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-20">
     <!-- Progress Logo (Sticky) -->
-    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md py-4 sm:py-5 mb-4">
-      <div class="max-w-4xl mx-auto px-4">
-        <div class="flex items-center justify-center">
-          <!-- Logo con efecto de llenado -->
-          <div id="progress-logo" class="flex items-center justify-center">
-            <!-- Exclamación inicial -->
-            <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">¡¡¡</span> -->
+    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md mb-4">
+      <div class="relative py-4 sm:py-5">
+        <div class="max-w-4xl mx-auto px-4">
+          <div class="flex items-center justify-center">
+            <!-- Logo con efecto de llenado -->
+            <div id="progress-logo" class="flex items-center justify-center">
+              <!-- Exclamación inicial -->
+              <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">¡¡¡</span> -->
 
-            <!-- Fase 1: Des -->
-            <div class="letter-group" data-phase="fase1" style="position: relative; display: inline-block;">
-              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">des</span>
-              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #4f46e5; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">des</span>
+              <!-- Fase 1: un -->
+              <div class="letter-group" data-phase="fase1" style="position: relative; display: inline-block;">
+                <span class="base-layer logo-font text-5xl sm:text-8xl text-slate-400">un</span>
+                <span class="color-layer logo-font text-5xl sm:text-8xl" style="position: absolute; top: 0; left: 0; color: #4f46e5; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">un</span>
+              </div>
+
+              <!-- Fase 2: sl -->
+              <div class="letter-group" data-phase="fase2" style="position: relative; display: inline-block;">
+                <span class="base-layer logo-font text-5xl sm:text-8xl text-slate-400">sl</span>
+                <span class="color-layer logo-font text-5xl sm:text-8xl" style="position: absolute; top: 0; left: 0; color: #14b8a6; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">sl</span>
+              </div>
+
+              <!-- Fase 3: um -->
+              <div class="letter-group" data-phase="fase3" style="position: relative; display: inline-block;">
+                <span class="base-layer logo-font text-5xl sm:text-8xl text-slate-400">um</span>
+                <span class="color-layer logo-font text-5xl sm:text-8xl" style="position: absolute; top: 0; left: 0; color: #f97316; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">um</span>
+              </div>
+
+              <!-- Fase 4: p! -->
+              <div class="letter-group" data-phase="fase4" style="position: relative; display: inline-block;">
+                <span class="base-layer logo-font text-5xl sm:text-8xl text-slate-400">p!</span>
+                <span class="color-layer logo-font text-5xl sm:text-8xl" style="position: absolute; top: 0; left: 0; color: #ec4899; clip-path: inset(-10% 100% -10% 0); transition: clip-path 0.5s ease;">p!</span>
+              </div>
+
+              <!-- Exclamación final -->
+              <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">!!!</span> -->
             </div>
+          </div>
+        </div>
 
-            <!-- Fase 2: atr -->
-            <div class="letter-group" data-phase="fase2" style="position: relative; display: inline-block;">
-              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">atr</span>
-              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #14b8a6; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">atr</span>
-            </div>
-
-            <!-- Fase 3: ófi -->
-            <div class="letter-group" data-phase="fase3" style="position: relative; display: inline-block;">
-              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">ófi</span>
-              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #f97316; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">ófi</span>
-            </div>
-
-            <!-- Fase 4: ate -->
-            <div class="letter-group" data-phase="fase4" style="position: relative; display: inline-block;">
-              <span class="base-layer font-extrabold text-4xl sm:text-6xl text-slate-400">ate</span>
-              <span class="color-layer font-extrabold text-4xl sm:text-6xl" style="position: absolute; top: 0; left: 0; color: #ec4899; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease;">ate</span>
-            </div>
-
-            <!-- Exclamación final -->
-            <!-- <span class="font-extrabold text-4xl sm:text-6xl text-slate-400">!!!</span> -->
+        <!-- Barra de progreso por fases en el borde inferior -->
+        <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 gap-2 bg-slate-200">
+          <!-- Fase 1 -->
+          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase1">
+            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #4f46e5; transform: scaleX(0);"></div>
+          </div>
+          <!-- Fase 2 -->
+          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase2">
+            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #14b8a6; transform: scaleX(0);"></div>
+          </div>
+          <!-- Fase 3 -->
+          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase3">
+            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #f97316; transform: scaleX(0);"></div>
+          </div>
+          <!-- Fase 4 -->
+          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase4">
+            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #ec4899; transform: scaleX(0);"></div>
           </div>
         </div>
       </div>
@@ -334,8 +356,8 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         <div class="flex items-center justify-between gap-3 mb-4">
           <div class="flex items-center gap-3">
             <div class="text-3xl sm:text-4xl">🧑‍💻</div>
-            <h2 class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent" style="background-image: linear-gradient(to right, #4f46e5, #14b8a6, #f97316, #ec4899)">
-              Desatrófiate!
+            <h2 class="logo-font text-xl sm:text-2xl bg-clip-text text-transparent" style="background-image: linear-gradient(to right, #4f46e5, #14b8a6, #f97316, #ec4899)">
+              unslump!
             </h2>
           </div>
           <button id="close-onboarding-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 rounded-full transition-all flex-shrink-0">
@@ -492,6 +514,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
   </div>
 
   <style>
+    .logo-font {
+      font-family: 'Chicle', cursive;
+      font-weight: 400;
+    }
+
     .letter-group {
       letter-spacing: -0.02em;
     }
@@ -545,12 +572,12 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
   </style>
 
   <script>
-    import { animate, stagger, spring } from "motion";
+    import { animate, stagger } from "motion";
 
     // Expose Motion functions globally so the inline script can use them
+    
     (window as any).motionAnimate = animate;
     (window as any).motionStagger = stagger;
-    (window as any).motionSpring = spring;
   </script>
 
   <script is:inline define:vars={{ exerciseDetails, workout }}>
@@ -566,7 +593,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
     };
 
     // Motion aliases (will be set after Motion loads)
-    let animate, stagger, spring;
+    let animate, stagger;
 
     // App State
     let currentLevel = 'intermedio';
@@ -584,7 +611,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
     // Load state from localStorage
     const loadState = () => {
-      const saved = localStorage.getItem('desatrofiate-progress');
+      const saved = localStorage.getItem('unslump-progress');
       if (saved) {
         try {
           const data = JSON.parse(saved);
@@ -624,7 +651,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
     // Save state to localStorage
     const saveState = () => {
-      localStorage.setItem('desatrofiate-progress', JSON.stringify({
+      localStorage.setItem('unslump-progress', JSON.stringify({
         completed: Array.from(completedExercises),
         level: currentLevel
       }));
@@ -639,15 +666,15 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       if (!letterGroup) return;
 
       // Motion animation for the letter group (only if Motion is loaded)
-      if (animate && spring) {
+      if (animate) {
         animate(
           letterGroup,
           { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0], y: [0, -10, 0] },
-          { duration: 0.8, easing: spring({ stiffness: 200, damping: 12 }) }
+          { duration: 0.8, easing: "ease-out" }
         );
       }
 
-      // Confetti celebration
+      // Confetti celebration - single burst
       if (typeof confetti !== 'undefined') {
         const rect = letterGroup.getBoundingClientRect();
         const originX = (rect.left + rect.width / 2) / window.innerWidth;
@@ -663,22 +690,17 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
         const colors = phaseColorMap[phaseId] || phaseColorMap.fase1;
 
-        function fire(particleRatio, opts) {
-          confetti({
-            origin: { x: originX, y: originY },
-            colors,
-            angle: 270, // Disparar hacia abajo
-            particleCount: Math.floor(100 * particleRatio),
-            ...opts
-          });
-        }
-
-        // Explosión de confetti de la fase
-        fire(0.25, { spread: 26, startVelocity: 55 });
-        fire(0.2, { spread: 60 });
-        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-        fire(0.1, { spread: 120, startVelocity: 45 });
+        // Un solo disparo de confetti
+        confetti({
+          origin: { x: originX, y: originY },
+          colors,
+          angle: 270, // Disparar hacia abajo
+          particleCount: 80,
+          spread: 80,
+          startVelocity: 50,
+          decay: 0.91,
+          scalar: 1
+        });
       }
     };
 
@@ -692,41 +714,24 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         fase4: ['#ec4899', '#f472b6', '#f9a8d4']
       };
 
-      // Animate entire logo with spectacular motion (only if Motion is loaded)
-      if (animate && spring && stagger) {
-        const logo = document.getElementById('progress-logo');
-        if (logo) {
-          animate(
-            logo,
-            {
-              scale: [1, 1.1, 1.05, 1],
-              rotate: [0, -2, 2, -1, 1, 0],
-              y: [0, -15, 0]
-            },
-            { duration: 1.2, easing: spring({ stiffness: 150, damping: 12 }) }
-          );
-        }
-
-        // Animate each letter group in sequence
+      // Animate each letter group with the same animation as phase completion (only if Motion is loaded)
+      if (animate && stagger) {
+        // Animate each letter group in sequence with bounce (same as phase celebration)
         const letterGroups = document.querySelectorAll('.letter-group');
         if (letterGroups.length > 0) {
           animate(
             letterGroups,
+            { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0], y: [0, -10, 0] },
             {
-              scale: [1, 1.2, 1],
-              y: [0, -20, 0],
-              rotate: [0, 360]
-            },
-            {
-              duration: 1,
+              duration: 0.8,
               delay: stagger(0.15),
-              easing: spring({ stiffness: 200, damping: 15 })
+              easing: "ease-out"
             }
           );
         }
       }
 
-      // Confetti celebration
+      // Confetti celebration - single burst per phase
       if (typeof confetti !== 'undefined') {
         phaseIds.forEach((phaseId, index) => {
           setTimeout(() => {
@@ -738,28 +743,17 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             const originY = (rect.top + rect.height / 2) / window.innerHeight;
             const colors = phaseColorMap[phaseId];
 
-            function fire(particleRatio, opts) {
-              confetti({
-                origin: { x: originX, y: originY },
-                colors,
-                angle: 270, // Disparar hacia abajo
-                particleCount: Math.floor(200 * particleRatio),
-                ...opts
-              });
-            }
-
-            // Explosión espectacular por fase
-            fire(0.25, { spread: 40, startVelocity: 70 });
-            fire(0.2, { spread: 80 });
-            fire(0.35, { spread: 120, decay: 0.91, scalar: 0.9 });
-            fire(0.1, { spread: 140, startVelocity: 35, decay: 0.92, scalar: 1.3 });
-            fire(0.1, { spread: 140, startVelocity: 60 });
-
-            // Segunda ola más intensa
-            setTimeout(() => {
-              fire(0.2, { spread: 100, startVelocity: 65, decay: 0.9 });
-              fire(0.15, { spread: 120, startVelocity: 75, scalar: 1.2 });
-            }, 200);
+            // Un solo disparo de confetti por fase
+            confetti({
+              origin: { x: originX, y: originY },
+              colors,
+              angle: 270, // Disparar hacia abajo
+              particleCount: 100,
+              spread: 90,
+              startVelocity: 55,
+              decay: 0.91,
+              scalar: 1.1
+            });
           }, index * 150); // Escalonar las explosiones
         });
       }
@@ -786,12 +780,26 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         // Calcular el porcentaje que queda oculto (de derecha a izquierda)
         const hiddenPercent = 100 - (phaseProgress * 100);
 
-        // Actualizar clip-path de la capa de color
+        // Actualizar clip-path de la capa de color del logo
         const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
         if (letterGroup) {
           const colorLayer = letterGroup.querySelector('.color-layer');
           if (colorLayer) {
-            colorLayer.style.clipPath = `inset(0 ${hiddenPercent}% 0 0)`;
+            // Para fase4 (la "p" tiene descender), usar valores negativos en top/bottom
+            if (phaseId === 'fase4') {
+              colorLayer.style.clipPath = `inset(-10% ${hiddenPercent}% -10% 0)`;
+            } else {
+              colorLayer.style.clipPath = `inset(0 ${hiddenPercent}% 0 0)`;
+            }
+          }
+        }
+
+        // Actualizar barra de progreso inferior
+        const progressBar = document.querySelector(`.phase-progress-bar[data-phase="${phaseId}"]`);
+        if (progressBar) {
+          const progressFill = progressBar.querySelector('.absolute');
+          if (progressFill) {
+            progressFill.style.transform = `scaleX(${phaseProgress})`;
           }
         }
 
@@ -884,7 +892,6 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       const display = card.querySelector('.timer-display');
       const startBtn = card.querySelector('.start-timer-btn');
       const pauseBtn = card.querySelector('.pause-timer-btn');
-      const playBtn = card.querySelector('.play-timer-btn');
       const resetBtn = card.querySelector('.reset-timer-btn');
 
       startBtn.classList.add('hidden');
@@ -892,8 +899,8 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       resetBtn.classList.remove('hidden');
 
       // Animate timer start
-      if (animate && spring) {
-        animate(display, { scale: [1, 1.1, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+      if (animate) {
+        animate(display, { scale: [1, 1.1, 1] }, { duration: 0.4, easing: "ease-out" });
       }
 
       let timeLeft = duration;
@@ -905,21 +912,21 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         display.textContent = formatTime(timeLeft);
 
         // Pulse animation when time is running low (last 10 seconds)
-        if (timeLeft <= 10 && timeLeft > 0 && animate && spring) {
+        if (timeLeft <= 10 && timeLeft > 0 && animate) {
           animate(
             display,
             { scale: [1, 1.08, 1] },
-            { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
+            { duration: 0.5, easing: "ease-out" }
           );
         }
 
         if (timeLeft <= 0) {
           // Completion animation
-          if (animate && spring) {
+          if (animate) {
             animate(
               display,
               { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] },
-              { duration: 0.6, easing: spring({ stiffness: 250, damping: 15 }) }
+              { duration: 0.6, easing: "ease-out" }
             );
           }
           stopTimer(card);
@@ -1018,7 +1025,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
     // Check and show onboarding on first visit
     const checkOnboarding = () => {
-      const hasSeenOnboarding = localStorage.getItem('desatrofiate-onboarding-shown');
+      const hasSeenOnboarding = localStorage.getItem('unslump-onboarding-shown');
       if (!hasSeenOnboarding) {
         // Show onboarding modal after a short delay to let the page settle
         setTimeout(() => {
@@ -1029,7 +1036,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
     // Mark onboarding as seen
     const markOnboardingAsSeen = () => {
-      localStorage.setItem('desatrofiate-onboarding-shown', 'true');
+      localStorage.setItem('unslump-onboarding-shown', 'true');
     };
 
     // Modal animation helpers
@@ -1040,7 +1047,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       modal.classList.remove('hidden');
       const content = modal.querySelector('.bg-white');
 
-      if (animate && spring) {
+      if (animate) {
         // Animate backdrop
         animate(modal, { opacity: [0, 1] }, { duration: 0.2 });
 
@@ -1049,7 +1056,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           animate(
             content,
             { opacity: [0, 1], scale: [0.95, 1], y: [20, 0] },
-            { duration: 0.3, delay: 0.1, easing: spring({ stiffness: 300, damping: 25 }) }
+            { duration: 0.3, delay: 0.1, easing: "ease-out" }
           );
         }
       }
@@ -1081,7 +1088,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
     // Initial animations
     const runInitialAnimations = () => {
-      if (!animate || !stagger || !spring) {
+      if (!animate || !stagger) {
         console.warn('Motion not loaded yet');
         return;
       }
@@ -1092,7 +1099,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         animate(
           logo,
           { opacity: [0, 1], y: [-20, 0] },
-          { duration: 0.8, easing: spring({ stiffness: 100, damping: 15 }) }
+          { duration: 0.8, easing: "ease-out" }
         );
       }
 
@@ -1102,7 +1109,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         animate(
           letterGroups,
           { opacity: [0, 1], scale: [0.8, 1] },
-          { duration: 0.6, delay: stagger(0.1, { start: 0.3 }), easing: spring({ stiffness: 200, damping: 20 }) }
+          { duration: 0.6, delay: stagger(0.1, { start: 0.3 }), easing: "ease-out" }
         );
       }
 
@@ -1122,7 +1129,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         animate(
           helpBtn,
           { opacity: [0, 1], scale: [0.8, 1] },
-          { duration: 0.5, delay: 1.2, easing: spring({ stiffness: 200, damping: 15 }) }
+          { duration: 0.5, delay: 1.2, easing: "ease-out" }
         );
       }
     };
@@ -1133,7 +1140,6 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       await waitForMotion();
       animate = window.motionAnimate;
       stagger = window.motionStagger;
-      spring = window.motionSpring;
 
       loadState();
       checkOnboarding();
@@ -1151,11 +1157,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       document.querySelectorAll('.level-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           // Pulse animation on click
-          if (animate && spring) {
+          if (animate) {
             animate(
               btn,
               { scale: [1, 1.15, 1] },
-              { duration: 0.4, easing: spring({ stiffness: 300, damping: 20 }) }
+              { duration: 0.4, easing: "ease-out" }
             );
           }
 
@@ -1238,12 +1244,12 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             content.classList.remove('hidden');
             const exerciseCards = content.querySelectorAll('.exercise-card');
 
-            if (animate && stagger && spring) {
+            if (animate && stagger) {
               // Animate cards in
               animate(
                 exerciseCards,
                 { opacity: [0, 1], y: [10, 0] },
-                { duration: 0.3, delay: stagger(0.05, { from: 'first', start: 0.1 }), easing: spring({ stiffness: 200, damping: 20 }) }
+                { duration: 0.3, delay: stagger(0.05, { from: 'first', start: 0.1 }), easing: "ease-out" }
               );
 
               // Animate chevrons
@@ -1289,13 +1295,13 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             btn.classList.remove(colors.btnBg, colors.text);
             btn.classList.add('bg-slate-200', 'text-slate-500');
             // Subtle scale animation
-            if (animate && spring) {
-              animate(btn, { scale: [1.2, 1] }, { duration: 0.3, easing: spring({ stiffness: 300, damping: 20 }) });
+            if (animate) {
+              animate(btn, { scale: [1.2, 1] }, { duration: 0.3, easing: "ease-out" });
             }
           }
           // Card bounce back
-          if (animate && spring) {
-            animate(card, { scale: [0.98, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+          if (animate) {
+            animate(card, { scale: [0.98, 1] }, { duration: 0.4, easing: "ease-out" });
           }
         } else {
           // Complete animation
@@ -1306,16 +1312,16 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             btn.classList.add(colors.btnBg, colors.text);
             btn.classList.remove('bg-slate-200', 'text-slate-500');
             // Celebratory pulse
-            if (animate && spring) {
-              animate(btn, { scale: [1, 1.3, 1] }, { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) });
+            if (animate) {
+              animate(btn, { scale: [1, 1.3, 1] }, { duration: 0.5, easing: "ease-out" });
             }
           }
           // Card success animation
-          if (animate && spring) {
+          if (animate) {
             animate(
               card,
               { scale: [1, 1.02, 1], y: [0, -4, 0] },
-              { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+              { duration: 0.6, easing: "ease-out" }
             );
           }
         }
@@ -1400,11 +1406,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             currentSetSpan.textContent = currentSet;
 
             // Animate counter increment
-            if (animate && spring) {
+            if (animate) {
               animate(
                 currentSetSpan,
                 { scale: [1, 1.4, 1], rotate: [0, 5, 0] },
-                { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+                { duration: 0.5, easing: "ease-out" }
               );
 
               // Pulse button feedback
@@ -1414,11 +1420,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             // Visual feedback when all sets are completed
             if (currentSet === totalSets) {
               // Celebration animation for completing all sets
-              if (animate && spring) {
+              if (animate) {
                 animate(
                   counter,
                   { scale: [1, 1.05, 1], y: [0, -5, 0] },
-                  { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+                  { duration: 0.6, easing: "ease-out" }
                 );
               }
 
@@ -1445,11 +1451,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           const key = `${phaseId}-${exerciseId}`;
 
           // Reset animation
-          if (animate && spring) {
+          if (animate) {
             animate(
               currentSetSpan,
               { scale: [1, 0.5, 1], rotate: [0, -180, -360] },
-              { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
+              { duration: 0.5, easing: "ease-out" }
             );
           }
 
@@ -1474,11 +1480,11 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           e.stopPropagation();
 
           // Bounce animation on click
-          if (animate && spring) {
+          if (animate) {
             animate(
               btn,
               { scale: [1, 0.9, 1.1, 1], rotate: [0, -10, 10, 0] },
-              { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+              { duration: 0.5, easing: "ease-out" }
             );
           }
 
