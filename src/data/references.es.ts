@@ -1,9 +1,6 @@
-export interface ReferenceSection {
-  category: string;
-  studies: string[];
-}
+import type { References } from './types';
 
-export const references: ReferenceSection[] = [
+export const references: References = [
   {
     category: "Revisiones Sistemáticas y Metaanálisis",
     studies: [

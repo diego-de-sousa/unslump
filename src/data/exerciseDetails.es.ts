@@ -1,11 +1,6 @@
-export interface ExerciseDetail {
-  muscles: string;
-  why: string;
-  evidence: string;
-  tips: string;
-}
+import type { ExerciseDetails } from './types';
 
-export const exerciseDetails: Record<string, ExerciseDetail> = {
+export const exerciseDetails: ExerciseDetails = {
   suboccipital: {
     muscles: "Músculos suboccipitales (recto posterior mayor/menor, oblicuos superior/inferior)",
     why: "Estos músculos se vuelven hiperactivos por mantener la cabeza hacia adelante durante horas. Su tensión excesiva contribuye a dolores de cabeza tensionales y rigidez cervical superior.",

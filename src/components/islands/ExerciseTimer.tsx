@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { animate } from 'motion';
 import type { JSX } from 'preact';
+import { completeExercise } from '../../stores/progressStore';
 
 interface ExerciseTimerProps {
   exerciseId: string;
@@ -77,13 +78,9 @@ export default function ExerciseTimer({
             );
           }
 
-          // Dispatch custom event for completion
+          // Complete exercise directly via store
           setTimeout(() => {
-            const event = new CustomEvent('exercise-complete', {
-              detail: { phaseId: phaseId, exerciseId: exerciseId },
-              bubbles: true
-            });
-            window.dispatchEvent(event);
+            completeExercise(phaseId, exerciseId);
           }, 600);
 
           clearTimer();

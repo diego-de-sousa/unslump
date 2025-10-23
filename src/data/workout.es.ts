@@ -1,37 +1,6 @@
-export interface ExerciseLevels {
-  principiante: string;
-  intermedio: string;
-  avanzado: string;
-}
+import type { Workout } from './types';
 
-export interface Exercise {
-  id: string;
-  name: string;
-  duration: number;
-  reps: string;
-  instructions: string;
-  levels?: ExerciseLevels;
-  videoUrl?: string;
-  sets?: number; // Número de series para mostrar contador
-}
-
-export interface Phase {
-  name: string;
-  time: string;
-  color: string; // Clase Tailwind para bg y border (backward compatibility)
-  colorPrimary: string; // Color principal (ej: indigo-600)
-  colorLight: string; // Color claro para fondos (ej: indigo-50)
-  colorBorder: string; // Color para bordes (ej: indigo-200)
-  colorPrimaryHex: string; // Valor hex del color principal
-  colorLightHex: string; // Valor hex del color claro
-  colorBorderHex: string; // Valor hex del color de borde
-  description: string;
-  exercises: Exercise[];
-}
-
-export type Level = 'principiante' | 'intermedio' | 'avanzado';
-
-export const workout: Record<string, Phase> = {
+export const workout: Workout = {
   fase1: {
     name: "FASE 1: INHIBIR",
     time: "≈ 4 min",

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'preact/hooks';
 import { animate } from 'motion';
 import type { JSX } from 'preact';
+import { completeExercise, toggleExerciseCompletion } from '../../stores/progressStore';
 
 interface SetCounterProps {
   exerciseId: string;
@@ -73,12 +74,8 @@ export default function SetCounter({
 
       // Auto-complete the exercise after animation
       setTimeout(() => {
-        // Dispatch custom event for completion
-        const event = new CustomEvent('exercise-complete', {
-          detail: { phaseId, exerciseId },
-          bubbles: true
-        });
-        window.dispatchEvent(event);
+        // Complete exercise directly via store
+        completeExercise(phaseId, exerciseId);
 
         if (onComplete) {
           onComplete(phaseId, exerciseId);
@@ -112,12 +109,8 @@ export default function SetCounter({
     setCurrentSet(0);
     setIsCompleted(false);
 
-    // Dispatch event to uncomplete the exercise
-    const event = new CustomEvent('exercise-uncomplete', {
-      detail: { phaseId, exerciseId },
-      bubbles: true
-    });
-    window.dispatchEvent(event);
+    // Uncomplete exercise directly via store (toggle if completed)
+    toggleExerciseCompletion(phaseId, exerciseId);
   };
 
   return (

@@ -1,37 +1,6 @@
-export interface ExerciseLevels {
-  principiante: string;
-  intermedio: string;
-  avanzado: string;
-}
+import type { Workout } from './types';
 
-export interface Exercise {
-  id: string;
-  name: string;
-  duration: number;
-  reps: string;
-  instructions: string;
-  levels?: ExerciseLevels;
-  videoUrl?: string;
-  sets?: number;
-}
-
-export interface Phase {
-  name: string;
-  time: string;
-  color: string;
-  colorPrimary: string;
-  colorLight: string;
-  colorBorder: string;
-  colorPrimaryHex: string;
-  colorLightHex: string;
-  colorBorderHex: string;
-  description: string;
-  exercises: Exercise[];
-}
-
-export type Level = 'principiante' | 'intermedio' | 'avanzado';
-
-export const workout: Record<string, Phase> = {
+export const workout: Workout = {
   fase1: {
     name: "PHASE 1: INHIBIT",
     time: "≈ 4 min",
