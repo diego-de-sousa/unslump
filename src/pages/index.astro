@@ -809,27 +809,32 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           setTimeout(() => {
             celebratePhase(phaseId);
 
-            // Colapsar la fase automáticamente después del confetti
+            // Scroll automático a la siguiente fase después del confetti
             setTimeout(() => {
-              const container = document.querySelector(`.phase-container[data-phase-id="${phaseId}"]`);
-              if (container) {
-                const content = container.querySelector('.phase-content');
-                const chevronDown = container.querySelector('.chevron-down');
-                const chevronUp = container.querySelector('.chevron-up');
-                const toggleBtn = container.querySelector('.phase-toggle');
-                const phase = workout[phaseId];
+              // Encontrar la siguiente fase
+              const phaseOrder = ['fase1', 'fase2', 'fase3', 'fase4'];
+              const currentIndex = phaseOrder.indexOf(phaseId);
+              const nextPhaseId = phaseOrder[currentIndex + 1];
 
-                if (content && chevronDown && chevronUp) {
-                  content.classList.add('hidden');
-                  chevronDown.classList.remove('hidden');
-                  chevronUp.classList.add('hidden');
+              if (nextPhaseId) {
+                const nextContainer = document.querySelector(`.phase-container[data-phase-id="${nextPhaseId}"]`);
+                if (nextContainer) {
+                  const nextToggle = nextContainer.querySelector('.phase-toggle');
+                  const nextContent = nextContainer.querySelector('.phase-content');
 
-                  // Restaurar el estilo del botón a colapsado
-                  if (toggleBtn && phase) {
-                    toggleBtn.style.background = `linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%)`;
-                    toggleBtn.classList.remove('shadow-xl', 'ring-2');
-                    toggleBtn.classList.add('shadow-lg');
+                  // Expandir la siguiente fase si está colapsada
+                  if (nextContent && nextContent.classList.contains('hidden')) {
+                    nextToggle?.click();
                   }
+
+                  // Scroll suave a la siguiente fase
+                  setTimeout(() => {
+                    nextToggle?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                      inline: 'nearest'
+                    });
+                  }, 100);
                 }
               }
             }, 800); // Esperar a que termine el confetti
