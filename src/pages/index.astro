@@ -827,13 +827,19 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
                     nextToggle?.click();
                   }
 
-                  // Scroll suave a la siguiente fase
+                  // Scroll suave a la siguiente fase con offset para el sticky header
                   setTimeout(() => {
-                    nextToggle?.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start',
-                      inline: 'nearest'
-                    });
+                    if (nextToggle) {
+                      // Calcular posición con offset para el header sticky (~120px)
+                      const yOffset = -120;
+                      const elementPosition = nextToggle.getBoundingClientRect().top;
+                      const offsetPosition = elementPosition + window.pageYOffset + yOffset;
+
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                      });
+                    }
                   }, 100);
                 }
               }
