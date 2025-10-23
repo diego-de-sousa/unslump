@@ -29,6 +29,11 @@
   "preferences": {
     "title": "Preferences"
   },
+  "darkMode": {
+    "title": "Theme:",
+    "light": "Light mode",
+    "dark": "Dark mode"
+  },
   "timer": {
     "completed": "Sets completed:",
     "addSet": "+ Set"
@@ -73,5 +78,22 @@
   },
   "progress": {
     "resetConfirm": "Are you sure you want to reset all progress?"
+  },
+  "completion": {
+    "title": "Congratulations! 🎉",
+    "subtitle": "You've completed your daily routine",
+    "message": "You're investing in your health. Consistency is key!",
+    "statsTitle": "Your Progress",
+    "daysThisWeek": "Days this week",
+    "currentStreak": "Current streak",
+    "longestStreak": "Longest streak",
+    "totalSessions": "Total sessions",
+    "days": "days",
+    "sessions": "sessions",
+    "placeholderNote": "📊 Detailed statistics coming soon! We're working on tracking your weekly progress and streaks.",
+    "shareButton": "Share my progress",
+    "resetButton": "Start new session",
+    "sessionLocked": "Session completed! You can start a new session tomorrow or use the reset button.",
+    "comeBackTomorrow": "Come back tomorrow for a new session! 💪"
   }
 }

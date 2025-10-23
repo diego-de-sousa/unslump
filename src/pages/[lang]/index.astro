@@ -39,9 +39,9 @@ const references = getReferences(lang);
   description={t('meta.description')}
   lang={lang}
 >
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
     <!-- Progress Logo (Sticky) -->
-    <div class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm shadow-md mb-4">
+    <div class="sticky top-0 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md mb-4">
       <div class="relative py-4 sm:py-5">
         <div class="max-w-4xl mx-auto px-4">
           <div class="flex items-center justify-center">
@@ -50,25 +50,21 @@ const references = getReferences(lang);
           </div>
         </div>
 
-        <!-- Barra de progreso por fases en el borde inferior -->
-        <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 gap-2 bg-slate-200">
-          <!-- Fase 1 -->
+        <!-- Barra de progreso por fases en el borde inferior (OCULTA - Descomentar para restaurar) -->
+        <!-- <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 bg-slate-200">
           <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase1">
             <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #4f46e5; transform: scaleX(0);"></div>
           </div>
-          <!-- Fase 2 -->
           <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase2">
             <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #14b8a6; transform: scaleX(0);"></div>
           </div>
-          <!-- Fase 3 -->
           <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase3">
             <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #f97316; transform: scaleX(0);"></div>
           </div>
-          <!-- Fase 4 -->
           <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase4">
             <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #ec4899; transform: scaleX(0);"></div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -92,13 +88,13 @@ const references = getReferences(lang);
               </div>
 
               <div>
-                <div class="text-left mb-3">
+                <div class="text-left mb-1">
                   <h2 class="text-lg sm:text-2xl font-extrabold leading-tight mb-1 pr-10 sm:pr-12" style={`color: ${phase.colorPrimaryHex};`}>
                     {phase.name.includes(':') ? phase.name.split(':')[1].trim() : phase.name}
                   </h2>
-                  <p class="phase-description text-xs sm:text-sm text-slate-600/90 leading-relaxed max-w-prose mb-2 pr-10 sm:pr-12">{phase.description}</p>
+                  <p class="phase-description text-xs sm:text-sm text-slate-600/90 dark:text-gray-300/90 leading-relaxed max-w-prose mb-1 pr-10 sm:pr-12">{phase.description}</p>
                   <div class="flex justify-end">
-                    <span class="text-xs text-slate-500 font-medium whitespace-nowrap">{phase.time}</span>
+                    <span class="text-xs text-slate-500 dark:text-gray-400 font-medium whitespace-nowrap">{phase.time}</span>
                   </div>
                 </div>
 
@@ -117,34 +113,34 @@ const references = getReferences(lang);
             </button>
           </div>
 
-          <div class="phase-content hidden bg-white rounded-b-lg shadow-lg p-3 sm:p-4 mt-2 space-y-3">
+          <div class="phase-content hidden p-3 sm:p-4 mt-2 space-y-3">
             {phase.exercises.map(exercise => (
                 <div
-                  class="exercise-card border-2 border-slate-200 bg-white rounded-lg p-3 sm:p-4 transition-all cursor-pointer hover:shadow-lg"
+                  class="exercise-card border-2 border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 transition-all cursor-pointer hover:shadow-lg"
                   data-phase-id={phaseId}
                   data-exercise-id={exercise.id}
                   data-duration={exercise.duration}
                 >
                   <div class="flex justify-between items-start gap-2 mb-2">
                     <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-1">
-                        <h3 class="font-bold text-lg sm:text-xl text-slate-800 flex-1 min-w-0 break-words">{exercise.name}</h3>
+                      <div class="flex items-start gap-2 mb-1">
+                        <h3 class="font-bold text-lg sm:text-xl text-slate-800 dark:text-gray-100 flex-1 min-w-0 break-words">{exercise.name}</h3>
                         <button
-                          class="info-btn p-2 border rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
+                          class="info-btn p-1.5 sm:p-2 border rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
                           style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`}
                           data-exercise-id={exercise.id}
                           title={t('common.moreInfo')}
                         >
-                          <Info size={20} style={`color: ${phase.colorPrimaryHex};`} />
+                          <Info size={18} style={`color: ${phase.colorPrimaryHex};`} />
                         </button>
                       </div>
-                      <p class="text-sm sm:text-base font-semibold text-slate-700 mb-2">{exercise.reps}</p>
-                      <p class="text-xs sm:text-sm text-slate-700">{exercise.instructions}</p>
+                      <p class="text-sm sm:text-base font-semibold text-slate-700 dark:text-gray-300 mb-2">{exercise.reps}</p>
+                      <p class="text-xs sm:text-sm text-slate-700 dark:text-gray-300">{exercise.instructions}</p>
 
                       {exercise.levels && (
                         <div class="level-info mt-2 p-2 border rounded text-xs sm:text-sm" style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`} data-levels={JSON.stringify(exercise.levels)}>
                           <span class="font-semibold" style={`color: ${phase.colorPrimaryHex};`}>{t('levels.intermediate')}:</span>{' '}
-                          <span class="text-slate-800 level-text">{exercise.levels.intermedio}</span>
+                          <span class="text-slate-800 dark:text-gray-200 level-text">{exercise.levels.intermedio}</span>
                         </div>
                       )}
                     </div>
@@ -234,14 +230,100 @@ const references = getReferences(lang);
           </div>
         </div>
       ))}
+
+      <!-- Completion Celebration Section (shown only when all exercises are done) -->
+      <div id="completion-section" class="hidden mb-8 mt-8">
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 sm:p-8 shadow-xl">
+          <!-- Confetti background decoration -->
+          <div class="text-center mb-6">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-green-700 mb-2">
+              {t('completion.title')}
+            </h2>
+            <p class="text-lg sm:text-xl text-green-600 font-semibold mb-1">
+              {t('completion.subtitle')}
+            </p>
+            <p class="text-sm sm:text-base text-slate-700">
+              {t('completion.message')}
+            </p>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="mb-6">
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-800 mb-4 text-center">
+              {t('completion.statsTitle')}
+            </h3>
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+              <!-- Days This Week -->
+              <div class="bg-white rounded-lg p-4 border-2 border-blue-200 shadow-md">
+                <div class="text-center">
+                  <div class="text-3xl sm:text-4xl font-bold text-blue-600 mb-1">3</div>
+                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
+                    {t('completion.daysThisWeek')}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Current Streak -->
+              <div class="bg-white rounded-lg p-4 border-2 border-orange-200 shadow-md">
+                <div class="text-center">
+                  <div class="text-3xl sm:text-4xl font-bold text-orange-600 mb-1">5</div>
+                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
+                    {t('completion.currentStreak')}
+                  </div>
+                  <div class="text-xs text-slate-500">{t('completion.days')}</div>
+                </div>
+              </div>
+
+              <!-- Longest Streak -->
+              <div class="bg-white rounded-lg p-4 border-2 border-purple-200 shadow-md">
+                <div class="text-center">
+                  <div class="text-3xl sm:text-4xl font-bold text-purple-600 mb-1">12</div>
+                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
+                    {t('completion.longestStreak')}
+                  </div>
+                  <div class="text-xs text-slate-500">{t('completion.days')}</div>
+                </div>
+              </div>
+
+              <!-- Total Sessions -->
+              <div class="bg-white rounded-lg p-4 border-2 border-pink-200 shadow-md">
+                <div class="text-center">
+                  <div class="text-3xl sm:text-4xl font-bold text-pink-600 mb-1">24</div>
+                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
+                    {t('completion.totalSessions')}
+                  </div>
+                  <div class="text-xs text-slate-500">{t('completion.sessions')}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Placeholder Notice -->
+            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
+              <p class="text-xs sm:text-sm text-yellow-800 text-center leading-relaxed">
+                {t('completion.placeholderNote')}
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              id="reset-session-btn"
+              class="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
+            >
+              {t('completion.resetButton')}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Exercise Info Modal -->
     <div id="exercise-info-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50 hidden">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <div class="flex justify-between items-start gap-2 mb-4">
-          <h2 id="modal-title" class="text-xl sm:text-2xl font-bold text-slate-800 flex-1 min-w-0"></h2>
-          <button id="close-info-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 rounded-full transition-all flex-shrink-0">
+          <h2 id="modal-title" class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-gray-100 flex-1 min-w-0"></h2>
+          <button id="close-info-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
             <X size={20} />
           </button>
         </div>
@@ -266,31 +348,31 @@ const references = getReferences(lang);
 
         <div class="space-y-3 sm:space-y-4">
           <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 mb-1 flex items-center gap-2">
+            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
               🎯 {t('modal.exerciseInfo.muscles')}
             </h3>
-            <p id="modal-muscles" class="text-xs sm:text-sm text-slate-600"></p>
+            <p id="modal-muscles" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
           </div>
 
           <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 mb-1 flex items-center gap-2">
+            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
               ❓ {t('modal.exerciseInfo.why')}
             </h3>
-            <p id="modal-why" class="text-xs sm:text-sm text-slate-600"></p>
+            <p id="modal-why" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
           </div>
 
           <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 mb-1 flex items-center gap-2">
+            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
               🔬 {t('modal.exerciseInfo.evidence')}
             </h3>
-            <p id="modal-evidence" class="text-xs sm:text-sm text-slate-600"></p>
+            <p id="modal-evidence" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
           </div>
 
           <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 mb-1 flex items-center gap-2">
+            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
               💡 {t('modal.exerciseInfo.tips')}
             </h3>
-            <p id="modal-tips" class="text-xs sm:text-sm text-slate-600"></p>
+            <p id="modal-tips" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
           </div>
         </div>
 
@@ -305,27 +387,27 @@ const references = getReferences(lang);
 
     <!-- References Modal -->
     <div id="references-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-[60] hidden">
-      <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <div class="flex justify-between items-start gap-2 mb-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 flex-1 min-w-0">{t('modal.references.title')}</h2>
-          <button id="close-references-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 rounded-full transition-all flex-shrink-0">
+          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-gray-100 flex-1 min-w-0">{t('modal.references.title')}</h2>
+          <button id="close-references-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
             <X size={20} />
           </button>
         </div>
 
-        <p class="text-xs sm:text-sm text-slate-600 mb-4 sm:mb-6">
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-4 sm:mb-6">
           {t('modal.references.description')}
         </p>
 
         <div class="space-y-4 sm:space-y-6">
           {references.map((section) => (
             <div>
-              <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-2 sm:mb-3 pb-2 border-b-2 border-slate-200">
+              <h3 class="text-base sm:text-lg font-bold text-slate-800 dark:text-gray-200 mb-2 sm:mb-3 pb-2 border-b-2 border-slate-200 dark:border-gray-700">
                 {section.category}
               </h3>
               <ul class="space-y-2 sm:space-y-3">
                 {section.studies.map((study) => (
-                  <li class="text-xs sm:text-sm text-slate-700 pl-3 sm:pl-4 border-l-2 border-blue-300 leading-relaxed">
+                  <li class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 pl-3 sm:pl-4 border-l-2 border-blue-300 dark:border-blue-600 leading-relaxed">
                     {study}
                   </li>
                 ))}
@@ -352,34 +434,37 @@ const references = getReferences(lang);
 
     <!-- Onboarding Modal -->
     <div id="onboarding-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50 hidden">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <!-- Header del modal con logo -->
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <Logo size="medium" />
-          <button id="close-onboarding-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 rounded-full transition-all flex-shrink-0">
+      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col relative">
+        <!-- Header del modal con logo - STICKY -->
+        <div class="flex-shrink-0 bg-white dark:bg-gray-800 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 border-b border-slate-200 dark:border-gray-700 rounded-t-lg">
+          <Logo id="onboarding-logo" showProgress={true} size="medium" />
+          <button id="close-onboarding-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
             <X size={20} />
           </button>
         </div>
 
+        <!-- Contenido scrollable -->
+        <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+
         <!-- Descripción de la app - MÁS DESTACADA -->
-        <div class="mb-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200">
-          <p class="text-sm sm:text-base text-slate-800 mb-2 font-semibold leading-relaxed">
+        <div class="mb-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+          <p class="text-sm sm:text-base text-slate-800 dark:text-gray-100 mb-2 font-semibold leading-relaxed">
             {t('modal.onboarding.subtitle')}
           </p>
-          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 leading-relaxed">
             {t('modal.onboarding.description')}
           </p>
         </div>
 
-        <!-- Preferencias (nivel + idioma) AGRUPADAS -->
-        <div class="mb-4 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200">
-          <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+        <!-- Preferencias (nivel + idioma + modo oscuro) AGRUPADAS -->
+        <div class="mb-4 p-3 sm:p-4 bg-slate-50 dark:bg-gray-900/50 rounded-lg border border-slate-200 dark:border-gray-700">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-gray-100 mb-3 flex items-center gap-2">
             ⚙️ {t('preferences.title')}
           </h3>
 
           <!-- Level Selector con descripción incluida -->
           <div class="mb-3">
-            <span class="text-xs sm:text-sm text-slate-700 font-semibold block mb-2">🎚️ {t('levels.selectLevel')}</span>
+            <span class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-2">🎚️ {t('levels.selectLevel')}</span>
             <div class="grid grid-cols-3 gap-2 mb-2">
               {['principiante', 'intermedio', 'avanzado'].map(l => (
                 <button
@@ -387,7 +472,7 @@ const references = getReferences(lang);
                   class={`level-btn px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                     l === 'intermedio'
                       ? 'bg-blue-500 text-white shadow-md'
-                      : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                      : 'bg-slate-200 dark:bg-gray-700 text-slate-700 dark:text-gray-300 hover:bg-slate-300 dark:hover:bg-gray-600'
                   }`}
                 >
                   <span class="hidden sm:inline">{t(`levels.${l === 'principiante' ? 'beginner' : l === 'intermedio' ? 'intermediate' : 'advanced'}`)}</span>
@@ -395,19 +480,19 @@ const references = getReferences(lang);
                 </button>
               ))}
             </div>
-            <p class="text-xs text-slate-600 italic">
+            <p class="text-xs text-slate-600 dark:text-gray-400 italic">
               {t('levels.description')}
             </p>
           </div>
 
           <!-- Language Selector -->
-          <div>
-            <label for="language-select" class="text-xs sm:text-sm text-slate-700 font-semibold block mb-2">
+          <div class="mb-3">
+            <label for="language-select" class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-2">
               🌐 {t('language.selector')}
             </label>
             <select
               id="language-select"
-              class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               {Object.entries(languages).map(([code, name]) => (
                 <option value={code} selected={code === lang}>
@@ -416,26 +501,40 @@ const references = getReferences(lang);
               ))}
             </select>
           </div>
+
+          <!-- Dark Mode Toggle -->
+          <div>
+            <label class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-2">
+              🌙 {t('darkMode.title')}
+            </label>
+            <button
+              id="theme-toggle"
+              class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 font-medium text-sm sm:text-base hover:bg-slate-50 dark:hover:bg-gray-600 transition-all flex items-center justify-between"
+            >
+              <span id="theme-toggle-text">{t('darkMode.light')}</span>
+              <span id="theme-toggle-icon">🌞</span>
+            </button>
+          </div>
         </div>
 
         <!-- Cómo usar la app - SIMPLIFICADO -->
-        <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-3">📖 {t('modal.onboarding.howToUse')}</h3>
+        <h3 class="text-base sm:text-lg font-bold text-slate-800 dark:text-gray-100 mb-3">📖 {t('modal.onboarding.howToUse')}</h3>
 
         <div class="space-y-2.5 sm:space-y-3 mb-4">
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all">
-            <h4 class="font-semibold text-sm sm:text-base text-slate-900 mb-1 flex items-center gap-2">
+          <div class="p-3 bg-slate-50 dark:bg-gray-900/50 rounded-lg border border-slate-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all">
+            <h4 class="font-semibold text-sm sm:text-base text-slate-900 dark:text-gray-100 mb-1 flex items-center gap-2">
               🔘 {t('modal.onboarding.completeTitle')}
             </h4>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
               {t('modal.onboarding.completeDescription')}
             </p>
           </div>
 
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all">
-            <h4 class="font-semibold text-sm sm:text-base text-slate-900 mb-1 flex items-center gap-2">
+          <div class="p-3 bg-slate-50 dark:bg-gray-900/50 rounded-lg border border-slate-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all">
+            <h4 class="font-semibold text-sm sm:text-base text-slate-900 dark:text-gray-100 mb-1 flex items-center gap-2">
               ℹ️ {t('modal.onboarding.infoTitle')}
             </h4>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-gray-400 leading-relaxed">
               {t('modal.onboarding.infoDescription')}
             </p>
           </div>
@@ -444,35 +543,35 @@ const references = getReferences(lang);
         <!-- Referencias Button MOVIDO AQUÍ -->
         <button
           id="show-references-btn"
-          class="w-full mb-4 px-3 sm:px-4 py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 text-xs sm:text-sm border border-indigo-200 hover:border-indigo-300 text-balance"
+          class="w-full mb-4 px-3 sm:px-4 py-3 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 text-xs sm:text-sm border border-indigo-200 dark:border-indigo-800 hover:border-indigo-300 dark:hover:border-indigo-600 text-balance"
         >
           {t('modal.onboarding.referencesButton')}
         </button>
 
         <!-- Consejos clave -->
-        <div class="mt-4 p-4 sm:p-5 bg-gradient-to-br from-amber-50/80 to-yellow-50/60 rounded-lg border-2 border-amber-200/60">
-          <h4 class="font-bold text-base sm:text-lg text-slate-900 mb-3 flex items-center gap-2">
+        <div class="mt-4 p-4 sm:p-5 bg-gradient-to-br from-amber-50/80 to-yellow-50/60 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-lg border-2 border-amber-200/60 dark:border-amber-800/60">
+          <h4 class="font-bold text-base sm:text-lg text-slate-900 dark:text-gray-100 mb-3 flex items-center gap-2">
             💡 {t('modal.onboarding.keyTipsTitle')}
           </h4>
           <ul class="space-y-2.5 sm:space-y-3">
-            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed text-balance">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
               <span set:html={t('modal.onboarding.keyTip1')}></span>
             </li>
-            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed text-balance">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
               <span set:html={t('modal.onboarding.keyTip2')}></span>
             </li>
-            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed text-balance">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
               <span set:html={t('modal.onboarding.keyTip3')}></span>
             </li>
-            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed text-balance">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
               <span set:html={t('modal.onboarding.keyTip4')}></span>
             </li>
-            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed text-balance">
-              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0" aria-hidden="true"></span>
               <span set:html={t('modal.onboarding.keyTip5')}></span>
             </li>
           </ul>
@@ -492,6 +591,7 @@ const references = getReferences(lang);
         >
           {t('modal.onboarding.startButton')}
         </button>
+        </div> <!-- Cierre del contenido scrollable -->
       </div>
     </div>
 
@@ -511,8 +611,9 @@ const references = getReferences(lang);
 
   <style>
     .logo-font {
-      font-family: 'Barriecito', cursive;
+      font-family: 'Tilt Warp Variable', system-ui, sans-serif;
       font-weight: 400;
+      font-variation-settings: 'XROT' 0, 'YROT' 0;
     }
 
     .letter-group {
@@ -601,12 +702,11 @@ const references = getReferences(lang);
     import { animate, stagger } from "motion";
 
     // Expose Motion functions globally so the inline script can use them
-    
     (window as any).motionAnimate = animate;
     (window as any).motionStagger = stagger;
   </script>
 
-  <script is:inline define:vars={{ exerciseDetails, workout, resetConfirmMsg: t('progress.resetConfirm') }}>
+  <script is:inline define:vars={{ exerciseDetails, workout, resetConfirmMsg: t('progress.resetConfirm'), darkModeLight: t('darkMode.light'), darkModeDark: t('darkMode.dark') }}>
     // Wait for Motion to be available
     const waitForMotion = () => {
       return new Promise((resolve) => {
@@ -626,6 +726,7 @@ const references = getReferences(lang);
     let completedExercises = new Set();
     let activeTimer = null;
     let timerInterval = null;
+    let sessionLocked = false; // Track if session is locked (all exercises completed)
 
     // Color mapping for phases (Energía Progresiva palette)
     const phaseColors = {
@@ -635,8 +736,43 @@ const references = getReferences(lang);
       fase4: { border: 'border-pink-400', bg: 'bg-pink-50', btnBg: 'bg-pink-500', text: 'text-white' }
     };
 
+    // Check if it's a new day and reset if needed
+    const checkAndResetIfNewDay = () => {
+      const saved = localStorage.getItem('unslump-progress');
+      if (!saved) return false;
+
+      try {
+        const data = JSON.parse(saved);
+        const lastSessionDate = data.lastSessionDate;
+
+        if (!lastSessionDate) return false;
+
+        const today = new Date().toDateString();
+        const lastSession = new Date(lastSessionDate).toDateString();
+
+        // If it's a new day, reset the session
+        if (today !== lastSession) {
+          completedExercises.clear();
+          sessionLocked = false;
+          saveState();
+          return true;
+        }
+
+        // Check if session was completed (locked)
+        if (data.sessionLocked) {
+          sessionLocked = true;
+        }
+      } catch (e) {
+        console.error('Error checking date:', e);
+      }
+      return false;
+    };
+
     // Load state from localStorage
     const loadState = () => {
+      // First check if we need to reset for a new day
+      const wasReset = checkAndResetIfNewDay();
+
       const saved = localStorage.getItem('unslump-progress');
       if (saved) {
         try {
@@ -677,9 +813,19 @@ const references = getReferences(lang);
 
     // Save state to localStorage
     const saveState = () => {
+      const total = Object.values(workout).reduce((sum, phase) => sum + phase.exercises.length, 0);
+      const completed = completedExercises.size;
+
+      // Lock session if all exercises are completed
+      if (completed === total && completed > 0) {
+        sessionLocked = true;
+      }
+
       localStorage.setItem('unslump-progress', JSON.stringify({
         completed: Array.from(completedExercises),
-        level: currentLevel
+        level: currentLevel,
+        sessionLocked: sessionLocked,
+        lastSessionDate: new Date().toISOString()
       }));
     };
 
@@ -785,6 +931,44 @@ const references = getReferences(lang);
       }
     };
 
+    // Show/hide completion section
+    const updateCompletionSection = () => {
+      const total = Object.values(workout).reduce((sum, phase) => sum + phase.exercises.length, 0);
+      const completed = completedExercises.size;
+      const completionSection = document.getElementById('completion-section');
+
+      if (completed === total && completed > 0) {
+        // All exercises completed - show completion section
+        if (completionSection.classList.contains('hidden')) {
+          completionSection.classList.remove('hidden');
+
+          // Smooth scroll to completion section with offset for sticky header
+          setTimeout(() => {
+            const yOffset = -120;
+            const elementPosition = completionSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset + yOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }, 1000); // Wait for confetti to finish
+
+          // Animate section entrance
+          if (animate) {
+            animate(
+              completionSection,
+              { opacity: [0, 1], y: [30, 0], scale: [0.95, 1] },
+              { duration: 0.6, easing: "ease-out" }
+            );
+          }
+        }
+      } else {
+        // Not all exercises completed - hide completion section
+        completionSection.classList.add('hidden');
+      }
+    };
+
     // Update progress bar
     const updateProgress = () => {
       const total = Object.values(workout).reduce((sum, phase) => sum + phase.exercises.length, 0);
@@ -806,11 +990,25 @@ const references = getReferences(lang);
         // Calcular el porcentaje que queda oculto (de derecha a izquierda)
         const hiddenPercent = 100 - (phaseProgress * 100);
 
-        // Actualizar clip-path de la capa de color del logo
-        const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
-        if (letterGroup) {
+        // Actualizar clip-path y rotaciones de la capa de color de TODOS los logos
+        const letterGroups = document.querySelectorAll(`.letter-group[data-phase="${phaseId}"]`);
+        letterGroups.forEach(letterGroup => {
           const colorLayer = letterGroup.querySelector('.color-layer');
-          if (colorLayer) {
+          const baseLayer = letterGroup.querySelector('.base-layer');
+
+          if (colorLayer && baseLayer) {
+            // Animar gradualmente las rotaciones de "encorvado" a "recto" según el progreso
+            // XROT: 25 (encorvado hacia atrás) -> 0 (recto)
+            // YROT: -15 (inclinado lateral al otro lado) -> 0 (recto)
+            const xrotValue = 25 - (phaseProgress * 25);
+            const yrotValue = -15 + (phaseProgress * 15);
+
+            // Actualizar custom properties para animar las rotaciones
+            colorLayer.style.setProperty('--xrot', xrotValue);
+            baseLayer.style.setProperty('--xrot', xrotValue);
+            colorLayer.style.setProperty('--yrot', yrotValue);
+            baseLayer.style.setProperty('--yrot', yrotValue);
+
             // Para fase4 (la "p" tiene descender), usar valores negativos en top/bottom
             if (phaseId === 'fase4') {
               colorLayer.style.clipPath = `inset(-10% ${hiddenPercent}% -10% 0)`;
@@ -818,7 +1016,7 @@ const references = getReferences(lang);
               colorLayer.style.clipPath = `inset(0 ${hiddenPercent}% 0 0)`;
             }
           }
-        }
+        });
 
         // Actualizar barra de progreso inferior
         const progressBar = document.querySelector(`.phase-progress-bar[data-phase="${phaseId}"]`);
@@ -883,6 +1081,9 @@ const references = getReferences(lang);
           celebrateComplete();
         }, 400);
       }
+
+      // Update completion section visibility
+      updateCompletionSection();
     };
 
     // Update level buttons
@@ -1043,16 +1244,26 @@ const references = getReferences(lang);
       if (confirm(resetConfirmMsg)) {
         completedExercises.clear();
         celebratedPhases.clear();
+        sessionLocked = false; // Unlock session on manual reset
 
-        // Reset UI
+        // Reset UI with phase colors
         document.querySelectorAll('.exercise-card').forEach(card => {
-          card.classList.remove('border-green-400', 'bg-green-50');
+          const phaseId = card.dataset.phaseId;
+          const colors = phaseColors[phaseId] || phaseColors.fase1;
+
+          card.classList.remove(colors.border, colors.bg);
           card.classList.add('border-slate-200', 'bg-white');
           const btn = card.querySelector('.complete-btn');
           if (btn) {
-            btn.classList.remove('bg-green-500', 'text-white');
+            btn.classList.remove(colors.btnBg, colors.text);
             btn.classList.add('bg-slate-200', 'text-slate-500');
           }
+        });
+
+        // Scroll to top smoothly
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
         });
 
         updateProgress();
@@ -1219,6 +1430,12 @@ const references = getReferences(lang);
         resetBtn.addEventListener('click', resetProgress);
       }
 
+      // Reset session button (in completion section)
+      const resetSessionBtn = document.getElementById('reset-session-btn');
+      if (resetSessionBtn) {
+        resetSessionBtn.addEventListener('click', resetProgress);
+      }
+
       // Language selector
       const languageSelect = document.getElementById('language-select');
       if (languageSelect) {
@@ -1226,6 +1443,39 @@ const references = getReferences(lang);
           const newLang = e.target.value;
           // Navigate to the new language URL
           window.location.href = `/${newLang}/`;
+        });
+      }
+
+      // Dark mode toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeToggleText = document.getElementById('theme-toggle-text');
+      const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+      function updateThemeToggle() {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (themeToggleText) {
+          themeToggleText.textContent = isDark ? darkModeDark : darkModeLight;
+        }
+        if (themeToggleIcon) {
+          themeToggleIcon.textContent = isDark ? '🌙' : '🌞';
+        }
+      }
+
+      if (themeToggle) {
+        updateThemeToggle();
+
+        themeToggle.addEventListener('click', () => {
+          const isDark = document.documentElement.classList.contains('dark');
+
+          if (isDark) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          }
+
+          updateThemeToggle();
         });
       }
 
@@ -1363,6 +1613,19 @@ const references = getReferences(lang);
         const colors = phaseColors[phaseId] || phaseColors.fase1;
 
         if (completedExercises.has(key)) {
+          // BLOCK UNCOMPLETE if session is locked (all exercises completed)
+          if (sessionLocked) {
+            // Show visual feedback that action is blocked
+            if (animate) {
+              animate(
+                card,
+                { x: [-5, 5, -5, 5, 0] },
+                { duration: 0.4, easing: "ease-out" }
+              );
+            }
+            return; // Don't allow uncomplete
+          }
+
           // Uncomplete animation
           completedExercises.delete(key);
           card.classList.remove(colors.border, colors.bg);
@@ -1518,6 +1781,20 @@ const references = getReferences(lang);
       document.querySelectorAll('.reset-set-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
+
+          // Block reset if session is locked
+          if (sessionLocked) {
+            const card = btn.closest('.exercise-card');
+            if (animate) {
+              animate(
+                card,
+                { x: [-5, 5, -5, 5, 0] },
+                { duration: 0.4, easing: "ease-out" }
+              );
+            }
+            return;
+          }
+
           const card = btn.closest('.exercise-card');
           const counter = card.querySelector('.sets-counter');
           const currentSetSpan = counter.querySelector('.current-set');

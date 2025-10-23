@@ -1,5 +1,5 @@
 ---
-import '@fontsource/barriecito/400.css';
+import '@fontsource-variable/tilt-warp/full.css';
 import type { Language } from '../i18n/utils';
 
 export interface Props {
@@ -75,11 +75,44 @@ const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
     <!-- Keywords -->
     <meta name="keywords" content="exercises, posture, office, remote work, back pain, ergonomics, exercise routine, postural correction" />
 
-    <!-- Fonts (if needed) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Dark Mode Script (inline to prevent flash) -->
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (theme === 'dark' || (!theme && systemPrefersDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
+
+    <!-- Font Loading Script (inline to prevent FOUT) -->
+    <script is:inline>
+      (function() {
+        if ('fonts' in document) {
+          // Wait for the document.fonts to be ready
+          document.fonts.ready.then(function() {
+            document.documentElement.classList.add('font-loaded');
+          });
+
+          // Also set a timeout as fallback (max 200ms wait)
+          setTimeout(function() {
+            if (!document.documentElement.classList.contains('font-loaded')) {
+              document.documentElement.classList.add('font-loaded');
+            }
+          }, 200);
+        } else {
+          // Fallback for browsers without Font Loading API
+          document.documentElement.classList.add('font-loaded');
+        }
+      })();
+    </script>
   </head>
-  <body>
+  <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
     <slot />
 
     <!-- Confetti Library -->
@@ -113,6 +146,18 @@ const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
     min-height: 100vh;
     max-width: 100vw;
     overflow-x: clip; /* clip instead of hidden to not break sticky */
+  }
+
+  /* FOUT prevention - hide logo until font is loaded */
+  html:not(.font-loaded) .logo-font {
+    visibility: hidden;
+  }
+
+  /* FOUT prevention animation */
+  @keyframes fadeInFont {
+    to {
+      opacity: 1;
+    }
   }
 
   /* Smooth scrolling for better UX */

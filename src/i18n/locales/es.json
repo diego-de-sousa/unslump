@@ -29,6 +29,11 @@
   "preferences": {
     "title": "Preferencias"
   },
+  "darkMode": {
+    "title": "Tema:",
+    "light": "Modo claro",
+    "dark": "Modo oscuro"
+  },
   "timer": {
     "completed": "Series completadas:",
     "addSet": "+ Serie"
@@ -73,5 +78,22 @@
   },
   "progress": {
     "resetConfirm": "¿Estás seguro de que quieres resetear todo el progreso?"
+  },
+  "completion": {
+    "title": "¡Felicitaciones! 🎉",
+    "subtitle": "Has completado tu rutina diaria",
+    "message": "Estás invirtiendo en tu salud. ¡La consistencia es la clave!",
+    "statsTitle": "Tu Progreso",
+    "daysThisWeek": "Días esta semana",
+    "currentStreak": "Racha actual",
+    "longestStreak": "Racha más larga",
+    "totalSessions": "Sesiones totales",
+    "days": "días",
+    "sessions": "sesiones",
+    "placeholderNote": "📊 ¡Estadísticas detalladas próximamente! Estamos trabajando en el seguimiento de tu progreso semanal y rachas.",
+    "shareButton": "Compartir mi progreso",
+    "resetButton": "Iniciar nueva sesión",
+    "sessionLocked": "¡Sesión completada! Puedes iniciar una nueva sesión mañana o usar el botón de resetear.",
+    "comeBackTomorrow": "¡Vuelve mañana para una nueva sesión! 💪"
   }
 }
