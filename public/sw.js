@@ -1,9 +1,10 @@
 // IMPORTANT: Increment version (v1 -> v2 -> v3, etc.) when deploying changes that need cache invalidation
 // Examples: UI updates, bug fixes, exercise data changes, styling updates
 // This ensures users get the latest content by clearing old caches on activation
-const CACHE_NAME = 'desatrofiate-v2';
+const CACHE_NAME = 'desatrofiate-v3';
 const urlsToCache = [
-  '/',
+  '/en/',
+  '/es/',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png'
