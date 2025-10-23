@@ -14,6 +14,9 @@ importers:
       '@astrojs/vercel':
         specifier: ^8.2.11
         version: 8.2.11(astro@5.14.8(@types/node@24.9.1)(@vercel/functions@2.2.13)(jiti@1.21.7)(rollup@4.52.5)(typescript@5.9.3)(yaml@2.8.1))(rollup@4.52.5)
+      '@fontsource-variable/tilt-warp':
+        specifier: ^5.2.11
+        version: 5.2.11
       '@fontsource/barriecito':
         specifier: ^5.2.8
         version: 5.2.8
@@ -290,6 +293,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource-variable/tilt-warp@5.2.11':
+    resolution: {integrity: sha512-N30Qmi598lQQbK81e6Fws7QyVcwlKeqqgPS5sOGGTQOTu0tT53L++bP6RUAer8WcQNp8zEUYFhLyN5f30Jj0vA==}
 
   '@fontsource/barriecito@5.2.8':
     resolution: {integrity: sha512-cb6F4tcFdzbj/llFZ9w7Ghp56KNlREPLEkOr8/LOHBUZiJU8snNzdd318S7oPniTxdVSNbt39/7Er60lylAJ2w==}
@@ -2559,6 +2565,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.11':
     optional: true
+
+  '@fontsource-variable/tilt-warp@5.2.11': {}
 
   '@fontsource/barriecito@5.2.8': {}
 

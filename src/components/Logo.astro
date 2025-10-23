@@ -17,12 +17,14 @@ const sizeClasses = {
 
 const textSize = sizeClasses[size];
 
-// Colores por fase
+// Colores por fase con rotación inicial (encorvado)
+// XROT: rotación horizontal (hacia adelante/atrás) - positivo = encorvado hacia atrás
+// YROT: rotación vertical (hacia los lados) - negativo = inclinado al otro lado
 const phases = [
-  { id: 'fase1', text: 'un', color: '#4f46e5', clipPath: 'inset(0 100% 0 0)' },
-  { id: 'fase2', text: 'sl', color: '#14b8a6', clipPath: 'inset(0 100% 0 0)' },
-  { id: 'fase3', text: 'um', color: '#f97316', clipPath: 'inset(0 100% 0 0)' },
-  { id: 'fase4', text: 'p!', color: '#ec4899', clipPath: 'inset(-10% 100% -10% 0)' }
+  { id: 'fase1', text: 'un', color: '#4f46e5', clipPath: 'inset(0 100% 0 0)', xrot: 25, yrot: -15 },
+  { id: 'fase2', text: 'sl', color: '#14b8a6', clipPath: 'inset(0 100% 0 0)', xrot: 25, yrot: -15 },
+  { id: 'fase3', text: 'um', color: '#f97316', clipPath: 'inset(0 100% 0 0)', xrot: 25, yrot: -15 },
+  { id: 'fase4', text: 'p!', color: '#ec4899', clipPath: 'inset(-10% 100% -10% 0)', xrot: 25, yrot: -15 }
 ];
 ---
 
@@ -31,14 +33,19 @@ const phases = [
     <div
       class="letter-group"
       data-phase={showProgress ? phase.id : undefined}
-      style="position: relative; display: inline-block;"
+      data-xrot={showProgress ? phase.xrot : 0}
+      data-yrot={showProgress ? phase.yrot : 0}
+      style="position: relative; display: inline-block; overflow: visible;"
     >
-      <span class={`base-layer logo-font ${textSize} text-slate-400`}>
+      <span
+        class={`base-layer logo-font ${textSize} text-slate-500`}
+        style={`--xrot: ${showProgress ? phase.xrot : 0}; --yrot: ${showProgress ? phase.yrot : 0};`}
+      >
         {phase.text}
       </span>
       <span
         class={`color-layer logo-font ${textSize}`}
-        style={`position: absolute; top: 0; left: 0; color: ${phase.color}; clip-path: ${showProgress ? phase.clipPath : 'inset(0 0 0 0)'}; transition: clip-path 0.5s ease;`}
+        style={`position: absolute; top: 0; left: 0; color: ${phase.color}; clip-path: ${showProgress ? phase.clipPath : 'inset(0 0 0 0)'}; --xrot: ${showProgress ? phase.xrot : 0}; --yrot: ${showProgress ? phase.yrot : 0};`}
       >
         {phase.text}
       </span>
@@ -47,9 +54,23 @@ const phases = [
 </div>
 
 <style>
+  /* Registrar custom properties para animar rotaciones */
+  @property --xrot {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 25;
+  }
+
+  @property --yrot {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: -15;
+  }
+
   .logo-font {
-    font-family: 'Barriecito', cursive;
+    font-family: 'Tilt Warp Variable', system-ui, sans-serif;
     font-weight: 400;
+    font-variation-settings: 'XROT' var(--xrot), 'YROT' var(--yrot);
   }
 
   .letter-group {
@@ -58,9 +79,11 @@ const phases = [
 
   .color-layer {
     will-change: clip-path;
+    transition: clip-path 0.6s ease-out, --xrot 0.6s ease-out, --yrot 0.6s ease-out;
   }
 
   .base-layer {
     display: inline-block;
+    transition: --xrot 0.6s ease-out, --yrot 0.6s ease-out;
   }
 </style>
