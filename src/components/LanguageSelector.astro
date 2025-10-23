@@ -1,0 +1,42 @@
+---
+import { languages, type Language } from '../i18n/utils';
+
+interface Props {
+  currentLang: Language;
+}
+
+const { currentLang } = Astro.props;
+---
+
+<div class="language-selector">
+  <div class="flex gap-2 items-center">
+    {Object.entries(languages).map(([lang, name]) => (
+      <a
+        href={`/${lang}/`}
+        class={`lang-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+          currentLang === lang
+            ? 'bg-blue-500 text-white shadow-md'
+            : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+        }`}
+        aria-label={`Switch to ${name}`}
+      >
+        {lang.toUpperCase()}
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .language-selector {
+    display: flex;
+    align-items: center;
+  }
+
+  .lang-btn {
+    text-decoration: none;
+  }
+
+  .lang-btn:active {
+    transform: scale(0.95);
+  }
+</style>
