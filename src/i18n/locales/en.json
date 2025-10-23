@@ -9,7 +9,8 @@
     "start": "Start",
     "reset": "Reset",
     "help": "Help",
-    "moreInfo": "More information"
+    "moreInfo": "More information",
+    "comingSoon": "Coming soon"
   },
   "levels": {
     "beginner": "Beginner",
@@ -19,7 +20,10 @@
     "medium": "Medium",
     "advanc": "Adv.",
     "selectLevel": "Select your level:",
-    "description": "Exercises with variations will show instructions adapted to your level."
+    "description": "Exercises with variations will show instructions adapted to your level.",
+    "beginnerDescription": "You haven't done mobility exercises in a while or have never done them.",
+    "intermediateDescription": "You exercise occasionally and have basic experience with mobility work.",
+    "advancedDescription": "You train regularly and are proficient with mobility and stability exercises."
   },
   "language": {
     "selector": "Language:",
@@ -55,7 +59,7 @@
       "viewButtonShort": "References (30+ studies)"
     },
     "onboarding": {
-      "subtitle": "Your 25-minute science-backed routine to counteract hours of sitting. Based on 30+ peer-reviewed studies.",
+      "subtitle": "Your 25-minute science-backed routine to counteract hours of sitting.",
       "description": "Each exercise is backed by scientific research and part of a proven 4-phase system: Inhibit → Lengthen → Activate → Integrate.",
       "howToUse": "How to use the app:",
       "completeTitle": "Complete exercises",

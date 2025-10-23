@@ -9,7 +9,8 @@
     "start": "Iniciar",
     "reset": "Resetear",
     "help": "Ayuda",
-    "moreInfo": "Más información"
+    "moreInfo": "Más información",
+    "comingSoon": "Próximamente"
   },
   "levels": {
     "beginner": "Principiante",
@@ -19,7 +20,10 @@
     "medium": "Medio",
     "advanc": "Avanz.",
     "selectLevel": "Selecciona tu nivel:",
-    "description": "Los ejercicios con variaciones mostrarán instrucciones adaptadas a tu nivel."
+    "description": "Los ejercicios con variaciones mostrarán instrucciones adaptadas a tu nivel.",
+    "beginnerDescription": "Llevas tiempo sin hacer ejercicios de movilidad o nunca los has hecho.",
+    "intermediateDescription": "Haces ejercicio ocasionalmente y tienes experiencia básica con movilidad.",
+    "advancedDescription": "Entrenas regularmente y dominas ejercicios de movilidad y estabilidad."
   },
   "language": {
     "selector": "Idioma:",
@@ -55,13 +59,13 @@
       "viewButtonShort": "Referencias (30+ estudios)"
     },
     "onboarding": {
-      "subtitle": "Tu rutina científica de 25 minutos para contrarrestar las horas sentado. Basada en 30+ estudios peer-reviewed.",
+      "subtitle": "Tu método probado de 25 minutos para contrarrestar las horas sentado.",
       "description": "Cada ejercicio está respaldado por investigación científica y forma parte de un sistema probado de 4 fases: Inhibir → Alargar → Activar → Integrar.",
       "howToUse": "Cómo usar la app:",
       "completeTitle": "Completa ejercicios",
       "completeDescription": "Haz clic en cualquier tarjeta de ejercicio o en el botón ✓ para marcarlo como completado. Tu progreso se guarda automáticamente.",
-      "infoTitle": "Información científica + videos",
-      "infoDescription": "Los botones azules con \"i\" contienen información detallada de cada ejercicio: músculos trabajados, evidencia científica, consejos técnicos y videos de YouTube explicativos.",
+      "infoTitle": "Información científica + vídeos",
+      "infoDescription": "Los botones azules con \"i\" contienen información detallada de cada ejercicio: músculos trabajados, evidencia científica, consejos técnicos y vídeos de YouTube explicativos.",
       "referencesButton": "📚 Ver referencias científicas completas (30+ estudios)",
       "keyTipsTitle": "Consejos clave",
       "keyTip1": "Secuencia <strong>no negociable:</strong> <em>Inhibir → Alargar → Activar → Integrar</em>",
