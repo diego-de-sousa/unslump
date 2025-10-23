@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "title": "unslump! - Rutina de ejercicios para oficinistas",
+    "description": "25 minutos para contrarrestar las horas sentado y rescatar tu postura. Rutina basada en 30+ estudios científicos peer-reviewed."
+  },
+  "common": {
+    "understood": "Entendido",
+    "close": "Cerrar",
+    "start": "Iniciar",
+    "reset": "Resetear",
+    "help": "Ayuda",
+    "moreInfo": "Más información"
+  },
+  "levels": {
+    "beginner": "Principiante",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado",
+    "basic": "Básico",
+    "medium": "Medio",
+    "advanc": "Avanz.",
+    "selectLevel": "Selecciona tu nivel:",
+    "description": "Los ejercicios con variaciones mostrarán instrucciones adaptadas a tu nivel."
+  },
+  "language": {
+    "selector": "Idioma:",
+    "current": "Idioma actual",
+    "select": "Seleccionar idioma"
+  },
+  "preferences": {
+    "title": "Preferencias"
+  },
+  "timer": {
+    "completed": "Series completadas:",
+    "addSet": "+ Serie"
+  },
+  "modal": {
+    "exerciseInfo": {
+      "muscles": "Músculos trabajados",
+      "why": "Por qué es importante",
+      "evidence": "Evidencia científica",
+      "tips": "Consejos técnicos",
+      "videoTutorial": "Video tutorial del ejercicio"
+    },
+    "references": {
+      "title": "Referencias Científicas",
+      "description": "Esta rutina se basa en más de 30 estudios peer-reviewed publicados entre 2015-2025, incluyendo revisiones sistemáticas, metaanálisis, ensayos controlados aleatorizados (RCTs) y estudios con electromiografía (EMG) y ultrasonido.",
+      "accessTitle": "Cómo acceder a los estudios",
+      "accessDescription": "La mayoría de estos estudios están disponibles gratuitamente en PubMed Central (PMC), BMC journals, y otras bases de datos de acceso abierto. Busca los códigos PMC o DOI en Google Scholar o PubMed para acceder directamente.",
+      "viewButton": "Ver Referencias Científicas (30+ estudios)",
+      "viewButtonShort": "Referencias (30+ estudios)"
+    },
+    "onboarding": {
+      "subtitle": "Tu rutina científica de 25 minutos para contrarrestar las horas sentado. Basada en 30+ estudios peer-reviewed.",
+      "description": "Cada ejercicio está respaldado por investigación científica y forma parte de un sistema probado de 4 fases: Inhibir → Alargar → Activar → Integrar.",
+      "howToUse": "Cómo usar la app:",
+      "completeTitle": "Completa ejercicios",
+      "completeDescription": "Haz clic en cualquier tarjeta de ejercicio o en el botón ✓ para marcarlo como completado. Tu progreso se guarda automáticamente.",
+      "infoTitle": "Información científica + videos",
+      "infoDescription": "Los botones azules con \"i\" contienen información detallada de cada ejercicio: músculos trabajados, evidencia científica, consejos técnicos y videos de YouTube explicativos.",
+      "referencesButton": "📚 Ver referencias científicas completas (30+ estudios)",
+      "keyTipsTitle": "Consejos clave",
+      "keyTip1": "Secuencia <strong>no negociable:</strong> <em>Inhibir → Alargar → Activar → Integrar</em>",
+      "keyTip2": "Frecuencia: <strong>3 sesiones/semana</strong> + micropausas diarias",
+      "keyTip3": "<strong>Bird dog:</strong> El ejercicio <strong>#1</strong> para core según estudios",
+      "keyTip4": "<strong>12 semanas mínimo</strong> para cambios estructurales duraderos",
+      "keyTip5": "Detén si hay: <strong>Dolor agudo, adormecimiento, mareos</strong>",
+      "reminderText": "💡 Consejo: Puedes volver a ver este tutorial en cualquier momento haciendo clic en el botón de ayuda flotante.",
+      "resetProgress": "Resetear todo el progreso",
+      "startButton": "¡Entendido, empecemos! 💪",
+      "helpTooltip": "¿Necesitas ayuda?",
+      "helpTitle": "Ayuda - Cómo usar la app"
+    }
+  },
+  "progress": {
+    "resetConfirm": "¿Estás seguro de que quieres resetear todo el progreso?"
+  }
+}

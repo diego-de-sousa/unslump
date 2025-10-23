@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "title": "unslump! - Exercise routine for office workers",
+    "description": "25 minutes to counteract hours of computer work and rescue your posture. Routine based on 30+ peer-reviewed scientific studies."
+  },
+  "common": {
+    "understood": "Got it",
+    "close": "Close",
+    "start": "Start",
+    "reset": "Reset",
+    "help": "Help",
+    "moreInfo": "More information"
+  },
+  "levels": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "basic": "Basic",
+    "medium": "Medium",
+    "advanc": "Adv.",
+    "selectLevel": "Select your level:",
+    "description": "Exercises with variations will show instructions adapted to your level."
+  },
+  "language": {
+    "selector": "Language:",
+    "current": "Current language",
+    "select": "Select language"
+  },
+  "preferences": {
+    "title": "Preferences"
+  },
+  "timer": {
+    "completed": "Sets completed:",
+    "addSet": "+ Set"
+  },
+  "modal": {
+    "exerciseInfo": {
+      "muscles": "Muscles worked",
+      "why": "Why it matters",
+      "evidence": "Scientific evidence",
+      "tips": "Technical tips",
+      "videoTutorial": "Exercise video tutorial"
+    },
+    "references": {
+      "title": "Scientific References",
+      "description": "This routine is based on over 30 peer-reviewed studies published between 2015-2025, including systematic reviews, meta-analyses, randomized controlled trials (RCTs), and studies with electromyography (EMG) and ultrasound.",
+      "accessTitle": "How to access studies",
+      "accessDescription": "Most of these studies are freely available on PubMed Central (PMC), BMC journals, and other open-access databases. Search for PMC codes or DOIs on Google Scholar or PubMed for direct access.",
+      "viewButton": "View Scientific References (30+ studies)",
+      "viewButtonShort": "References (30+ studies)"
+    },
+    "onboarding": {
+      "subtitle": "Your 25-minute science-backed routine to counteract hours of sitting. Based on 30+ peer-reviewed studies.",
+      "description": "Each exercise is backed by scientific research and part of a proven 4-phase system: Inhibit → Lengthen → Activate → Integrate.",
+      "howToUse": "How to use the app:",
+      "completeTitle": "Complete exercises",
+      "completeDescription": "Click on any exercise card or the ✓ button to mark it as completed. Your progress is saved automatically.",
+      "infoTitle": "Scientific information + videos",
+      "infoDescription": "Blue buttons with \"i\" contain detailed information about each exercise: muscles worked, scientific evidence, technical tips, and explanatory YouTube videos.",
+      "referencesButton": "📚 View complete scientific references (30+ studies)",
+      "keyTipsTitle": "Key tips",
+      "keyTip1": "<strong>Non-negotiable</strong> sequence: <em>Inhibit → Lengthen → Activate → Integrate</em>",
+      "keyTip2": "Frequency: <strong>3 sessions/week</strong> + daily microbreaks",
+      "keyTip3": "<strong>Bird dog:</strong> The <strong>#1</strong> exercise for core according to studies",
+      "keyTip4": "<strong>12 weeks minimum</strong> for lasting structural changes",
+      "keyTip5": "Stop if you experience: <strong>Sharp pain, numbness, dizziness</strong>",
+      "reminderText": "💡 Tip: You can view this tutorial anytime by clicking the floating help button.",
+      "resetProgress": "Reset all progress",
+      "startButton": "Got it, let's start! 💪",
+      "helpTooltip": "Need help?",
+      "helpTitle": "Help - How to use the app"
+    }
+  },
+  "progress": {
+    "resetConfirm": "Are you sure you want to reset all progress?"
+  }
+}
