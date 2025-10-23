@@ -638,12 +638,14 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       const letterGroup = document.querySelector(`.letter-group[data-phase="${phaseId}"]`);
       if (!letterGroup) return;
 
-      // Motion animation for the letter group
-      animate(
-        letterGroup,
-        { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0], y: [0, -10, 0] },
-        { duration: 0.8, easing: spring({ stiffness: 200, damping: 12 }) }
-      );
+      // Motion animation for the letter group (only if Motion is loaded)
+      if (animate && spring) {
+        animate(
+          letterGroup,
+          { scale: [1, 1.15, 1], rotate: [0, -3, 3, 0], y: [0, -10, 0] },
+          { duration: 0.8, easing: spring({ stiffness: 200, damping: 12 }) }
+        );
+      }
 
       // Confetti celebration
       if (typeof confetti !== 'undefined') {
@@ -690,35 +692,39 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         fase4: ['#ec4899', '#f472b6', '#f9a8d4']
       };
 
-      // Animate entire logo with spectacular motion
-      const logo = document.getElementById('progress-logo');
-      if (logo) {
-        animate(
-          logo,
-          {
-            scale: [1, 1.1, 1.05, 1],
-            rotate: [0, -2, 2, -1, 1, 0],
-            y: [0, -15, 0]
-          },
-          { duration: 1.2, easing: spring({ stiffness: 150, damping: 12 }) }
-        );
-      }
-
-      // Animate each letter group in sequence
-      const letterGroups = document.querySelectorAll('.letter-group');
-      animate(
-        letterGroups,
-        {
-          scale: [1, 1.2, 1],
-          y: [0, -20, 0],
-          rotate: [0, 360]
-        },
-        {
-          duration: 1,
-          delay: stagger(0.15),
-          easing: spring({ stiffness: 200, damping: 15 })
+      // Animate entire logo with spectacular motion (only if Motion is loaded)
+      if (animate && spring && stagger) {
+        const logo = document.getElementById('progress-logo');
+        if (logo) {
+          animate(
+            logo,
+            {
+              scale: [1, 1.1, 1.05, 1],
+              rotate: [0, -2, 2, -1, 1, 0],
+              y: [0, -15, 0]
+            },
+            { duration: 1.2, easing: spring({ stiffness: 150, damping: 12 }) }
+          );
         }
-      );
+
+        // Animate each letter group in sequence
+        const letterGroups = document.querySelectorAll('.letter-group');
+        if (letterGroups.length > 0) {
+          animate(
+            letterGroups,
+            {
+              scale: [1, 1.2, 1],
+              y: [0, -20, 0],
+              rotate: [0, 360]
+            },
+            {
+              duration: 1,
+              delay: stagger(0.15),
+              easing: spring({ stiffness: 200, damping: 15 })
+            }
+          );
+        }
+      }
 
       // Confetti celebration
       if (typeof confetti !== 'undefined') {
@@ -886,7 +892,9 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       resetBtn.classList.remove('hidden');
 
       // Animate timer start
-      animate(display, { scale: [1, 1.1, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+      if (animate && spring) {
+        animate(display, { scale: [1, 1.1, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+      }
 
       let timeLeft = duration;
       activeTimer = { card, timeLeft };
@@ -897,7 +905,7 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
         display.textContent = formatTime(timeLeft);
 
         // Pulse animation when time is running low (last 10 seconds)
-        if (timeLeft <= 10 && timeLeft > 0) {
+        if (timeLeft <= 10 && timeLeft > 0 && animate && spring) {
           animate(
             display,
             { scale: [1, 1.08, 1] },
@@ -907,11 +915,13 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
         if (timeLeft <= 0) {
           // Completion animation
-          animate(
-            display,
-            { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] },
-            { duration: 0.6, easing: spring({ stiffness: 250, damping: 15 }) }
-          );
+          if (animate && spring) {
+            animate(
+              display,
+              { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] },
+              { duration: 0.6, easing: spring({ stiffness: 250, damping: 15 }) }
+            );
+          }
           stopTimer(card);
         }
       }, 1000);
@@ -1030,16 +1040,18 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       modal.classList.remove('hidden');
       const content = modal.querySelector('.bg-white');
 
-      // Animate backdrop
-      animate(modal, { opacity: [0, 1] }, { duration: 0.2 });
+      if (animate && spring) {
+        // Animate backdrop
+        animate(modal, { opacity: [0, 1] }, { duration: 0.2 });
 
-      // Animate modal content
-      if (content) {
-        animate(
-          content,
-          { opacity: [0, 1], scale: [0.95, 1], y: [20, 0] },
-          { duration: 0.3, delay: 0.1, easing: spring({ stiffness: 300, damping: 25 }) }
-        );
+        // Animate modal content
+        if (content) {
+          animate(
+            content,
+            { opacity: [0, 1], scale: [0.95, 1], y: [20, 0] },
+            { duration: 0.3, delay: 0.1, easing: spring({ stiffness: 300, damping: 25 }) }
+          );
+        }
       }
     };
 
@@ -1049,20 +1061,31 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
       const content = modal.querySelector('.bg-white');
 
-      // Animate content out
-      if (content) {
-        animate(content, { opacity: [1, 0], scale: [1, 0.95], y: [0, 10] }, { duration: 0.2 });
-      }
+      if (animate) {
+        // Animate content out
+        if (content) {
+          animate(content, { opacity: [1, 0], scale: [1, 0.95], y: [0, 10] }, { duration: 0.2 });
+        }
 
-      // Animate backdrop out
-      animate(modal, { opacity: [1, 0] }, { duration: 0.2, delay: 0.1 }).finished.then(() => {
+        // Animate backdrop out
+        animate(modal, { opacity: [1, 0] }, { duration: 0.2, delay: 0.1 }).finished.then(() => {
+          modal.classList.add('hidden');
+          if (callback) callback();
+        });
+      } else {
+        // Fallback without animation
         modal.classList.add('hidden');
         if (callback) callback();
-      });
+      }
     };
 
     // Initial animations
     const runInitialAnimations = () => {
+      if (!animate || !stagger || !spring) {
+        console.warn('Motion not loaded yet');
+        return;
+      }
+
       // Animate logo entrance
       const logo = document.getElementById('progress-logo');
       if (logo) {
@@ -1075,19 +1098,23 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
 
       // Animate letter groups with stagger
       const letterGroups = document.querySelectorAll('.letter-group');
-      animate(
-        letterGroups,
-        { opacity: [0, 1], scale: [0.8, 1] },
-        { duration: 0.6, delay: stagger(0.1, { start: 0.3 }), easing: spring({ stiffness: 200, damping: 20 }) }
-      );
+      if (letterGroups.length > 0) {
+        animate(
+          letterGroups,
+          { opacity: [0, 1], scale: [0.8, 1] },
+          { duration: 0.6, delay: stagger(0.1, { start: 0.3 }), easing: spring({ stiffness: 200, damping: 20 }) }
+        );
+      }
 
       // Animate phase containers with stagger
       const phaseContainers = document.querySelectorAll('.phase-container');
-      animate(
-        phaseContainers,
-        { opacity: [0, 1], y: [30, 0] },
-        { duration: 0.5, delay: stagger(0.15, { start: 0.5 }), easing: [0.22, 1, 0.36, 1] }
-      );
+      if (phaseContainers.length > 0) {
+        animate(
+          phaseContainers,
+          { opacity: [0, 1], y: [30, 0] },
+          { duration: 0.5, delay: stagger(0.15, { start: 0.5 }), easing: [0.22, 1, 0.36, 1] }
+        );
+      }
 
       // Animate help button in footer
       const helpBtn = document.getElementById('show-onboarding-btn');
@@ -1124,11 +1151,13 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
       document.querySelectorAll('.level-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           // Pulse animation on click
-          animate(
-            btn,
-            { scale: [1, 1.15, 1] },
-            { duration: 0.4, easing: spring({ stiffness: 300, damping: 20 }) }
-          );
+          if (animate && spring) {
+            animate(
+              btn,
+              { scale: [1, 1.15, 1] },
+              { duration: 0.4, easing: spring({ stiffness: 300, damping: 20 }) }
+            );
+          }
 
           currentLevel = btn.dataset.level;
           updateLevelButtons();
@@ -1136,20 +1165,22 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           saveState();
 
           // Animate level info updates
-          document.querySelectorAll('.level-info').forEach(info => {
-            animate(info, { opacity: [0.6, 1], x: [-5, 0] }, { duration: 0.3 });
-          });
+          if (animate) {
+            document.querySelectorAll('.level-info').forEach(info => {
+              animate(info, { opacity: [0.6, 1], x: [-5, 0] }, { duration: 0.3 });
+            });
+          }
         });
 
         // Hover effect
         btn.addEventListener('mouseenter', () => {
-          if (btn.dataset.level !== currentLevel) {
+          if (animate && btn.dataset.level !== currentLevel) {
             animate(btn, { scale: 1.05 }, { duration: 0.2 });
           }
         });
 
         btn.addEventListener('mouseleave', () => {
-          if (btn.dataset.level !== currentLevel) {
+          if (animate && btn.dataset.level !== currentLevel) {
             animate(btn, { scale: 1 }, { duration: 0.2 });
           }
         });
@@ -1172,22 +1203,29 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             // Collapsing
             const exerciseCards = content.querySelectorAll('.exercise-card');
 
-            // Animate cards out
-            animate(
-              exerciseCards,
-              { opacity: [1, 0], y: [0, -10] },
-              { duration: 0.2, delay: stagger(0.03, { from: 'first' }) }
-            ).finished.then(() => {
-              content.classList.add('hidden');
-            });
+            if (animate && stagger) {
+              // Animate cards out
+              animate(
+                exerciseCards,
+                { opacity: [1, 0], y: [0, -10] },
+                { duration: 0.2, delay: stagger(0.03, { from: 'first' }) }
+              ).finished.then(() => {
+                content.classList.add('hidden');
+              });
 
-            // Animate chevrons
-            animate(chevronUp, { opacity: [1, 0], rotate: [0, 90] }, { duration: 0.2 }).finished.then(() => {
+              // Animate chevrons
+              animate(chevronUp, { opacity: [1, 0], rotate: [0, 90] }, { duration: 0.2 }).finished.then(() => {
+                chevronUp.classList.add('hidden');
+              });
+              animate(chevronDown, { opacity: [0, 1], rotate: [-90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
+                chevronDown.classList.remove('hidden');
+              });
+            } else {
+              // Fallback without animation
+              content.classList.add('hidden');
               chevronUp.classList.add('hidden');
-            });
-            animate(chevronDown, { opacity: [0, 1], rotate: [-90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
               chevronDown.classList.remove('hidden');
-            });
+            }
 
             // Update button style
             if (phase) {
@@ -1200,20 +1238,26 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             content.classList.remove('hidden');
             const exerciseCards = content.querySelectorAll('.exercise-card');
 
-            // Animate cards in
-            animate(
-              exerciseCards,
-              { opacity: [0, 1], y: [10, 0] },
-              { duration: 0.3, delay: stagger(0.05, { from: 'first', start: 0.1 }), easing: spring({ stiffness: 200, damping: 20 }) }
-            );
+            if (animate && stagger && spring) {
+              // Animate cards in
+              animate(
+                exerciseCards,
+                { opacity: [0, 1], y: [10, 0] },
+                { duration: 0.3, delay: stagger(0.05, { from: 'first', start: 0.1 }), easing: spring({ stiffness: 200, damping: 20 }) }
+              );
 
-            // Animate chevrons
-            animate(chevronDown, { opacity: [1, 0], rotate: [0, -90] }, { duration: 0.2 }).finished.then(() => {
+              // Animate chevrons
+              animate(chevronDown, { opacity: [1, 0], rotate: [0, -90] }, { duration: 0.2 }).finished.then(() => {
+                chevronDown.classList.add('hidden');
+              });
+              animate(chevronUp, { opacity: [0, 1], rotate: [90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
+                chevronUp.classList.remove('hidden');
+              });
+            } else {
+              // Fallback without animation
               chevronDown.classList.add('hidden');
-            });
-            animate(chevronUp, { opacity: [0, 1], rotate: [90, 0] }, { duration: 0.2, delay: 0.15 }).finished.then(() => {
               chevronUp.classList.remove('hidden');
-            });
+            }
 
             // Update button style
             if (phase) {
@@ -1245,10 +1289,14 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             btn.classList.remove(colors.btnBg, colors.text);
             btn.classList.add('bg-slate-200', 'text-slate-500');
             // Subtle scale animation
-            animate(btn, { scale: [1.2, 1] }, { duration: 0.3, easing: spring({ stiffness: 300, damping: 20 }) });
+            if (animate && spring) {
+              animate(btn, { scale: [1.2, 1] }, { duration: 0.3, easing: spring({ stiffness: 300, damping: 20 }) });
+            }
           }
           // Card bounce back
-          animate(card, { scale: [0.98, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+          if (animate && spring) {
+            animate(card, { scale: [0.98, 1] }, { duration: 0.4, easing: spring({ stiffness: 200, damping: 15 }) });
+          }
         } else {
           // Complete animation
           completedExercises.add(key);
@@ -1258,14 +1306,18 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             btn.classList.add(colors.btnBg, colors.text);
             btn.classList.remove('bg-slate-200', 'text-slate-500');
             // Celebratory pulse
-            animate(btn, { scale: [1, 1.3, 1] }, { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) });
+            if (animate && spring) {
+              animate(btn, { scale: [1, 1.3, 1] }, { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) });
+            }
           }
           // Card success animation
-          animate(
-            card,
-            { scale: [1, 1.02, 1], y: [0, -4, 0] },
-            { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
-          );
+          if (animate && spring) {
+            animate(
+              card,
+              { scale: [1, 1.02, 1], y: [0, -4, 0] },
+              { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+            );
+          }
         }
 
         updateProgress();
@@ -1348,23 +1400,27 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
             currentSetSpan.textContent = currentSet;
 
             // Animate counter increment
-            animate(
-              currentSetSpan,
-              { scale: [1, 1.4, 1], rotate: [0, 5, 0] },
-              { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
-            );
+            if (animate && spring) {
+              animate(
+                currentSetSpan,
+                { scale: [1, 1.4, 1], rotate: [0, 5, 0] },
+                { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+              );
 
-            // Pulse button feedback
-            animate(btn, { scale: [1, 0.95, 1] }, { duration: 0.3 });
+              // Pulse button feedback
+              animate(btn, { scale: [1, 0.95, 1] }, { duration: 0.3 });
+            }
 
             // Visual feedback when all sets are completed
             if (currentSet === totalSets) {
               // Celebration animation for completing all sets
-              animate(
-                counter,
-                { scale: [1, 1.05, 1], y: [0, -5, 0] },
-                { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
-              );
+              if (animate && spring) {
+                animate(
+                  counter,
+                  { scale: [1, 1.05, 1], y: [0, -5, 0] },
+                  { duration: 0.6, easing: spring({ stiffness: 200, damping: 15 }) }
+                );
+              }
 
               counter.classList.add('ring-2', 'ring-green-400', 'shadow-lg');
               btn.disabled = true;
@@ -1389,11 +1445,13 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           const key = `${phaseId}-${exerciseId}`;
 
           // Reset animation
-          animate(
-            currentSetSpan,
-            { scale: [1, 0.5, 1], rotate: [0, -180, -360] },
-            { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
-          );
+          if (animate && spring) {
+            animate(
+              currentSetSpan,
+              { scale: [1, 0.5, 1], rotate: [0, -180, -360] },
+              { duration: 0.5, easing: spring({ stiffness: 300, damping: 20 }) }
+            );
+          }
 
           currentSetSpan.textContent = '0';
           counter.classList.remove('ring-2', 'ring-green-400', 'shadow-lg');
@@ -1416,11 +1474,13 @@ const totalExercises = Object.values(workout).reduce((sum, phase) => sum + phase
           e.stopPropagation();
 
           // Bounce animation on click
-          animate(
-            btn,
-            { scale: [1, 0.9, 1.1, 1], rotate: [0, -10, 10, 0] },
-            { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
-          );
+          if (animate && spring) {
+            animate(
+              btn,
+              { scale: [1, 0.9, 1.1, 1], rotate: [0, -10, 10, 0] },
+              { duration: 0.5, easing: spring({ stiffness: 300, damping: 15 }) }
+            );
+          }
 
           const exerciseId = btn.dataset.exerciseId;
           const details = exerciseDetails[exerciseId];
