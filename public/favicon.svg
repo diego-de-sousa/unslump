@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 38">
-  <!-- Layered "u!" with diagonal offset (down-right) - Larger and centered -->
+  <!-- Layered "u!" with diagonal offset (down-right) - Larger and properly centered -->
   <!-- Colors: indigo → teal → orange → pink -->
-  <text x="21" y="29" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#ec4899">u!</text>
-  <text x="19" y="27" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#f97316">u!</text>
-  <text x="17" y="25" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#14b8a6">u!</text>
-  <text x="15" y="23" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#4f46e5">u!</text>
+  <text x="21" y="31" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#ec4899">u!</text>
+  <text x="19" y="29" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#f97316">u!</text>
+  <text x="17" y="27" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#14b8a6">u!</text>
+  <text x="15" y="25" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#4f46e5">u!</text>
 </svg>
