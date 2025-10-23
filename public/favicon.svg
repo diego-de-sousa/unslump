@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="2" y="0" width="6" height="32" fill="#4f46e5"/>
-  <rect x="10" y="0" width="6" height="32" fill="#14b8a6"/>
-  <rect x="18" y="0" width="6" height="32" fill="#f97316"/>
-  <rect x="26" y="0" width="6" height="32" fill="#ec4899"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 38">
+  <!-- Layered "u!" with diagonal offset (down-right) -->
+  <!-- Colors: indigo → teal → orange → pink -->
+  <text x="19" y="27" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#ec4899">u!</text>
+  <text x="17" y="25" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#f97316">u!</text>
+  <text x="15" y="23" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#14b8a6">u!</text>
+  <text x="13" y="21" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4f46e5">u!</text>
 </svg>
