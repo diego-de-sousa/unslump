@@ -81,7 +81,19 @@
     }
   },
   "progress": {
-    "resetConfirm": "¿Estás seguro de que quieres resetear todo el progreso?"
+    "resetConfirm": "¿Estás seguro de que quieres resetear todo el progreso?",
+    "phaseSequenceWarnings": [
+      "¡Ey! Esto no es Netflix—no te saltes fases 😅 (pero tú haz lo que quieras)",
+      "Las fases son como recetas: saltarse pasos = resultados dudosos 👨‍🍳",
+      "¡No puedes hacer el techo antes de los cimientos! (Bueno, puedes intentarlo... 🏗️)",
+      "¡Esto no es un sprint! Completa las fases anteriores para mejores resultados 🏃‍♂️",
+      "Las instrucciones de IKEA existen por algo—las secuencias de fase también 📦",
+      "¡Hasta los superhéroes entrenan en orden! Completa las fases anteriores primero 🦸",
+      "¡No puedes saltarte el campamento base del Everest! Con las fases igual 🏔️",
+      "¿Saltando a la canción 10? El álbum suena mejor en orden 🎵",
+      "¿Empezando por la temporada 3? ¡Estrategia audaz! (Tus músculos no están de acuerdo 📺)",
+      "No tomas postre antes del desayuno, ¿no? Las fases funcionan igual 🥞"
+    ]
   },
   "completion": {
     "title": "¡Felicitaciones! 🎉",

@@ -8,6 +8,7 @@ import StickyHeader from '../../components/StickyHeader.astro';
 import PhaseCard from '../../components/PhaseCard.astro';
 import CompletionCelebration from '../../components/CompletionCelebration.astro';
 import HelpFAB from '../../components/HelpFAB.astro';
+import Toast from '../../components/Toast.astro';
 
 // Modals
 import ExerciseInfoModal from '../../components/modals/ExerciseInfoModal.astro';
@@ -163,7 +164,8 @@ const references = getReferences(lang);
     workout,
     resetConfirmMsg: t('progress.resetConfirm'),
     darkModeLight: t('darkMode.light'),
-    darkModeDark: t('darkMode.dark')
+    darkModeDark: t('darkMode.dark'),
+    phaseSequenceWarnings: t('progress.phaseSequenceWarnings')
   }}>
     // Wait for Motion to be available
     const waitForMotion = () => {
@@ -1070,6 +1072,81 @@ const references = getReferences(lang);
         });
       });
 
+      // Show toast notification
+      const showToast = (message, phaseColor) => {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.getElementById('toast');
+        const toastText = toast.querySelector('.toast-text');
+
+        if (!toastContainer || !toast || !toastText) return;
+
+        // Set message
+        toastText.textContent = message;
+
+        // Set phase color styling
+        if (phaseColor) {
+          toast.style.background = `linear-gradient(135deg, white 0%, ${phaseColor} 100%)`;
+          toast.style.borderColor = phaseColor;
+        }
+
+        // Animate in
+        if (animate) {
+          animate(
+            toastContainer,
+            { opacity: [0, 1], y: [100, 0] },
+            { duration: 0.4, easing: 'ease-out' }
+          );
+        } else {
+          toastContainer.style.opacity = '1';
+          toastContainer.style.transform = 'translate(-50%, 0)';
+        }
+
+        // Auto-hide after 4 seconds
+        setTimeout(() => {
+          if (animate) {
+            animate(
+              toastContainer,
+              { opacity: [1, 0], y: [0, 100] },
+              { duration: 0.3, easing: 'ease-in' }
+            ).finished.then(() => {
+              toastContainer.style.opacity = '0';
+              toastContainer.style.transform = 'translate(-50%, 100px)';
+            });
+          } else {
+            toastContainer.style.opacity = '0';
+            toastContainer.style.transform = 'translate(-50%, 100px)';
+          }
+        }, 4000);
+      };
+
+      // Check if all previous phases are completed
+      const arePreviousPhasesCompleted = (phaseId) => {
+        const phaseOrder = ['fase1', 'fase2', 'fase3', 'fase4'];
+        const currentPhaseIndex = phaseOrder.indexOf(phaseId);
+
+        // Fase 1 has no previous phases
+        if (currentPhaseIndex <= 0) return true;
+
+        // Check all previous phases
+        for (let i = 0; i < currentPhaseIndex; i++) {
+          const previousPhaseId = phaseOrder[i];
+          const phase = workout[previousPhaseId];
+          const phaseTotal = phase.exercises.length;
+
+          // Count completed exercises in this phase
+          const phaseCompleted = phase.exercises.filter(ex =>
+            completedExercises.has(`${previousPhaseId}-${ex.id}`)
+          ).length;
+
+          // If any previous phase is not 100% complete, return false
+          if (phaseCompleted < phaseTotal) {
+            return false;
+          }
+        }
+
+        return true;
+      };
+
       // Phase toggles
       document.querySelectorAll('.phase-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1119,6 +1196,13 @@ const references = getReferences(lang);
             }
           } else {
             // Expanding
+            // Check if previous phases are completed (friendly warning, not blocking)
+            if (!arePreviousPhasesCompleted(phaseId)) {
+              // Select random warning message
+              const randomWarning = phaseSequenceWarnings[Math.floor(Math.random() * phaseSequenceWarnings.length)];
+              showToast(randomWarning, phase.colorLightHex);
+            }
+
             content.classList.remove('hidden');
             const exerciseCards = content.querySelectorAll('.exercise-card');
 
@@ -1505,4 +1589,7 @@ const references = getReferences(lang);
 
   <!-- Help FAB -->
   <HelpFAB lang={lang} />
+
+  <!-- Toast Notifications -->
+  <Toast />
 </BaseLayout>

@@ -81,7 +81,19 @@
     }
   },
   "progress": {
-    "resetConfirm": "Are you sure you want to reset all progress?"
+    "resetConfirm": "Are you sure you want to reset all progress?",
+    "phaseSequenceWarnings": [
+      "Hey! This isn't Netflix—you can't skip phases 😅 (but you do you)",
+      "Phases are like recipes: skipping steps = questionable results 👨‍🍳",
+      "Can't build the roof before the foundation! (Well, you can try... 🏗️)",
+      "This isn't a sprint! Complete previous phases for best results 🏃‍♂️",
+      "IKEA instructions exist for a reason—so do phase sequences 📦",
+      "Even superheroes train in order! Complete previous phases first 🦸",
+      "Can't skip base camp on Everest! Same with phases 🏔️",
+      "Skipping to track 10? The album hits better in order 🎵",
+      "Starting from season 3? Bold strategy! (Your muscles disagree 📺)",
+      "You don't have dessert before breakfast, right? Phases work the same 🥞"
+    ]
   },
   "completion": {
     "title": "Congratulations! 🎉",
