@@ -1,25 +1,34 @@
 ---
-import '@fontsource/chicle/400.css';
+import '@fontsource/barriecito/400.css';
+import type { Language } from '../i18n/utils';
 
 export interface Props {
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
+  lang: Language;
   image?: string;
-  url?: string;
 }
 
 const {
-  title = 'unslump! - Exercise routine for office workers',
-  description = '25 minutes to counteract hours of computer work and rescue your posture. Routine based on 30+ peer-reviewed scientific studies.',
+  title,
+  description,
+  lang,
   image = '/og-image.png',
-  url = Astro.site?.toString() || 'https://desatrofiate.vercel.app'
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Generate alternate language URLs
+const alternateUrls = {
+  en: new URL('/en/', Astro.site).toString(),
+  es: new URL('/es/', Astro.site).toString(),
+};
+
+const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,17 +40,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- Alternate Language Links -->
+    <link rel="alternate" hreflang="en" href={alternateUrls.en} />
+    <link rel="alternate" hreflang="es" href={alternateUrls.es} />
+    <link rel="alternate" hreflang="x-default" href={alternateUrls.en} />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={url} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={lang === 'en' ? 'es_ES' : 'en_US'} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={url} />
+    <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={image} />
