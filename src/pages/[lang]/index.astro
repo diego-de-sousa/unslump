@@ -1,28 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getWorkout, getExerciseDetails, getReferences } from '../../data/index';
-import { useTranslations, type Language, languages } from '../../i18n/utils';
+import { useTranslations, type Language } from '../../i18n/utils';
 
-// Components
-import Logo from '../../components/Logo.astro';
+// Refactored Components
+import StickyHeader from '../../components/StickyHeader.astro';
+import PhaseCard from '../../components/PhaseCard.astro';
+import CompletionCelebration from '../../components/CompletionCelebration.astro';
+import HelpFAB from '../../components/HelpFAB.astro';
 
-// Island Components
-import ExerciseTimer from '../../components/islands/ExerciseTimer.tsx';
-import SetCounter from '../../components/islands/SetCounter.tsx';
-import LevelSelector from '../../components/islands/LevelSelector.tsx';
-import LevelInfo from '../../components/islands/LevelInfo.tsx';
-
-// Icons
-import Play from '../../components/icons/Play.astro';
-import Pause from '../../components/icons/Pause.astro';
-import RotateCcw from '../../components/icons/RotateCcw.astro';
-import Check from '../../components/icons/Check.astro';
-import ChevronDown from '../../components/icons/ChevronDown.astro';
-import ChevronUp from '../../components/icons/ChevronUp.astro';
-import Info from '../../components/icons/Info.astro';
-import BookOpen from '../../components/icons/BookOpen.astro';
-import X from '../../components/icons/X.astro';
-import HelpCircle from '../../components/icons/HelpCircle.astro';
+// Modals
+import ExerciseInfoModal from '../../components/modals/ExerciseInfoModal.astro';
+import ReferencesModal from '../../components/modals/ReferencesModal.astro';
+import OnboardingModal from '../../components/modals/OnboardingModal.astro';
 
 export async function getStaticPaths() {
   return [
@@ -46,647 +36,24 @@ const references = getReferences(lang);
   lang={lang}
 >
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800">
-    <!-- Progress Logo (Sticky) -->
-    <div class="sticky top-0 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md mb-4">
-      <div class="relative py-4 sm:py-5">
-        <div class="max-w-4xl mx-auto px-4">
-          <div class="flex items-center justify-center">
-            <!-- Logo con efecto de llenado -->
-            <Logo id="progress-logo" showProgress={true} size="large" />
-          </div>
-        </div>
-
-        <!-- Barra de progreso por fases en el borde inferior (OCULTA - Descomentar para restaurar) -->
-        <!-- <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 bg-slate-200">
-          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase1">
-            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #4f46e5; transform: scaleX(0);"></div>
-          </div>
-          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase2">
-            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #14b8a6; transform: scaleX(0);"></div>
-          </div>
-          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase3">
-            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #f97316; transform: scaleX(0);"></div>
-          </div>
-          <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase4">
-            <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #ec4899; transform: scaleX(0);"></div>
-          </div>
-        </div> -->
-      </div>
-    </div>
+    <!-- Sticky Header with Progress Logo -->
+    <StickyHeader />
 
     <div class="max-w-4xl mx-auto px-4">
 
       <!-- Phases -->
       {Object.entries(workout).map(([phaseId, phase]) => (
-        <div class="mb-4 phase-container" data-phase-id={phaseId}>
-          <div class="sticky top-[100px] z-[5] mb-2">
-            <button
-              class="phase-toggle w-full border-2 rounded-lg pt-3 sm:pt-4 px-3 sm:px-4 pb-1 hover:shadow-xl transition-all shadow-lg backdrop-blur-md relative"
-              style={`background: linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%); border-color: ${phase.colorBorderHex};`}
-              data-phase-id={phaseId}
-            >
-              <!-- Phase Number Badge -->
-              <div
-                class="absolute top-2 right-2 sm:top-3 sm:right-3 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md font-bold text-xs sm:text-sm shadow-sm"
-                style={`background-color: ${phase.colorPrimaryHex}; color: white;`}
-              >
-                #{phaseId.replace('fase', '')}
-              </div>
-
-              <div>
-                <div class="text-left mb-1">
-                  <h2 class="text-lg sm:text-2xl font-extrabold leading-tight mb-1 pr-10 sm:pr-12" style={`color: ${phase.colorPrimaryHex};`}>
-                    {phase.name.includes(':') ? phase.name.split(':')[1].trim() : phase.name}
-                  </h2>
-                  <p class="phase-description text-xs sm:text-sm text-slate-600/90 dark:text-gray-300/90 leading-relaxed max-w-prose mb-1 pr-10 sm:pr-12">{phase.description}</p>
-                  <div class="flex justify-end">
-                    <span class="text-xs text-slate-500 dark:text-gray-400 font-medium whitespace-nowrap">{phase.time}</span>
-                  </div>
-                </div>
-
-                <!-- Chevron centrado abajo -->
-                <div class="flex justify-center pb-1 -mb-1">
-                  <div class="relative w-5 h-5 opacity-60">
-                    <div class="chevron-down absolute inset-0 opacity-100 transition-opacity duration-200" style={`color: ${phase.colorPrimaryHex};`}>
-                      <ChevronDown size={20} />
-                    </div>
-                    <div class="chevron-up absolute inset-0 opacity-0 transition-opacity duration-200" style={`color: ${phase.colorPrimaryHex};`}>
-                      <ChevronUp size={20} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
-          </div>
-
-          <div class="phase-content hidden p-3 sm:p-4 mt-2 space-y-3">
-            {phase.exercises.map(exercise => (
-                <div
-                  class="exercise-card border-2 border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 transition-all cursor-pointer hover:shadow-lg"
-                  data-phase-id={phaseId}
-                  data-exercise-id={exercise.id}
-                  data-duration={exercise.duration}
-                >
-                  <div class="flex justify-between items-start gap-2 mb-2">
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-start gap-2 mb-1">
-                        <h3 class="font-bold text-lg sm:text-xl text-slate-800 dark:text-gray-100 flex-1 min-w-0 break-words">{exercise.name}</h3>
-                        <button
-                          class="info-btn p-1.5 sm:p-2 border rounded-full transition-all flex-shrink-0 shadow-sm hover:shadow-md"
-                          style={`background-color: ${phase.colorLightHex}; border-color: ${phase.colorBorderHex};`}
-                          data-exercise-id={exercise.id}
-                          title={t('common.moreInfo')}
-                        >
-                          <Info size={18} style={`color: ${phase.colorPrimaryHex};`} />
-                        </button>
-                      </div>
-                      <p class="text-sm sm:text-base font-semibold text-slate-700 dark:text-gray-300 mb-2">{exercise.reps}</p>
-                      <p class="text-xs sm:text-sm text-slate-700 dark:text-gray-300">{exercise.instructions}</p>
-
-                      {exercise.levels && (
-                        <LevelInfo
-                          client:visible
-                          levels={exercise.levels}
-                          colorHex={phase.colorPrimaryHex}
-                          colorLightHex={phase.colorLightHex}
-                          colorBorderHex={phase.colorBorderHex}
-                          labels={{
-                            beginner: t('levels.beginner'),
-                            intermediate: t('levels.intermediate'),
-                            advanced: t('levels.advanced')
-                          }}
-                        />
-                      )}
-                    </div>
-
-                    <button
-                      class="complete-btn ml-2 sm:ml-4 p-1.5 sm:p-2 rounded-full transition-all bg-slate-200 text-slate-500 hover:bg-slate-300 flex-shrink-0"
-                      data-phase-id={phaseId}
-                      data-exercise-id={exercise.id}
-                    >
-                      <Check size={18} />
-                    </button>
-                  </div>
-
-                  {exercise.duration > 0 && (
-                    <ExerciseTimer
-                      client:visible
-                      exerciseId={exercise.id}
-                      phaseId={phaseId}
-                      duration={exercise.duration}
-                      colorHex={phase.colorPrimaryHex}
-                      colorLightHex={phase.colorLightHex}
-                      colorBorderHex={phase.colorBorderHex}
-                      startLabel={t('common.start')}
-                    />
-                  )}
-
-                  {exercise.sets && exercise.sets > 0 && (
-                    <SetCounter
-                      client:visible
-                      exerciseId={exercise.id}
-                      phaseId={phaseId}
-                      totalSets={exercise.sets}
-                      colorHex={phase.colorPrimaryHex}
-                      colorLightHex={phase.colorLightHex}
-                      colorBorderHex={phase.colorBorderHex}
-                      completedLabel={t('timer.completed')}
-                      addSetLabel={t('timer.addSet')}
-                    />
-                  )}
-                </div>
-            ))}
-          </div>
-        </div>
+        <PhaseCard
+          phaseId={phaseId}
+          phase={phase}
+          lang={lang}
+        />
       ))}
 
-      <!-- Completion Celebration Section (shown only when all exercises are done) -->
-      <div id="completion-section" class="hidden mb-8 mt-8">
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 sm:p-8 shadow-xl">
-          <!-- Confetti background decoration -->
-          <div class="text-center mb-6">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-green-700 mb-2">
-              {t('completion.title')}
-            </h2>
-            <p class="text-lg sm:text-xl text-green-600 font-semibold mb-1">
-              {t('completion.subtitle')}
-            </p>
-            <p class="text-sm sm:text-base text-slate-700">
-              {t('completion.message')}
-            </p>
-          </div>
-
-          <!-- Stats Grid -->
-          <div class="mb-6">
-            <h3 class="text-xl sm:text-2xl font-bold text-slate-800 mb-4 text-center">
-              {t('completion.statsTitle')}
-            </h3>
-            <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
-              <!-- Days This Week -->
-              <div class="bg-white rounded-lg p-4 border-2 border-blue-200 shadow-md">
-                <div class="text-center">
-                  <div class="text-3xl sm:text-4xl font-bold text-blue-600 mb-1">3</div>
-                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
-                    {t('completion.daysThisWeek')}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Current Streak -->
-              <div class="bg-white rounded-lg p-4 border-2 border-orange-200 shadow-md">
-                <div class="text-center">
-                  <div class="text-3xl sm:text-4xl font-bold text-orange-600 mb-1">5</div>
-                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
-                    {t('completion.currentStreak')}
-                  </div>
-                  <div class="text-xs text-slate-500">{t('completion.days')}</div>
-                </div>
-              </div>
-
-              <!-- Longest Streak -->
-              <div class="bg-white rounded-lg p-4 border-2 border-purple-200 shadow-md">
-                <div class="text-center">
-                  <div class="text-3xl sm:text-4xl font-bold text-purple-600 mb-1">12</div>
-                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
-                    {t('completion.longestStreak')}
-                  </div>
-                  <div class="text-xs text-slate-500">{t('completion.days')}</div>
-                </div>
-              </div>
-
-              <!-- Total Sessions -->
-              <div class="bg-white rounded-lg p-4 border-2 border-pink-200 shadow-md">
-                <div class="text-center">
-                  <div class="text-3xl sm:text-4xl font-bold text-pink-600 mb-1">24</div>
-                  <div class="text-xs sm:text-sm text-slate-600 font-medium">
-                    {t('completion.totalSessions')}
-                  </div>
-                  <div class="text-xs text-slate-500">{t('completion.sessions')}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Placeholder Notice -->
-            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
-              <p class="text-xs sm:text-sm text-yellow-800 text-center leading-relaxed">
-                {t('completion.placeholderNote')}
-              </p>
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row gap-3">
-            <button
-              id="reset-session-btn"
-              class="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
-            >
-              {t('completion.resetButton')}
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- Completion Celebration -->
+      <CompletionCelebration lang={lang} />
     </div>
 
-    <!-- Exercise Info Modal -->
-    <div id="exercise-info-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50 hidden">
-      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <div class="flex justify-between items-start gap-2 mb-4">
-          <h2 id="modal-title" class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-gray-100 flex-1 min-w-0"></h2>
-          <button id="close-info-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
-            <X size={20} />
-          </button>
-        </div>
-
-        <!-- Video Container -->
-        <div id="modal-video-container" class="mb-4 hidden">
-          <div class="aspect-video rounded-lg overflow-hidden shadow-md bg-slate-100 flex items-center justify-center">
-            <iframe
-              id="modal-video-iframe"
-              width="100%"
-              height="100%"
-              src=""
-              title={t('modal.exerciseInfo.videoTutorial')}
-              frameborder="0"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              class="w-full h-full"
-            ></iframe>
-          </div>
-        </div>
-
-        <div class="space-y-3 sm:space-y-4">
-          <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
-              🎯 {t('modal.exerciseInfo.muscles')}
-            </h3>
-            <p id="modal-muscles" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
-              ❓ {t('modal.exerciseInfo.why')}
-            </h3>
-            <p id="modal-why" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
-              🔬 {t('modal.exerciseInfo.evidence')}
-            </h3>
-            <p id="modal-evidence" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
-              💡 {t('modal.exerciseInfo.tips')}
-            </h3>
-            <p id="modal-tips" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
-          </div>
-        </div>
-
-        <button
-          id="close-info-modal-btn"
-          class="mt-4 sm:mt-6 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all font-medium text-sm sm:text-base"
-        >
-          {t('common.understood')}
-        </button>
-      </div>
-    </div>
-
-    <!-- References Modal -->
-    <div id="references-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-[60] hidden">
-      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <div class="flex justify-between items-start gap-2 mb-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-gray-100 flex-1 min-w-0">{t('modal.references.title')}</h2>
-          <button id="close-references-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
-            <X size={20} />
-          </button>
-        </div>
-
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-4 sm:mb-6">
-          {t('modal.references.description')}
-        </p>
-
-        <div class="space-y-4 sm:space-y-6">
-          {references.map((section) => (
-            <div>
-              <h3 class="text-base sm:text-lg font-bold text-slate-800 dark:text-gray-200 mb-2 sm:mb-3 pb-2 border-b-2 border-slate-200 dark:border-gray-700">
-                {section.category}
-              </h3>
-              <ul class="space-y-2 sm:space-y-3">
-                {section.studies.map((study) => (
-                  <li class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 pl-3 sm:pl-4 border-l-2 border-blue-300 dark:border-blue-600 leading-relaxed">
-                    {study}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
-          <h3 class="font-bold text-sm sm:text-base text-blue-900 mb-2">📚 {t('modal.references.accessTitle')}</h3>
-          <p class="text-xs sm:text-sm text-blue-800">
-            {t('modal.references.accessDescription')}
-          </p>
-        </div>
-
-        <button
-          id="close-references-modal-btn"
-          class="mt-4 sm:mt-6 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all font-medium text-sm sm:text-base"
-        >
-          {t('common.close')}
-        </button>
-      </div>
-    </div>
-
-    <!-- Onboarding Modal -->
-    <div id="onboarding-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50 hidden">
-      <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col relative">
-        <!-- Header del modal con logo - STICKY -->
-        <div class="flex-shrink-0 bg-white dark:bg-gray-800 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 border-b border-slate-200 dark:border-gray-700 rounded-t-lg">
-          <Logo id="onboarding-logo" showProgress={true} size="medium" />
-          <button id="close-onboarding-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
-            <X size={20} />
-          </button>
-        </div>
-
-        <!-- Contenido scrollable -->
-        <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
-
-        <!-- Descripción de la app - DISEÑO MEJORADO -->
-        <div class="onboarding-section">
-        <div class="mb-4 relative overflow-hidden rounded-xl border-2 border-blue-300 dark:border-blue-700 shadow-lg">
-          <!-- Background gradient decorativo -->
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 dark:from-blue-900/40 dark:via-indigo-900/30 dark:to-purple-900/40"></div>
-
-          <!-- Elementos decorativos de fondo (círculos sutiles) -->
-          <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200/30 dark:bg-blue-700/20 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-          <div class="absolute bottom-0 left-0 w-24 h-24 bg-indigo-200/30 dark:bg-indigo-700/20 rounded-full -ml-12 -mb-12 blur-2xl"></div>
-
-          <!-- Contenido -->
-          <div class="relative p-5 sm:p-6">
-            <!-- Badge "25 min" -->
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 mb-3 bg-blue-500 text-white rounded-full text-xs font-bold shadow-md">
-              <span>⏱️</span>
-              <span>25 min</span>
-            </div>
-
-            <p class="text-base sm:text-lg text-slate-900 dark:text-gray-50 mb-3 font-bold leading-tight text-balance">
-              {t('modal.onboarding.subtitle')}
-            </p>
-
-            <!-- Sistema de 4 fases con iconos -->
-            <div class="mb-3 p-3 bg-white/60 dark:bg-gray-900/40 rounded-lg backdrop-blur-sm">
-              <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
-                <div class="text-center p-2 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-lg border border-indigo-300/50 dark:border-indigo-700/50">
-                  <div class="text-lg sm:text-xl mb-0.5">🧘</div>
-                  <div class="text-[10px] sm:text-xs font-bold text-indigo-700 dark:text-indigo-300 leading-tight">{lang === 'es' ? 'Inhibir' : 'Inhibit'}</div>
-                </div>
-                <div class="text-center p-2 bg-teal-500/10 dark:bg-teal-500/20 rounded-lg border border-teal-300/50 dark:border-teal-700/50">
-                  <div class="text-lg sm:text-xl mb-0.5">🤸</div>
-                  <div class="text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300 leading-tight">{lang === 'es' ? 'Alargar' : 'Lengthen'}</div>
-                </div>
-                <div class="text-center p-2 bg-orange-500/10 dark:bg-orange-500/20 rounded-lg border border-orange-300/50 dark:border-orange-700/50">
-                  <div class="text-lg sm:text-xl mb-0.5">💪</div>
-                  <div class="text-[10px] sm:text-xs font-bold text-orange-700 dark:text-orange-300 leading-tight">{lang === 'es' ? 'Activar' : 'Activate'}</div>
-                </div>
-                <div class="text-center p-2 bg-pink-500/10 dark:bg-pink-500/20 rounded-lg border border-pink-300/50 dark:border-pink-700/50">
-                  <div class="text-lg sm:text-xl mb-0.5">🏃</div>
-                  <div class="text-[10px] sm:text-xs font-bold text-pink-700 dark:text-pink-300 leading-tight">{lang === 'es' ? 'Integrar' : 'Integrate'}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Badge de estudios -->
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm border border-slate-300 dark:border-gray-600 rounded-lg">
-              <span class="text-sm">📚</span>
-              <span class="text-xs font-semibold text-slate-700 dark:text-gray-300">Basado en 30+ estudios peer-reviewed</span>
-            </div>
-          </div>
-        </div>
-        </div>
-
-        <!-- Preferencias (nivel + idioma + modo oscuro) AGRUPADAS -->
-        <div class="onboarding-section">
-        <div class="mb-4 p-3 sm:p-4 bg-slate-50 dark:bg-gray-900/50 rounded-lg border border-slate-200 dark:border-gray-700">
-          <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-gray-100 mb-3 flex items-center gap-2">
-            ⚙️ {t('preferences.title')}
-          </h3>
-
-          <!-- Level Selector con descripción incluida -->
-          <div class="mb-3">
-            <span class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-3">🎚️ {t('levels.selectLevel')}</span>
-            <LevelSelector
-              client:visible
-              levels={[
-                { key: 'principiante', label: t('levels.beginner'), desc: t('levels.beginnerDescription'), icon: '🌱', gradient: 'from-green-50 to-emerald-50', border: 'border-green-400', ring: 'ring-green-400', text: 'text-green-700', textLight: 'text-green-600' },
-                { key: 'intermedio', label: t('levels.intermediate'), desc: t('levels.intermediateDescription'), icon: '🔥', gradient: 'from-orange-50 to-amber-50', border: 'border-orange-400', ring: 'ring-orange-400', text: 'text-orange-700', textLight: 'text-orange-600' },
-                { key: 'avanzado', label: t('levels.advanced'), desc: t('levels.advancedDescription'), icon: '⚡', gradient: 'from-purple-50 to-violet-50', border: 'border-purple-400', ring: 'ring-purple-400', text: 'text-purple-700', textLight: 'text-purple-600' }
-              ]}
-            />
-            <p class="text-xs text-slate-600 dark:text-gray-400 italic">
-              {t('levels.description')}
-            </p>
-          </div>
-
-          <!-- Language Selector -->
-          <div class="mb-3">
-            <label for="language-select" class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-2">
-              🌐 {t('language.selector')}
-            </label>
-            <select
-              id="language-select"
-              class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-700 dark:text-gray-200 font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            >
-              {Object.entries(languages).map(([code, name]) => (
-                <option value={code} selected={code === lang}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <!-- Dark Mode Toggle - DISABLED -->
-          <div class="opacity-60">
-            <label class="text-xs sm:text-sm text-slate-700 dark:text-gray-300 font-semibold block mb-2">
-              🌙 {t('darkMode.title')}
-            </label>
-            <button
-              id="theme-toggle"
-              disabled
-              class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-gray-600 bg-slate-100 dark:bg-gray-700 text-slate-500 dark:text-gray-400 font-medium text-sm sm:text-base cursor-not-allowed transition-all flex items-center justify-between"
-            >
-              <span id="theme-toggle-text">{t('darkMode.light')}</span>
-              <span class="text-xs italic">{t('common.comingSoon')}</span>
-            </button>
-          </div>
-        </div>
-        </div>
-
-        <!-- Cómo usar la app - MEJORADO -->
-        <div class="onboarding-section">
-        <h3 class="text-base sm:text-lg font-bold text-slate-800 dark:text-gray-100 mb-3 flex items-center gap-2">
-          📖 {t('modal.onboarding.howToUse')}
-        </h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          <!-- Completar ejercicios -->
-          <div class="relative p-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-xl border-2 border-teal-200 dark:border-teal-700 shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 group overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute -top-8 -right-8 w-24 h-24 bg-teal-200/30 dark:bg-teal-600/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-
-            <div class="relative">
-              <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center text-2xl mb-3 shadow-md group-hover:rotate-12 transition-transform duration-300">
-                ✓
-              </div>
-              <h4 class="font-bold text-sm sm:text-base text-teal-900 dark:text-teal-100 mb-2">
-                {t('modal.onboarding.completeTitle')}
-              </h4>
-              <p class="text-xs sm:text-sm text-teal-800 dark:text-teal-200/90 leading-relaxed">
-                {t('modal.onboarding.completeDescription')}
-              </p>
-            </div>
-          </div>
-
-          <!-- Información científica -->
-          <div class="relative p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl border-2 border-blue-200 dark:border-blue-700 shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 group overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute -top-8 -right-8 w-24 h-24 bg-blue-200/30 dark:bg-blue-600/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-
-            <div class="relative">
-              <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-2xl mb-3 shadow-md group-hover:rotate-12 transition-transform duration-300">
-                ℹ️
-              </div>
-              <h4 class="font-bold text-sm sm:text-base text-blue-900 dark:text-blue-100 mb-2">
-                {t('modal.onboarding.infoTitle')}
-              </h4>
-              <p class="text-xs sm:text-sm text-blue-800 dark:text-blue-200/90 leading-relaxed">
-                {t('modal.onboarding.infoDescription')}
-              </p>
-            </div>
-          </div>
-        </div>
-        </div>
-
-        <!-- Referencias Button - MEJORADO CON GRADIENTE -->
-        <div class="onboarding-section">
-        <button
-          id="show-references-btn"
-          class="relative w-full mb-4 px-4 sm:px-5 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2.5 text-sm sm:text-base shadow-lg hover:shadow-2xl hover:scale-105 group overflow-hidden"
-        >
-          <!-- Shimmer effect -->
-          <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
-          <span class="relative text-2xl group-hover:rotate-12 transition-transform duration-300">📚</span>
-          <span class="relative text-balance">{t('modal.onboarding.referencesButton')}</span>
-        </button>
-        </div>
-
-        <!-- Consejos clave - REDISEÑADOS COMO TARJETAS -->
-        <div class="onboarding-section">
-        <div class="mt-4">
-          <h4 class="font-bold text-base sm:text-lg text-slate-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-            💡 {t('modal.onboarding.keyTipsTitle')}
-          </h4>
-          <div class="grid grid-cols-1 gap-2.5">
-            <!-- Tip 1: Secuencia no negociable -->
-            <div class="p-3 bg-gradient-to-r from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition-all">
-              <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-lg shadow-sm">
-                  🔒
-                </div>
-                <p class="flex-1 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance" set:html={t('modal.onboarding.keyTip1')}></p>
-              </div>
-            </div>
-
-            <!-- Tip 2: Frecuencia -->
-            <div class="p-3 bg-gradient-to-r from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-lg border-l-4 border-teal-500 shadow-sm hover:shadow-md transition-all">
-              <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center text-lg shadow-sm">
-                  📅
-                </div>
-                <p class="flex-1 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance" set:html={t('modal.onboarding.keyTip2')}></p>
-              </div>
-            </div>
-
-            <!-- Tip 3: Bird dog -->
-            <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg border-l-4 border-orange-500 shadow-sm hover:shadow-md transition-all">
-              <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-lg shadow-sm">
-                  🏆
-                </div>
-                <p class="flex-1 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance" set:html={t('modal.onboarding.keyTip3')}></p>
-              </div>
-            </div>
-
-            <!-- Tip 4: 12 semanas -->
-            <div class="p-3 bg-gradient-to-r from-pink-50 to-pink-100/50 dark:from-pink-900/30 dark:to-pink-800/20 rounded-lg border-l-4 border-pink-500 shadow-sm hover:shadow-md transition-all">
-              <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center text-lg shadow-sm">
-                  ⏳
-                </div>
-                <p class="flex-1 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance" set:html={t('modal.onboarding.keyTip4')}></p>
-              </div>
-            </div>
-
-            <!-- Tip 5: Detener si hay dolor -->
-            <div class="p-3 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-900/30 dark:to-red-800/20 rounded-lg border-l-4 border-red-500 shadow-sm hover:shadow-md transition-all">
-              <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-lg shadow-sm">
-                  ⚠️
-                </div>
-                <p class="flex-1 text-xs sm:text-sm text-slate-800 dark:text-gray-200 leading-relaxed text-balance" set:html={t('modal.onboarding.keyTip5')}></p>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-
-        <!-- Reset Progress Button -->
-        <div class="onboarding-section">
-        <button
-          id="reset-progress-btn"
-          class="mt-3 w-full px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 hover:border-red-300 transition-all text-xs sm:text-sm font-medium"
-        >
-          {t('modal.onboarding.resetProgress')}
-        </button>
-
-        <button
-          id="close-onboarding-modal-btn"
-          class="relative mt-3 w-full px-4 py-4 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group overflow-hidden"
-        >
-          <!-- Pulse animation ring -->
-          <div class="absolute inset-0 rounded-xl bg-green-400 opacity-0 group-hover:opacity-20 group-hover:animate-ping"></div>
-
-          <!-- Shimmer effect -->
-          <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-
-          <span class="relative flex items-center justify-center gap-2">
-            {t('modal.onboarding.startButton')}
-            <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🚀</span>
-          </span>
-        </button>
-        </div>
-
-        </div> <!-- Cierre del contenido scrollable -->
-      </div>
-    </div>
-
-    <!-- FAB - Botón de Ayuda Flotante -->
-    <button
-      id="show-onboarding-btn"
-      class="fixed bottom-6 left-6 z-50 w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center group"
-      title={t('modal.onboarding.helpTitle')}
-      aria-label={t('common.help')}
-    >
-      <HelpCircle size={24} class="text-white" />
-      <span class="absolute left-full ml-3 px-3 py-1.5 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-        {t('modal.onboarding.helpTooltip')}
-      </span>
-    </button>
-  </div>
 
   <style>
     .logo-font {
@@ -2017,6 +1384,9 @@ const references = getReferences(lang);
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
 
+          const exerciseId = btn.dataset.exerciseId;
+          console.log('🔍 Info button clicked! Exercise ID:', exerciseId);
+
           // Bounce animation on click
           if (animate) {
             animate(
@@ -2026,8 +1396,8 @@ const references = getReferences(lang);
             );
           }
 
-          const exerciseId = btn.dataset.exerciseId;
           const details = exerciseDetails[exerciseId];
+          console.log('📋 Exercise details found:', details ? 'YES' : 'NO', details);
 
           if (details) {
             // Find exercise name and video URL
@@ -2041,6 +1411,8 @@ const references = getReferences(lang);
                 break;
               }
             }
+
+            console.log('📝 Setting modal content for:', exerciseName);
 
             document.getElementById('modal-title').textContent = exerciseName;
             document.getElementById('modal-muscles').textContent = details.muscles;
@@ -2061,12 +1433,17 @@ const references = getReferences(lang);
 
               videoIframe.src = embedUrl;
               videoContainer.classList.remove('hidden');
+              console.log('🎥 Video URL set:', embedUrl);
             } else {
               videoContainer.classList.add('hidden');
               videoIframe.src = '';
+              console.log('❌ No video URL');
             }
 
+            console.log('🚀 Opening modal...');
             openModal('exercise-info-modal');
+          } else {
+            console.error('❌ No details found for exercise ID:', exerciseId);
           }
         });
       });
@@ -2120,4 +1497,12 @@ const references = getReferences(lang);
       });
     });
   </script>
+
+  <!-- Refactored Modals -->
+  <ExerciseInfoModal lang={lang} />
+  <ReferencesModal lang={lang} references={references} />
+  <OnboardingModal lang={lang} />
+
+  <!-- Help FAB -->
+  <HelpFAB lang={lang} />
 </BaseLayout>

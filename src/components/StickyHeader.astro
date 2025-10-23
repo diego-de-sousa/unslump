@@ -1,0 +1,42 @@
+---
+/**
+ * Sticky Header Component
+ * Top header with progress logo
+ */
+
+import Logo from './Logo.astro';
+
+interface Props {
+  showProgressBar?: boolean;
+}
+
+const { showProgressBar = false } = Astro.props;
+---
+
+<div class="sticky top-0 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md mb-4">
+  <div class="relative py-4 sm:py-5">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center justify-center">
+        <Logo id="progress-logo" showProgress={true} size="large" />
+      </div>
+    </div>
+
+    {showProgressBar && (
+      <!-- Progress bar by phases (HIDDEN - Uncomment to restore) -->
+      <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 bg-slate-200 hidden">
+        <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase1">
+          <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #4f46e5; transform: scaleX(0);"></div>
+        </div>
+        <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase2">
+          <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #14b8a6; transform: scaleX(0);"></div>
+        </div>
+        <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase3">
+          <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #f97316; transform: scaleX(0);"></div>
+        </div>
+        <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase4">
+          <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #ec4899; transform: scaleX(0);"></div>
+        </div>
+      </div>
+    )}
+  </div>
+</div>

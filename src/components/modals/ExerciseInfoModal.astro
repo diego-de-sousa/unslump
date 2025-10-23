@@ -1,0 +1,84 @@
+---
+/**
+ * Exercise Info Modal Component
+ * Displays detailed information about an exercise
+ */
+
+import type { Language } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div id="exercise-info-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50 hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+    <div class="flex justify-between items-start gap-2 mb-4">
+      <h2 id="modal-title" class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-gray-100 flex-1 min-w-0"></h2>
+      <button id="close-info-modal" class="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all flex-shrink-0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+  <!-- Video Container -->
+  <div id="modal-video-container" class="mb-4 hidden">
+    <div class="aspect-video rounded-lg overflow-hidden shadow-md bg-slate-100 flex items-center justify-center">
+      <iframe
+        id="modal-video-iframe"
+        width="100%"
+        height="100%"
+        src=""
+        title={t('modal.exerciseInfo.videoTutorial')}
+        frameborder="0"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        class="w-full h-full"
+      ></iframe>
+    </div>
+  </div>
+
+  <div class="space-y-3 sm:space-y-4">
+    <div>
+      <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        🎯 {t('modal.exerciseInfo.muscles')}
+      </h3>
+      <p id="modal-muscles" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
+    </div>
+
+    <div>
+      <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        ❓ {t('modal.exerciseInfo.why')}
+      </h3>
+      <p id="modal-why" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
+    </div>
+
+    <div>
+      <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        🔬 {t('modal.exerciseInfo.evidence')}
+      </h3>
+      <p id="modal-evidence" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
+    </div>
+
+    <div>
+      <h3 class="font-bold text-sm sm:text-base text-slate-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        💡 {t('modal.exerciseInfo.tips')}
+      </h3>
+      <p id="modal-tips" class="text-xs sm:text-sm text-slate-600 dark:text-gray-400"></p>
+    </div>
+
+    <button
+      id="close-info-modal-btn"
+      class="mt-4 sm:mt-6 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all font-medium text-sm sm:text-base"
+    >
+      {t('common.understood')}
+    </button>
+  </div>
+</div>

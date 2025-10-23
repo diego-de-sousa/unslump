@@ -1,0 +1,86 @@
+---
+/**
+ * Phase Card Component
+ * Displays a phase with toggle button and exercises list
+ */
+
+import ChevronDown from './icons/ChevronDown.astro';
+import ChevronUp from './icons/ChevronUp.astro';
+import ExerciseCard from './ExerciseCard.astro';
+import type { Phase } from '../types/workout';
+import type { Language } from '../i18n/utils';
+
+interface Props {
+  phaseId: string;
+  phase: Phase;
+  lang: Language;
+}
+
+const { phaseId, phase, lang } = Astro.props;
+---
+
+<div class="mb-4 phase-container" data-phase-id={phaseId}>
+  <div class="sticky top-[100px] z-[5] mb-2">
+    <button
+      class="phase-toggle w-full border-2 rounded-lg pt-3 sm:pt-4 px-3 sm:px-4 pb-1 hover:shadow-xl transition-all shadow-lg backdrop-blur-md relative"
+      style={`background: linear-gradient(135deg, white 0%, ${phase.colorLightHex} 100%); border-color: ${phase.colorBorderHex};`}
+      data-phase-id={phaseId}
+    >
+      <!-- Phase Number Badge -->
+      <div
+        class="absolute top-2 right-2 sm:top-3 sm:right-3 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md font-bold text-xs sm:text-sm shadow-sm"
+        style={`background-color: ${phase.colorPrimaryHex}; color: white;`}
+      >
+        #{phaseId.replace('fase', '')}
+      </div>
+
+      <div>
+        <div class="text-left mb-1">
+          <h2 class="text-lg sm:text-2xl font-extrabold leading-tight mb-1 pr-10 sm:pr-12" style={`color: ${phase.colorPrimaryHex};`}>
+            {phase.name.includes(':') ? phase.name.split(':')[1].trim() : phase.name}
+          </h2>
+          <p class="phase-description text-xs sm:text-sm text-slate-600/90 dark:text-gray-300/90 leading-relaxed max-w-prose mb-1 pr-10 sm:pr-12">
+            {phase.description}
+          </p>
+          <div class="flex justify-end">
+            <span class="text-xs text-slate-500 dark:text-gray-400 font-medium whitespace-nowrap">
+              {phase.time}
+            </span>
+          </div>
+        </div>
+
+        <!-- Chevron centered below -->
+        <div class="flex justify-center pb-1 -mb-1">
+          <div class="relative w-5 h-5 opacity-60">
+            <div class="chevron-down absolute inset-0 opacity-100 transition-opacity duration-200" style={`color: ${phase.colorPrimaryHex};`}>
+              <ChevronDown size={20} />
+            </div>
+            <div class="chevron-up absolute inset-0 opacity-0 transition-opacity duration-200" style={`color: ${phase.colorPrimaryHex};`}>
+              <ChevronUp size={20} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </button>
+  </div>
+
+  <div class="phase-content hidden p-3 sm:p-4 mt-2 space-y-3">
+    {phase.exercises.map(exercise => (
+      <ExerciseCard
+        exercise={exercise}
+        phaseId={phaseId}
+        colorPrimaryHex={phase.colorPrimaryHex}
+        colorLightHex={phase.colorLightHex}
+        colorBorderHex={phase.colorBorderHex}
+        lang={lang}
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  .phase-description {
+    text-wrap: balance;
+    max-w: 50ch;
+  }
+</style>
