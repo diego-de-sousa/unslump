@@ -1,0 +1,221 @@
+---
+/**
+ * ExerciseImage component
+ * Displays exercise reference media in priority order:
+ * 1. Embedded video (YouTube Short/video)
+ * 2. Static image with optional animated GIF on hover
+ * 3. Nothing (graceful degradation)
+ */
+
+export interface Props {
+  imageUrl?: string;
+  gifUrl?: string;
+  videoEmbedUrl?: string;
+  alt: string;
+  exerciseId: string;
+}
+
+const { imageUrl, gifUrl, videoEmbedUrl, alt, exerciseId } = Astro.props;
+
+// Helper function to convert YouTube URLs to embed format with autoplay, mute, and loop
+function getYouTubeEmbedUrl(url: string): string | null {
+  if (!url) return null;
+
+  let videoId: string | null = null;
+
+  // Handle YouTube Shorts: youtube.com/shorts/VIDEO_ID
+  const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch) {
+    videoId = shortsMatch[1];
+  }
+
+  // Handle regular YouTube: youtube.com/watch?v=VIDEO_ID or youtu.be/VIDEO_ID
+  if (!videoId) {
+    const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      videoId = watchMatch[1];
+    }
+  }
+
+  // If already an embed URL, extract video ID
+  if (!videoId && url.includes('youtube.com/embed/')) {
+    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+    if (embedMatch) {
+      videoId = embedMatch[1];
+    }
+  }
+
+  if (!videoId) return null;
+
+  // Build embed URL with autoplay, mute, loop parameters
+  // playlist parameter is required for loop to work
+  const params = new URLSearchParams({
+    autoplay: '1',
+    mute: '1',
+    loop: '1',
+    playlist: videoId,  // Required for loop
+    controls: '0',       // Hide controls for cleaner look
+    modestbranding: '1', // Minimal YouTube branding
+    rel: '0'             // Don't show related videos at end
+  });
+
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+}
+
+const embedUrl = videoEmbedUrl ? getYouTubeEmbedUrl(videoEmbedUrl) : null;
+
+// Detect if it's a vertical Short or horizontal video
+const isVerticalVideo = videoEmbedUrl?.includes('/shorts/') || false;
+
+// If no media is provided, don't render anything
+if (!embedUrl && !imageUrl) {
+  return null;
+}
+---
+
+<div
+  class={`exercise-media-container ${embedUrl ? (isVerticalVideo ? 'video-vertical' : 'video-horizontal') : ''}`}
+  data-exercise-id={exerciseId}
+>
+  {embedUrl ? (
+    <!-- Priority 1: Embedded Video -->
+    <iframe
+      src={embedUrl}
+      title={alt}
+      class="exercise-video-embed"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+      loading="lazy"
+    ></iframe>
+  ) : (
+    <!-- Priority 2: Images (static + optional GIF on hover) -->
+    <>
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt={alt}
+          class="exercise-image-static"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      {gifUrl && (
+        <img
+          src={gifUrl}
+          alt={`${alt} (animated)`}
+          class="exercise-image-animated"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+    </>
+  )}
+</div>
+
+<style>
+  .exercise-media-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    margin: 0 auto 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Vertical videos (YouTube Shorts) */
+  .exercise-media-container.video-vertical {
+    max-width: 200px;
+    aspect-ratio: 9 / 16;
+  }
+
+  /* Horizontal videos (normal YouTube videos) */
+  .exercise-media-container.video-horizontal {
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Images (not videos) */
+  .exercise-media-container:not(.video-vertical):not(.video-horizontal) {
+    max-width: 200px;
+    aspect-ratio: 9 / 16;
+  }
+
+  /* Video embed styles */
+  .exercise-video-embed {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0.5rem;
+  }
+
+  /* Image styles */
+  .exercise-image-static,
+  .exercise-image-animated {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+
+  .exercise-image-animated {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Show animated GIF on hover if available */
+  .exercise-media-container:hover .exercise-image-animated {
+    opacity: 1;
+  }
+
+  .exercise-media-container:hover .exercise-image-static {
+    opacity: 0;
+  }
+
+  /* Mobile: show animated GIF on tap */
+  @media (hover: none) {
+    .exercise-media-container.show-animation .exercise-image-animated {
+      opacity: 1;
+    }
+
+    .exercise-media-container.show-animation .exercise-image-static {
+      opacity: 0;
+    }
+  }
+
+  /* Responsive: adjust for different screen sizes (only for vertical videos and images) */
+  @media (max-width: 640px) {
+    .exercise-media-container.video-vertical,
+    .exercise-media-container:not(.video-vertical):not(.video-horizontal) {
+      max-width: 160px;
+    }
+  }
+</style>
+
+<script>
+  // Mobile tap handling: toggle animation on tap (only for images, not video)
+  if (matchMedia('(hover: none)').matches) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const containers = document.querySelectorAll('.exercise-media-container');
+
+      containers.forEach(container => {
+        const hasGif = container.querySelector('.exercise-image-animated');
+        const hasVideo = container.querySelector('.exercise-video-embed');
+
+        // Only add tap toggle for image containers with GIF
+        if (!hasGif || hasVideo) return;
+
+        container.addEventListener('click', (e) => {
+          e.preventDefault();
+          container.classList.toggle('show-animation');
+        });
+      });
+    });
+  }
+</script>
