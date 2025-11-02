@@ -55,6 +55,8 @@ The app follows a 4-phase exercise protocol based on corrective exercise science
   - Optional `levels` (beginner/intermediate/advanced or principiante/intermedio/avanzado)
   - Optional `videoUrl` (YouTube tutorial links)
   - Optional `sets` (for exercises with multiple sets, used for set counter UI)
+  - Optional `imageUrl` (static thumbnail image for quick visual reference)
+  - Optional `gifUrl` (animated GIF shown on hover/click for movement demonstration)
 
 - **`src/data/exerciseDetails.en.ts`** / **`src/data/exerciseDetails.es.ts`**: Comprehensive scientific information for each exercise:
   - `muscles`: Which muscles are targeted
@@ -120,6 +122,14 @@ The app uses vanilla JavaScript with localStorage for state persistence:
   - EN/ES buttons with active state indication
   - Links to localized URLs
 
+- **`src/components/ExerciseImage.astro`**: Exercise reference image component
+  - Displays static thumbnail image with optional animated GIF on hover/click
+  - Props: `imageUrl`, `gifUrl`, `alt`, `exerciseId`
+  - Responsive design with lazy loading and smooth transitions
+  - Mobile: tap to toggle between static and animated
+  - Desktop: hover to show animated GIF
+  - Returns null if no image is provided (graceful degradation)
+
 - **`src/components/icons/`**: SVG icon components (Play, Pause, Check, etc.)
 
 ### Interactive Features
@@ -143,16 +153,39 @@ The `[lang]/index.astro` page contains client-side JavaScript for:
   - `lang`: `en` (primary language)
   - `name`: "unslump! - Exercise Routine"
 
-- **`public/sw.js`**: Service worker for offline functionality (current version: v3)
+- **`public/sw.js`**: Service worker for offline functionality (current version: v17)
   - **Development**: Service worker is DISABLED in dev mode to avoid cache issues
   - **Production**: Cache-first strategy for offline support
   - **Cached URLs**: `/en/`, `/es/`, manifest, and icons
   - **Cache invalidation**: Increment `CACHE_NAME` version (v1 → v2 → v3) when deploying changes that need fresh content:
     - UI updates, bug fixes, exercise data changes, styling updates, i18n changes
     - Old caches are automatically deleted on activation
+  - **Exercise images**: Images from `/exercise-images/` are cached automatically on-demand via fetch handler (no need to pre-cache)
 
 - **`vercel.json`**: Custom headers for service worker, manifest, and security (CSP, X-Frame-Options, etc.)
 - Icons required: `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, `og-image.png`
+
+### Exercise Images
+
+The app supports optional reference images for exercises to help users quickly identify exercises:
+
+- **Storage**: Images stored in `/public/exercise-images/` directory
+- **Format**:
+  - Static images: JPG/PNG thumbnails (recommended: 400x400px, optimized for web)
+  - Animated images: GIF files showing exercise movement (recommended: 400x400px, optimized file size)
+- **Integration**:
+  - Images configured via `imageUrl` and `gifUrl` fields in `workout.en.ts` / `workout.es.ts`
+  - Component: `ExerciseImage.astro` handles display logic
+  - Behavior: Static thumbnail by default, animated GIF on hover (desktop) or tap (mobile)
+- **Performance**:
+  - Lazy loading enabled for all images
+  - Service worker caches images on-demand for offline access
+  - Images are optional - exercises without images display normally without placeholder
+- **Adding images**:
+  1. Add optimized image files to `/public/exercise-images/`
+  2. Update exercise objects in `workout.en.ts` and `workout.es.ts` with image paths
+  3. Example: `imageUrl: "/exercise-images/glute-bridge.jpg"`, `gifUrl: "/exercise-images/glute-bridge.gif"`
+  4. Increment service worker version in `public/sw.js` when deploying new images
 
 ### Deployment
 
