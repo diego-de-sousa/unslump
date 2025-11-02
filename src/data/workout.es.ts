@@ -19,7 +19,8 @@ export const workout: Workout = {
         duration: 120,
         reps: "2 min/lado",
         instructions: "Acostado, dedos en base del cráneo. Presión suave + pequeños asentimientos.",
-        videoUrl: "https://www.youtube.com/watch?v=PX5cE7Km6ZQ"
+        videoUrl: "https://www.youtube.com/watch?v=PX5cE7Km6ZQ",
+        videoEmbedUrl: "https://www.youtube.com/shorts/Yu89AAIRoFY"
       },
       {
         id: "pectoral",
@@ -27,7 +28,8 @@ export const workout: Workout = {
         duration: 60,
         reps: "30-60 seg/lado",
         instructions: "Contra pared con pelota o presión manual. Movimientos pequeños del brazo.",
-        videoUrl: "https://www.youtube.com/watch?v=jdgKQomV8Gs"
+        videoUrl: "https://www.youtube.com/watch?v=jdgKQomV8Gs",
+        videoEmbedUrl: "https://www.youtube.com/shorts/j8HNP7cVY2o"
       },
       {
         id: "trapecio",
@@ -35,7 +37,8 @@ export const workout: Workout = {
         duration: 60,
         reps: "30-60 seg/lado",
         instructions: "Con mano opuesta, presión deslizante sobre trapecio superior.",
-        videoUrl: "https://www.youtube.com/watch?v=9Aa4H-OyydM"
+        videoUrl: "https://www.youtube.com/watch?v=9Aa4H-OyydM",
+        videoEmbedUrl: "https://www.youtube.com/shorts/GJHtgMLqIaE"
       }
     ]
   },
@@ -62,7 +65,8 @@ export const workout: Workout = {
           intermedio: "45 seg, profundidad media",
           avanzado: "60 seg, mayor profundidad"
         },
-        videoUrl: "https://www.youtube.com/watch?v=-X2OC0WFaAM"
+        videoUrl: "https://www.youtube.com/watch?v=-X2OC0WFaAM",
+        videoEmbedUrl: "https://www.youtube.com/shorts/MCRnJkb48JU"
       },
       {
         id: "hip-flexor",
@@ -75,14 +79,16 @@ export const workout: Workout = {
           intermedio: "Alcance moderado",
           avanzado: "Alcance máximo + inclinación"
         },
-        videoUrl: "https://www.youtube.com/watch?v=67rVjQuuLVc"
+        videoUrl: "https://www.youtube.com/watch?v=67rVjQuuLVc",
+        videoEmbedUrl: "https://www.youtube.com/shorts/Ucluf0PLjcc"
       },
       {
         id: "trapecio-stretch",
         name: "Estiramiento trapecio/elevador escápula",
         duration: 45,
         reps: "30-60 seg/lado",
-        instructions: "Ancla hombro, inclina cuello a lado opuesto, añade rotación (nariz a axila)."
+        instructions: "Ancla hombro, inclina cuello a lado opuesto, añade rotación (nariz a axila).",
+        videoEmbedUrl: "https://www.youtube.com/shorts/I5v-YzmP9ww"
       },
       {
         id: "90-90",
@@ -94,7 +100,8 @@ export const workout: Workout = {
           principiante: "Bloque bajo cadera",
           intermedio: "Posición estándar",
           avanzado: "90/90 dinámico"
-        }
+        },
+        videoEmbedUrl: "https://www.youtube.com/shorts/X5jLF8JHCm8"
       }
     ]
   },
@@ -122,7 +129,8 @@ export const workout: Workout = {
           intermedio: "Sentado contra pared",
           avanzado: "De pie sin apoyo"
         },
-        videoUrl: "https://www.youtube.com/watch?v=FXA1jNr2chw"
+        videoUrl: "https://www.youtube.com/watch?v=FXA1jNr2chw",
+        videoEmbedUrl: "https://www.youtube.com/shorts/pAps-PUqwv0"
       },
       {
         id: "ytw",
@@ -136,7 +144,8 @@ export const workout: Workout = {
           intermedio: "Prono, mantención 5 seg",
           avanzado: "Con mancuernas 1-2kg"
         },
-        videoUrl: "https://www.youtube.com/watch?v=Bjor8CnEL_w"
+        videoUrl: "https://www.youtube.com/watch?v=Bjor8CnEL_w",
+        videoEmbedUrl: "https://www.youtube.com/shorts/8RJLYUH0akM"
       },
       {
         id: "pull-aparts",
@@ -149,7 +158,8 @@ export const workout: Workout = {
           principiante: "Toalla enrollada",
           intermedio: "Banda ligera",
           avanzado: "Banda resistente"
-        }
+        },
+        videoEmbedUrl: "https://www.youtube.com/shorts/Jcn93rBhUps"
       },
       {
         id: "bird-dog",
@@ -163,7 +173,10 @@ export const workout: Workout = {
           intermedio: "Solo pierna",
           avanzado: "Brazo + pierna opuestos"
         },
-        videoUrl: "https://www.youtube.com/watch?v=wiFNA3sqjCA"
+        videoUrl: "https://www.youtube.com/watch?v=wiFNA3sqjCA",
+        videoEmbedUrl: "https://www.youtube.com/shorts/Tjo5oYHoS8M"
+        // imageUrl: "/exercise-images/bird-dog.jpg",
+        // gifUrl: "/exercise-images/bird-dog.gif"
       },
       {
         id: "dead-bug",
@@ -177,7 +190,8 @@ export const workout: Workout = {
           intermedio: "Brazo + pierna",
           avanzado: "Con banda elástica"
         },
-        videoUrl: "https://www.youtube.com/watch?v=LL2iFJhUroQ"
+        videoUrl: "https://www.youtube.com/watch?v=LL2iFJhUroQ",
+        videoEmbedUrl: "https://www.youtube.com/shorts/DqLL45uk2Tk"
       },
       {
         id: "glute-bridge",
@@ -191,7 +205,8 @@ export const workout: Workout = {
           intermedio: "Con banda rodillas",
           avanzado: "Una pierna 2-4×5-10"
         },
-        videoUrl: "https://www.youtube.com/watch?v=wNSpjvy4NqA"
+        videoUrl: "https://www.youtube.com/watch?v=wNSpjvy4NqA",
+        videoEmbedUrl: "https://www.youtube.com/shorts/X_IGw8U_e38"
       },
       {
         id: "clamshells",
@@ -204,7 +219,8 @@ export const workout: Workout = {
           principiante: "Mantención 30-60 seg",
           intermedio: "Con banda ligera",
           avanzado: "Banda resistente"
-        }
+        },
+        videoEmbedUrl: "https://www.youtube.com/shorts/Hj-2r7OlXuE"
       }
     ]
   },
@@ -226,7 +242,8 @@ export const workout: Workout = {
         duration: 0,
         reps: "10 reps × 2-3 series",
         instructions: "Cuatro apoyos. VACA: inhala + arquea, GATO: exhala + redondea. Ciclo 10 seg.",
-        sets: 3
+        sets: 3,
+        videoEmbedUrl: "https://www.youtube.com/shorts/2of247Kt0tU"
       },
       {
         id: "thoracic-rotation",
@@ -234,7 +251,8 @@ export const workout: Workout = {
         duration: 0,
         reps: "10-12/lado × 2-3 series",
         instructions: "Cuatro apoyos, mano tras cabeza. Rota codo al techo, sigue con ojos.",
-        sets: 3
+        sets: 3,
+        videoEmbedUrl: "https://www.youtube.com/shorts/xXRe0JjjM7Q"
       },
       {
         id: "thoracic-extension",
@@ -242,7 +260,8 @@ export const workout: Workout = {
         duration: 10,
         reps: "6-10 reps × 1-2 series",
         instructions: "Boca arriba, toalla bajo omóplatos. Extiende lentamente hacia atrás.",
-        sets: 2
+        sets: 2,
+        videoEmbedUrl: "https://www.youtube.com/watch?v=Jx6z6OWbD9Y"
       },
       {
         id: "squats",
@@ -256,7 +275,8 @@ export const workout: Workout = {
           intermedio: "Peso corporal completa",
           avanzado: "Una pierna / búlgara"
         },
-        videoUrl: "https://www.youtube.com/watch?v=m9pMtbfYFQU"
+        videoUrl: "https://www.youtube.com/watch?v=m9pMtbfYFQU",
+        videoEmbedUrl: "https://www.youtube.com/shorts/eFEVKmp3M4g"
       },
       {
         id: "reverse-lunge",
@@ -269,7 +289,8 @@ export const workout: Workout = {
           principiante: "Paso corto, apoyo pared",
           intermedio: "Paso completo sin apoyo",
           avanzado: "Con peso (mochila)"
-        }
+        },
+        videoEmbedUrl: "https://www.youtube.com/shorts/b_2qgdXT_QQ"
       },
       {
         id: "side-plank",
@@ -283,7 +304,8 @@ export const workout: Workout = {
           intermedio: "Piernas rectas 30-45 seg",
           avanzado: "Eleva pierna superior 60 seg"
         },
-        videoUrl: "https://www.youtube.com/watch?v=zFBXownGs6U"
+        videoUrl: "https://www.youtube.com/watch?v=zFBXownGs6U",
+        videoEmbedUrl: "https://www.youtube.com/shorts/BFOyHDlY2UE"
       },
       {
         id: "wall-angels",
@@ -291,7 +313,8 @@ export const workout: Workout = {
         duration: 0,
         reps: "10-15 reps × 2-3 series",
         instructions: "Contra pared (cabeza, espalda, glúteos). Brazos W→Y manteniendo contacto.",
-        sets: 3
+        sets: 3,
+        videoEmbedUrl: "https://www.youtube.com/shorts/bEiiaBfY1hk"
       }
     ]
   }
