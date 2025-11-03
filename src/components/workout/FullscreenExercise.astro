@@ -1,0 +1,233 @@
+---
+/**
+ * FullscreenExercise Component
+ * Main exercise view with timer or rep counter
+ */
+import type { Exercise } from '../../types/workout';
+import type { Level } from '../../stores/levelStore';
+
+interface Props {
+  exercise: Exercise;
+  phaseColor: string;
+  currentLevel: Level;
+  lang: 'en' | 'es';
+}
+
+const { exercise, phaseColor, currentLevel, lang } = Astro.props;
+
+const translations = {
+  en: {
+    timeRemaining: 'Time remaining',
+  },
+  es: {
+    timeRemaining: 'Tiempo restante',
+  },
+};
+
+const t = translations[lang];
+
+// Get level-specific instructions if available
+const levelInstructions = exercise.levels?.[currentLevel];
+const hasTimer = exercise.duration > 0;
+const hasReps = !hasTimer && exercise.reps;
+const hasSets = exercise.sets && exercise.sets > 0;
+---
+
+<div class="fullscreen-exercise fixed inset-0 z-40 flex flex-col bg-white">
+  <!-- Exercise Content Container -->
+  <div class="exercise-content flex flex-1 flex-col overflow-y-auto p-6">
+    <!-- Exercise Media (Video or Image) -->
+    {exercise.videoEmbedUrl ? (
+      <div class="exercise-media mb-6 flex justify-center">
+        <div class="relative w-full max-w-sm overflow-hidden rounded-2xl shadow-xl" style="aspect-ratio: 9/16;">
+          <iframe
+            src={exercise.videoEmbedUrl}
+            title={exercise.name}
+            class="absolute inset-0 h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    ) : (exercise.gifUrl || exercise.imageUrl) ? (
+      <div class="exercise-media mb-6 flex justify-center">
+        <div class="overflow-hidden rounded-2xl shadow-xl">
+          <img
+            src={exercise.gifUrl || exercise.imageUrl}
+            alt={exercise.name}
+            class="h-auto w-full max-w-sm object-contain"
+          />
+        </div>
+      </div>
+    ) : null}
+
+    <!-- Exercise Name -->
+    <h2 class="mb-4 text-center text-3xl font-bold text-gray-800">
+      {exercise.name}
+    </h2>
+
+    <!-- Exercise Reps Info -->
+    {exercise.reps && (
+      <p class="mb-4 text-center text-lg text-gray-600">
+        {exercise.reps}
+      </p>
+    )}
+
+    <!-- Exercise Instructions -->
+    <div class="mb-6 rounded-lg bg-gray-50 p-4">
+      <p class="text-center text-gray-700">
+        {exercise.instructions}
+      </p>
+
+      {/* Level-specific instructions */}
+      {levelInstructions && (
+        <div class="mt-3 rounded-md border-l-4 bg-white p-3" style={`border-color: ${phaseColor};`}>
+          <p class="text-sm font-semibold uppercase tracking-wide text-gray-500 mb-1">
+            {currentLevel === 'principiante' ? (lang === 'es' ? 'Principiante' : 'Beginner') :
+             currentLevel === 'intermedio' ? (lang === 'es' ? 'Intermedio' : 'Intermediate') :
+             (lang === 'es' ? 'Avanzado' : 'Advanced')}
+          </p>
+          <p class="text-sm text-gray-700">
+            {levelInstructions}
+          </p>
+        </div>
+      )}
+    </div>
+
+    <!-- Timer or Rep Counter -->
+    {hasTimer ? (
+      <!-- Timer Display -->
+      <div class="timer-display mb-6 flex flex-col items-center">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+          {t.timeRemaining}
+        </p>
+        <div
+          class="timer-circle relative flex h-48 w-48 items-center justify-center rounded-full border-8"
+          style={`border-color: ${phaseColor};`}
+        >
+          <div
+            class="timer-number font-['Barriecito'] text-6xl font-bold"
+            style={`color: ${phaseColor};`}
+            id="exerciseTimer"
+          >
+            {exercise.duration}
+          </div>
+          <!-- Progress ring -->
+          <svg class="progress-ring absolute inset-0 -rotate-90" width="100%" height="100%">
+            <circle
+              class="progress-ring-circle"
+              stroke={phaseColor}
+              stroke-width="8"
+              fill="transparent"
+              r="88"
+              cx="50%"
+              cy="50%"
+              id="timerProgressRing"
+            />
+          </svg>
+        </div>
+      </div>
+    ) : hasReps && hasSets ? (
+      <!-- Rep Counter with Sets - Will be handled by RepCounter island component -->
+      <div id="repCounterContainer" class="mb-6">
+        <!-- RepCounter component will be injected here -->
+      </div>
+    ) : hasReps ? (
+      <!-- Simple manual completion -->
+      <div class="manual-complete mb-6 flex flex-col items-center">
+        <div class="rounded-lg bg-gray-50 p-6">
+          <p class="mb-4 text-center text-gray-600">
+            {lang === 'es'
+              ? 'Completa este ejercicio y presiona el botón cuando termines'
+              : 'Complete this exercise and press the button when done'}
+          </p>
+          <button
+            id="manualCompleteButton"
+            class="rounded-full px-8 py-4 font-bold text-white shadow-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            style={`background-color: ${phaseColor};`}
+          >
+            ✓ {lang === 'es' ? 'Completado' : 'Complete'}
+          </button>
+        </div>
+      </div>
+    ) : null}
+  </div>
+</div>
+
+<style>
+  .fullscreen-exercise {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .exercise-media {
+    animation: slideDown 0.5s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .timer-circle {
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .timer-number {
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* Urgent pulse when time is running out */
+  .timer-number.urgent {
+    animation: urgentPulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes urgentPulse {
+    0%, 100% {
+      transform: scale(1);
+      color: #ef4444;
+    }
+    50% {
+      transform: scale(1.15);
+      color: #dc2626;
+    }
+  }
+
+  .progress-ring-circle {
+    transition: stroke-dashoffset 1s linear;
+  }
+</style>

@@ -16,6 +16,7 @@ import {
 
 // Core state atoms
 export const completedExercises = atom<Set<string>>(new Set());
+export const skippedExercises = atom<Set<string>>(new Set());
 export const sessionLocked = atom<boolean>(false);
 export const currentWorkout = atom<Workout | null>(null);
 
@@ -32,6 +33,7 @@ export function initializeProgress(workout: Workout): void {
   const saved = loadProgress();
   if (saved && !wasReset) {
     completedExercises.set(new Set(saved.completed));
+    skippedExercises.set(new Set((saved as any).skipped || []));
     sessionLocked.set(saved.sessionLocked ?? false);
   }
 }
@@ -60,16 +62,45 @@ export function toggleExerciseCompletion(phaseId: string, exerciseId: string): b
 }
 
 /**
- * Mark exercise as completed
+ * Mark exercise as completed (fully done)
  */
 export function completeExercise(phaseId: string, exerciseId: string): void {
   const key = getExerciseKey(phaseId, exerciseId);
-  const current = completedExercises.get();
+  const completed = completedExercises.get();
+  const skipped = skippedExercises.get();
 
-  if (!current.has(key)) {
-    const newSet = new Set(current);
-    newSet.add(key);
-    completedExercises.set(newSet);
+  // Remove from skipped if it was there
+  if (skipped.has(key)) {
+    const newSkipped = new Set(skipped);
+    newSkipped.delete(key);
+    skippedExercises.set(newSkipped);
+  }
+
+  // Add to completed
+  if (!completed.has(key)) {
+    const newCompleted = new Set(completed);
+    newCompleted.add(key);
+    completedExercises.set(newCompleted);
+    saveProgressState();
+  }
+}
+
+/**
+ * Mark exercise as skipped (not completed, just jumped over)
+ */
+export function skipExercise(phaseId: string, exerciseId: string): void {
+  const key = getExerciseKey(phaseId, exerciseId);
+  const completed = completedExercises.get();
+  const skipped = skippedExercises.get();
+
+  // Don't mark as skipped if already completed
+  if (completed.has(key)) return;
+
+  // Add to skipped
+  if (!skipped.has(key)) {
+    const newSkipped = new Set(skipped);
+    newSkipped.add(key);
+    skippedExercises.set(newSkipped);
     saveProgressState();
   }
 }
@@ -79,6 +110,7 @@ export function completeExercise(phaseId: string, exerciseId: string): void {
  */
 export function resetProgress(): void {
   completedExercises.set(new Set());
+  skippedExercises.set(new Set());
   sessionLocked.set(false);
   saveProgressState();
 }
@@ -91,14 +123,16 @@ function saveProgressState(): void {
   if (!workout) return;
 
   const completed = Array.from(completedExercises.get());
+  const skipped = Array.from(skippedExercises.get());
   const total = Object.values(workout).reduce((sum, phase) => sum + phase.exercises.length, 0);
 
   // Lock session if all exercises completed
   const locked = shouldLockSession(completed.length, total);
   sessionLocked.set(locked);
 
-  const state: ProgressState = {
+  const state: any = {
     completed,
+    skipped, // Add skipped exercises to saved state
     level: 'principiante', // Will be synced from levelStore
     sessionLocked: locked,
     lastSessionDate: new Date().toISOString()

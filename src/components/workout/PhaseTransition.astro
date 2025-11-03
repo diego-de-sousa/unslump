@@ -1,0 +1,145 @@
+---
+/**
+ * PhaseTransition Component
+ * Full-screen phase introduction shown between phases
+ */
+import type { Phase } from '../../types/workout';
+
+interface Props {
+  phaseNumber: number;
+  phase: Phase;
+  lang: 'en' | 'es';
+}
+
+const { phaseNumber, phase, lang } = Astro.props;
+
+// Get phase color from phase data
+const bgColor = phase.colorLightHex || '#f5f5f5';
+const borderColor = phase.colorBorderHex || '#e0e0e0';
+const primaryColor = phase.colorPrimaryHex || '#4f46e5';
+---
+
+<div
+  class="phase-transition fixed inset-0 z-50 flex flex-col items-center justify-center p-6"
+  style={`background: linear-gradient(135deg, ${bgColor} 0%, white 100%);`}
+  data-phase={phaseNumber}
+>
+  <!-- Phase Number Badge -->
+  <div
+    class="phase-badge mb-6 flex h-24 w-24 items-center justify-center rounded-full border-4 font-['Barriecito'] text-4xl font-bold shadow-lg"
+    style={`border-color: ${borderColor}; background: white; color: ${primaryColor};`}
+  >
+    {phaseNumber}
+  </div>
+
+  <!-- Phase Name -->
+  <h1
+    class="mb-4 text-center font-['Barriecito'] text-4xl font-bold md:text-5xl"
+    style={`color: ${primaryColor};`}
+  >
+    {phase.name}
+  </h1>
+
+  <!-- Phase Description -->
+  <p class="mb-8 max-w-2xl text-center text-lg text-gray-700 md:text-xl">
+    {phase.description}
+  </p>
+
+  <!-- Exercise Count -->
+  <div class="mb-8 rounded-lg bg-white px-6 py-3 shadow-md" style={`border-left: 4px solid ${primaryColor};`}>
+    <p class="text-center text-sm font-semibold uppercase tracking-wide text-gray-600">
+      {lang === 'es' ? 'A continuación' : 'Up next'}
+    </p>
+    <p class="text-center text-2xl font-bold" style={`color: ${primaryColor};`}>
+      {phase.exercises.length} {lang === 'es' ? 'ejercicios' : 'exercises'}
+    </p>
+  </div>
+
+  <!-- Exercise List Preview -->
+  <div class="mb-8 max-w-md">
+    <ul class="space-y-2">
+      {phase.exercises.slice(0, 5).map((exercise, index) => (
+        <li class="flex items-center gap-3 text-gray-700">
+          <span
+            class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+            style={`background-color: ${primaryColor};`}
+          >
+            {index + 1}
+          </span>
+          <span class="text-sm">{exercise.name}</span>
+        </li>
+      ))}
+      {phase.exercises.length > 5 && (
+        <li class="flex items-center gap-3 text-gray-500">
+          <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-xs">
+            •••
+          </span>
+          <span class="text-sm italic">
+            {lang === 'es' ? `y ${phase.exercises.length - 5} más` : `and ${phase.exercises.length - 5} more`}
+          </span>
+        </li>
+      )}
+    </ul>
+  </div>
+
+  <!-- Continue Button -->
+  <button
+    id="continueButton"
+    class="continue-button rounded-full px-8 py-4 text-lg font-bold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"
+    style={`background-color: ${primaryColor};`}
+  >
+    <span id="continueButtonText">
+      {lang === 'es' ? 'Continuar' : 'Continue'}
+    </span>
+  </button>
+
+  <!-- Auto-start countdown (optional) -->
+  <p id="autoStartText" class="mt-4 text-sm text-gray-500 opacity-0 transition-opacity">
+    <!-- Will be populated by script -->
+  </p>
+</div>
+
+<style>
+  .phase-transition {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .phase-badge {
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .continue-button {
+    animation: slideUp 0.5s ease-out 0.3s both;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,0 +1,350 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/Logo.astro';
+---
+
+<BaseLayout
+  title="Logo Test - unslump!"
+  description="Testing alternative logo designs with layered effect"
+  lang="en"
+>
+  <div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-white text-4xl font-bold mb-4 text-center">Logo Comparison & Testing</h1>
+      <p class="text-gray-300 text-center mb-12">Compare current logo with layered single-line variations</p>
+
+      <!-- Current Assets -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+
+        <!-- Favicon -->
+        <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-6">
+          <h2 class="text-gray-700 text-lg font-bold">Current Favicon</h2>
+          <div class="bg-gray-100 rounded-lg p-8 flex items-center justify-center">
+            <img src="/icon-192.png" alt="Favicon" class="w-32 h-32" />
+          </div>
+          <p class="text-gray-600 text-sm text-center">192x192 layered "u!" design</p>
+        </div>
+
+        <!-- Current Logo with Progress Control -->
+        <div class="bg-white rounded-xl p-8 flex flex-col items-center gap-6">
+          <h2 class="text-gray-700 text-lg font-bold">Current Logo (Tilt Warp Variable)</h2>
+          <div class="flex items-center justify-center min-h-[128px]">
+            <Logo size="large" showProgress={true} id="current-logo" />
+          </div>
+          <div class="w-full space-y-4">
+            <div>
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Phase 1 (un) - Indigo</span>
+                <span id="phase1-value" class="text-indigo-600">0%</span>
+              </label>
+              <input type="range" id="phase1-slider" min="0" max="100" value="0" class="w-full accent-indigo-600" />
+            </div>
+            <div>
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Phase 2 (sl) - Teal</span>
+                <span id="phase2-value" class="text-teal-500">0%</span>
+              </label>
+              <input type="range" id="phase2-slider" min="0" max="100" value="0" class="w-full accent-teal-500" />
+            </div>
+            <div>
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Phase 3 (um) - Orange</span>
+                <span id="phase3-value" class="text-orange-500">0%</span>
+              </label>
+              <input type="range" id="phase3-slider" min="0" max="100" value="0" class="w-full accent-orange-500" />
+            </div>
+            <div>
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Phase 4 (p!) - Pink</span>
+                <span id="phase4-value" class="text-pink-500">0%</span>
+              </label>
+              <input type="range" id="phase4-slider" min="0" max="100" value="0" class="w-full accent-pink-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Single Line Layered Variations -->
+      <div class="bg-white rounded-xl p-8 mb-12">
+        <h2 class="text-gray-700 text-2xl font-bold mb-8 text-center">Single Line - Layered Variations</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+
+          <!-- Variation 1: Standard -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Standard Offset</h3>
+            <div class="logo-layered-v1 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+          <!-- Variation 2: Subtle -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Subtle Offset</h3>
+            <div class="logo-layered-v2 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+          <!-- Variation 3: Bold -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Bold Offset</h3>
+            <div class="logo-layered-v3 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+          <!-- Variation 4: Tight -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Tight Spacing</h3>
+            <div class="logo-layered-v4 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+          <!-- Variation 5: Wide -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Wide Spacing</h3>
+            <div class="logo-layered-v5 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+          <!-- Variation 6: Diagonal -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Diagonal Offset</h3>
+            <div class="logo-layered-v6 font-display text-7xl font-bold">unslump!</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Interactive Playground -->
+      <div class="bg-white rounded-xl p-8">
+        <h2 class="text-gray-700 text-2xl font-bold mb-8 text-center">Interactive Playground</h2>
+
+        <div class="flex flex-col items-center gap-8">
+          <!-- Logo Display -->
+          <div id="playground-logo" class="font-display text-8xl font-bold" style="transition: all 0.1s ease;">
+            unslump!
+          </div>
+
+          <!-- Controls -->
+          <div class="w-full max-w-2xl space-y-6">
+
+            <!-- Offset Controls -->
+            <div class="space-y-4">
+              <h3 class="text-gray-700 font-bold text-lg">Shadow Offset</h3>
+
+              <div>
+                <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                  <span>Teal (Layer 1)</span>
+                  <span id="offset1-value" class="text-teal-500">2px</span>
+                </label>
+                <input type="range" id="offset1-slider" min="0" max="10" value="2" step="0.5" class="w-full accent-teal-500" />
+              </div>
+
+              <div>
+                <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                  <span>Orange (Layer 2)</span>
+                  <span id="offset2-value" class="text-orange-500">4px</span>
+                </label>
+                <input type="range" id="offset2-slider" min="0" max="15" value="4" step="0.5" class="w-full accent-orange-500" />
+              </div>
+
+              <div>
+                <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                  <span>Pink (Layer 3)</span>
+                  <span id="offset3-value" class="text-pink-500">6px</span>
+                </label>
+                <input type="range" id="offset3-slider" min="0" max="20" value="6" step="0.5" class="w-full accent-pink-500" />
+              </div>
+            </div>
+
+            <!-- Letter Spacing -->
+            <div>
+              <h3 class="text-gray-700 font-bold text-lg mb-4">Letter Spacing</h3>
+              <div>
+                <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                  <span>Spacing</span>
+                  <span id="spacing-value" class="text-gray-700">0em</span>
+                </label>
+                <input type="range" id="spacing-slider" min="-0.1" max="0.2" value="0" step="0.01" class="w-full" />
+              </div>
+            </div>
+
+            <!-- Font Size -->
+            <div>
+              <h3 class="text-gray-700 font-bold text-lg mb-4">Font Size</h3>
+              <div>
+                <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                  <span>Size</span>
+                  <span id="size-value" class="text-gray-700">6rem</span>
+                </label>
+                <input type="range" id="size-slider" min="2" max="12" value="6" step="0.5" class="w-full" />
+              </div>
+            </div>
+
+            <!-- Reset Button -->
+            <button
+              id="reset-btn"
+              class="w-full bg-gradient-to-r from-indigo-600 via-teal-500 to-pink-500 text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition"
+            >
+              Reset to Defaults
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* Predefined Variations */
+    .logo-layered-v1 {
+      color: #4f46e5;
+      text-shadow:
+        2px 2px 0 #14b8a6,
+        4px 4px 0 #f97316,
+        6px 6px 0 #ec4899;
+    }
+
+    .logo-layered-v2 {
+      color: #4f46e5;
+      text-shadow:
+        1px 1px 0 #14b8a6,
+        2px 2px 0 #f97316,
+        3px 3px 0 #ec4899;
+    }
+
+    .logo-layered-v3 {
+      color: #4f46e5;
+      text-shadow:
+        4px 4px 0 #14b8a6,
+        8px 8px 0 #f97316,
+        12px 12px 0 #ec4899;
+    }
+
+    .logo-layered-v4 {
+      color: #4f46e5;
+      letter-spacing: -0.05em;
+      text-shadow:
+        2px 2px 0 #14b8a6,
+        4px 4px 0 #f97316,
+        6px 6px 0 #ec4899;
+    }
+
+    .logo-layered-v5 {
+      color: #4f46e5;
+      letter-spacing: 0.1em;
+      text-shadow:
+        2px 2px 0 #14b8a6,
+        4px 4px 0 #f97316,
+        6px 6px 0 #ec4899;
+    }
+
+    .logo-layered-v6 {
+      color: #4f46e5;
+      text-shadow:
+        3px 1px 0 #14b8a6,
+        6px 2px 0 #f97316,
+        9px 3px 0 #ec4899;
+    }
+  </style>
+
+  <script>
+    // Current Logo Progress Control
+    const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+    phases.forEach((phaseId, index) => {
+      const slider = document.getElementById(`phase${index + 1}-slider`) as HTMLInputElement;
+      const valueDisplay = document.getElementById(`phase${index + 1}-value`);
+
+      if (slider && valueDisplay) {
+        slider.addEventListener('input', () => {
+          const progress = parseInt(slider.value);
+          valueDisplay.textContent = `${progress}%`;
+
+          // Update logo clip-path
+          const phaseElement = document.querySelector(`[data-phase="${phaseId}"] .color-layer`) as HTMLElement;
+          if (phaseElement) {
+            const rightInset = 100 - progress;
+            if (phaseId === 'fase4') {
+              phaseElement.style.clipPath = `inset(-10% ${rightInset}% -10% 0)`;
+            } else {
+              phaseElement.style.clipPath = `inset(0 ${rightInset}% 0 0)`;
+            }
+          }
+
+          // Update rotation based on progress
+          const phaseGroup = document.querySelector(`[data-phase="${phaseId}"]`) as HTMLElement;
+          if (phaseGroup) {
+            const initialXrot = parseFloat(phaseGroup.dataset.xrot || '25');
+            const initialYrot = parseFloat(phaseGroup.dataset.yrot || '-15');
+            const targetXrot = 0;
+            const targetYrot = 0;
+
+            const progressFactor = progress / 100;
+            const newXrot = initialXrot + (targetXrot - initialXrot) * progressFactor;
+            const newYrot = initialYrot + (targetYrot - initialYrot) * progressFactor;
+
+            const baseLayers = phaseGroup.querySelectorAll('.base-layer, .color-layer');
+            baseLayers.forEach(layer => {
+              (layer as HTMLElement).style.setProperty('--xrot', newXrot.toString());
+              (layer as HTMLElement).style.setProperty('--yrot', newYrot.toString());
+            });
+          }
+        });
+      }
+    });
+
+    // Playground Controls
+    const playgroundLogo = document.getElementById('playground-logo') as HTMLElement;
+
+    const offset1Slider = document.getElementById('offset1-slider') as HTMLInputElement;
+    const offset1Value = document.getElementById('offset1-value');
+    const offset2Slider = document.getElementById('offset2-slider') as HTMLInputElement;
+    const offset2Value = document.getElementById('offset2-value');
+    const offset3Slider = document.getElementById('offset3-slider') as HTMLInputElement;
+    const offset3Value = document.getElementById('offset3-value');
+
+    const spacingSlider = document.getElementById('spacing-slider') as HTMLInputElement;
+    const spacingValue = document.getElementById('spacing-value');
+
+    const sizeSlider = document.getElementById('size-slider') as HTMLInputElement;
+    const sizeValue = document.getElementById('size-value');
+
+    const resetBtn = document.getElementById('reset-btn');
+
+    function updatePlaygroundLogo() {
+      const offset1 = parseFloat(offset1Slider.value);
+      const offset2 = parseFloat(offset2Slider.value);
+      const offset3 = parseFloat(offset3Slider.value);
+      const spacing = parseFloat(spacingSlider.value);
+      const size = parseFloat(sizeSlider.value);
+
+      playgroundLogo.style.color = '#4f46e5';
+      playgroundLogo.style.textShadow = `
+        ${offset1}px ${offset1}px 0 #14b8a6,
+        ${offset2}px ${offset2}px 0 #f97316,
+        ${offset3}px ${offset3}px 0 #ec4899
+      `;
+      playgroundLogo.style.letterSpacing = `${spacing}em`;
+      playgroundLogo.style.fontSize = `${size}rem`;
+
+      offset1Value!.textContent = `${offset1}px`;
+      offset2Value!.textContent = `${offset2}px`;
+      offset3Value!.textContent = `${offset3}px`;
+      spacingValue!.textContent = `${spacing}em`;
+      sizeValue!.textContent = `${size}rem`;
+    }
+
+    offset1Slider?.addEventListener('input', updatePlaygroundLogo);
+    offset2Slider?.addEventListener('input', updatePlaygroundLogo);
+    offset3Slider?.addEventListener('input', updatePlaygroundLogo);
+    spacingSlider?.addEventListener('input', updatePlaygroundLogo);
+    sizeSlider?.addEventListener('input', updatePlaygroundLogo);
+
+    resetBtn?.addEventListener('click', () => {
+      offset1Slider.value = '2';
+      offset2Slider.value = '4';
+      offset3Slider.value = '6';
+      spacingSlider.value = '0';
+      sizeSlider.value = '6';
+      updatePlaygroundLogo();
+    });
+
+    // Initialize
+    updatePlaygroundLogo();
+  </script>
+</BaseLayout>

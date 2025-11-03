@@ -111,5 +111,86 @@
     "resetButton": "Iniciar nueva sesión",
     "sessionLocked": "¡Sesión completada! Puedes iniciar una nueva sesión mañana o usar el botón de resetear.",
     "comeBackTomorrow": "¡Vuelve mañana para una nueva sesión! 💪"
+  },
+  "guidedWorkout": {
+    "startButton": "Iniciar Entrenamiento Guiado",
+    "startButtonSubtext": "Flujo automático de 25 min con timers",
+    "viewOverview": "Ver resumen de ejercicios",
+    "resumeSession": "¿Continuar donde lo dejaste?",
+    "resumeButton": "Continuar entrenamiento",
+    "startNewButton": "Empezar desde el principio",
+    "navigation": {
+      "pause": "Pausar",
+      "play": "Reanudar",
+      "skip": "Saltar",
+      "back": "Atrás",
+      "exit": "Salir",
+      "exitConfirm": "¿Seguro que quieres salir del entrenamiento?",
+      "settings": "Ajustes"
+    },
+    "progress": {
+      "exercise": "Ejercicio",
+      "of": "de",
+      "currentPhase": "Fase"
+    },
+    "phaseTransition": {
+      "title": "Fase {number}",
+      "upNext": "A continuación:",
+      "exerciseCount": "{count} ejercicios",
+      "continueButton": "Continuar",
+      "autoStart": "Iniciando en {seconds}s..."
+    },
+    "exercisePrep": {
+      "getReady": "¡Prepárate!",
+      "nextExercise": "Siguiente ejercicio:",
+      "starting": "Comenzando en...",
+      "skipCountdown": "Saltar cuenta atrás"
+    },
+    "rest": {
+      "title": "Descanso",
+      "message": "Respira, prepárate para el siguiente ejercicio",
+      "nextUp": "A continuación:",
+      "skipRest": "Saltar descanso"
+    },
+    "repCounter": {
+      "tapForRep": "Toca por cada repetición",
+      "repsCompleted": "{current} de {total} reps",
+      "set": "Serie",
+      "setOf": "de",
+      "completedSet": "¡Serie completa! Descansa antes de la siguiente",
+      "completeButton": "Ejercicio completo",
+      "nextSetIn": "Siguiente serie en {seconds}s..."
+    },
+    "timer": {
+      "timeRemaining": "Tiempo restante"
+    },
+    "settings": {
+      "title": "Ajustes de Entrenamiento",
+      "restBetweenExercises": "Descanso entre ejercicios",
+      "restBetweenPhases": "Descanso entre fases",
+      "prepCountdown": "Cuenta atrás de preparación",
+      "seconds": "segundos",
+      "sound": "Efectos de sonido",
+      "voice": "Instrucciones de voz",
+      "vibration": "Vibración de feedback",
+      "autoAdvance": "Avanzar ejercicios automáticamente"
+    },
+    "voiceAnnouncements": {
+      "phaseIntro": "Fase {number}: {name}",
+      "nextExercise": "Siguiente ejercicio: {name}",
+      "countdown": "Tres... Dos... Uno... ¡Comienza!",
+      "exerciseComplete": "Ejercicio completo. ¡Buen trabajo!",
+      "phaseComplete": "¡Fase {number} completa!",
+      "workoutComplete": "¡Entrenamiento completo! ¡Excelente trabajo!",
+      "rest": "Descansa por {seconds} segundos",
+      "getReady": "Prepárate para {name}"
+    },
+    "workoutComplete": {
+      "title": "¡Entrenamiento Completo! 🎉",
+      "subtitle": "¡Completaste los 21 ejercicios!",
+      "message": "Acabas de invertir 25 minutos en tu salud. ¡Así se ve la consistencia!",
+      "backToOverview": "Volver al resumen",
+      "repeatWorkout": "Repetir entrenamiento"
+    }
   }
 }

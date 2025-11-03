@@ -1,0 +1,540 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/Logo.astro';
+---
+
+<BaseLayout
+  title="Animation Tests - unslump!"
+  description="Testing celebration animations for user progress"
+  lang="en"
+>
+  <div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-white text-4xl font-bold mb-4 text-center">Celebration Animations</h1>
+      <p class="text-gray-300 text-center mb-12">Test different animations for the real logo with phases</p>
+
+      <!-- Exercise Complete Animations (Small celebrations) -->
+      <div class="bg-white rounded-xl p-8 mb-8">
+        <h2 class="text-gray-700 text-2xl font-bold mb-6 text-center">Exercise Complete (Small Celebrations)</h2>
+        <p class="text-gray-600 text-sm text-center mb-8">Quick feedback when user completes an individual exercise</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <!-- Animation 1: Bounce -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Bounce</h3>
+            <div class="animation-container">
+              <Logo size="medium" showProgress={false} id="exercise-logo-1" />
+            </div>
+            <button onclick="animateExercise1()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              Trigger
+            </button>
+          </div>
+
+          <!-- Animation 2: Pop Scale -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Pop & Scale</h3>
+            <div class="animation-container">
+              <Logo size="medium" showProgress={false} id="exercise-logo-2" />
+            </div>
+            <button onclick="animateExercise2()" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition">
+              Trigger
+            </button>
+          </div>
+
+          <!-- Animation 3: Shake -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Shake</h3>
+            <div class="animation-container">
+              <Logo size="medium" showProgress={false} id="exercise-logo-3" />
+            </div>
+            <button onclick="animateExercise3()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+              Trigger
+            </button>
+          </div>
+
+          <!-- Animation 4: Pulse -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-gray-600 text-sm font-semibold">Pulse Glow</h3>
+            <div class="animation-container">
+              <Logo size="medium" showProgress={false} id="exercise-logo-4" />
+            </div>
+            <button onclick="animateExercise4()" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+              Trigger
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Phase Complete Animations (Medium celebrations) -->
+      <div class="bg-white rounded-xl p-8 mb-8">
+        <h2 class="text-gray-700 text-2xl font-bold mb-6 text-center">Phase Complete (Medium Celebrations)</h2>
+        <p class="text-gray-600 text-sm text-center mb-8">Celebrate completing one of the 4 phases</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <!-- Phase 1: INHIBIR (un) - Indigo -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-indigo-600 text-lg font-bold">Phase 1: INHIBIR (un)</h3>
+            <div class="animation-container-large relative">
+              <Logo size="large" showProgress={true} id="phase-logo-1" />
+              <canvas id="confetti-canvas-1" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animatePhase1()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              Trigger Phase 1
+            </button>
+          </div>
+
+          <!-- Phase 2: ALARGAR (sl) - Teal -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-teal-500 text-lg font-bold">Phase 2: ALARGAR (sl)</h3>
+            <div class="animation-container-large relative">
+              <Logo size="large" showProgress={true} id="phase-logo-2" />
+              <canvas id="confetti-canvas-2" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animatePhase2()" class="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition">
+              Trigger Phase 2
+            </button>
+          </div>
+
+          <!-- Phase 3: ACTIVAR (um) - Orange -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-orange-500 text-lg font-bold">Phase 3: ACTIVAR (um)</h3>
+            <div class="animation-container-large relative">
+              <Logo size="large" showProgress={true} id="phase-logo-3" />
+              <canvas id="confetti-canvas-3" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animatePhase3()" class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+              Trigger Phase 3
+            </button>
+          </div>
+
+          <!-- Phase 4: INTEGRAR (p!) - Pink -->
+          <div class="flex flex-col items-center gap-4">
+            <h3 class="text-pink-500 text-lg font-bold">Phase 4: INTEGRAR (p!)</h3>
+            <div class="animation-container-large relative">
+              <Logo size="large" showProgress={true} id="phase-logo-4" />
+              <canvas id="confetti-canvas-4" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animatePhase4()" class="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+              Trigger Phase 4
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Session Complete Animation (Epic celebration) -->
+      <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-xl p-8">
+        <h2 class="text-white text-3xl font-bold mb-6 text-center">Session Complete (Epic Celebration)</h2>
+        <p class="text-gray-100 text-sm text-center mb-8">The ultimate celebration when all 4 phases are complete!</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <!-- Epic Animation 1: Sequential Reveal with Bounce -->
+          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-white text-lg font-semibold">Sequential Reveal</h3>
+            <p class="text-gray-200 text-sm text-center">Each phase reveals one by one with bounce</p>
+            <div class="animation-container-epic relative">
+              <Logo size="xl" showProgress={true} id="session-logo-1" />
+              <canvas id="confetti-canvas-session-1" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animateSession1()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
+              🎉 Sequential Reveal
+            </button>
+          </div>
+
+          <!-- Epic Animation 2: All at Once with Scale -->
+          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-white text-lg font-semibold">Dramatic Scale</h3>
+            <p class="text-gray-200 text-sm text-center">All phases reveal at once with dramatic scale</p>
+            <div class="animation-container-epic relative">
+              <Logo size="xl" showProgress={true} id="session-logo-2" />
+              <canvas id="confetti-canvas-session-2" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animateSession2()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
+              🎊 Dramatic Scale
+            </button>
+          </div>
+
+          <!-- Epic Animation 3: Wave Reveal -->
+          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-white text-lg font-semibold">Wave Reveal</h3>
+            <p class="text-gray-200 text-sm text-center">Phases reveal in a wave pattern</p>
+            <div class="animation-container-epic relative">
+              <Logo size="xl" showProgress={true} id="session-logo-3" />
+              <canvas id="confetti-canvas-session-3" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animateSession3()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
+              🌊 Wave Reveal
+            </button>
+          </div>
+
+          <!-- Epic Animation 4: Explosive Reveal -->
+          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <h3 class="text-white text-lg font-semibold">Explosive Reveal</h3>
+            <p class="text-gray-200 text-sm text-center">Fast reveal with rotation and massive confetti</p>
+            <div class="animation-container-epic relative">
+              <Logo size="xl" showProgress={true} id="session-logo-4" />
+              <canvas id="confetti-canvas-session-4" class="absolute inset-0 pointer-events-none"></canvas>
+            </div>
+            <button onclick="animateSession4()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
+              💥 Explosive Reveal
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    .animation-container {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .animation-container-large {
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .animation-container-epic {
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Exercise Animations */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes popScale {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      25% { transform: translateX(-5px) rotate(-2deg); }
+      75% { transform: translateX(5px) rotate(2deg); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 10px currentColor); }
+    }
+
+    /* Phase Animations */
+    @keyframes phaseBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.1); }
+    }
+
+    @keyframes phaseRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(360deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* Session Animations */
+    @keyframes epicScale {
+      0% { transform: scale(0.8) rotate(-5deg); opacity: 0.5; }
+      50% { transform: scale(1.2) rotate(2deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes epicGlow {
+      0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+      50% { filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.8)); }
+    }
+
+    @keyframes waveFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes explosiveRotate {
+      0% { transform: scale(0.5) rotate(-180deg); opacity: 0; }
+      60% { transform: scale(1.3) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+  </style>
+
+  <script>
+    // Helper: Animate logo with custom animation
+    function animateLogo(logoId, animation, duration = '0.6s') {
+      const logo = document.getElementById(logoId);
+      if (!logo) return;
+
+      logo.style.animation = 'none';
+      setTimeout(() => {
+        logo.style.animation = `${animation} ${duration} ease-in-out`;
+      }, 10);
+    }
+
+    // Helper: Fill phase progress
+    function fillPhase(logoId, phaseId, animate = true) {
+      const logo = document.getElementById(logoId);
+      if (!logo) return;
+
+      const phaseElement = logo.querySelector(`[data-phase="${phaseId}"] .color-layer`);
+      if (phaseElement) {
+        const clipPath = phaseId === 'fase4' ? 'inset(-10% 0 -10% 0)' : 'inset(0 0 0 0)';
+        phaseElement.style.clipPath = clipPath;
+      }
+
+      const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
+      if (phaseGroup && animate) {
+        phaseGroup.style.animation = 'phaseBounce 0.6s ease-out';
+
+        const baseLayers = phaseGroup.querySelectorAll('.base-layer, .color-layer');
+        baseLayers.forEach(layer => {
+          layer.style.setProperty('--xrot', '0');
+          layer.style.setProperty('--yrot', '0');
+        });
+      }
+    }
+
+    // Helper: Reset all phases
+    function resetAllPhases(logoId) {
+      const logo = document.getElementById(logoId);
+      if (!logo) return;
+
+      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+      phases.forEach(phaseId => {
+        const phaseElement = logo.querySelector(`[data-phase="${phaseId}"] .color-layer`);
+        if (phaseElement) {
+          const clipPath = phaseId === 'fase4' ? 'inset(-10% 100% -10% 0)' : 'inset(0 100% 0 0)';
+          phaseElement.style.clipPath = clipPath;
+        }
+
+        const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
+        if (phaseGroup) {
+          const baseLayers = phaseGroup.querySelectorAll('.base-layer, .color-layer');
+          baseLayers.forEach(layer => {
+            layer.style.setProperty('--xrot', '25');
+            layer.style.setProperty('--yrot', '-15');
+          });
+        }
+      });
+    }
+
+    // Exercise animations - simple whole logo animations
+    function animateExercise1() {
+      animateLogo('exercise-logo-1', 'bounce');
+    }
+
+    function animateExercise2() {
+      animateLogo('exercise-logo-2', 'popScale');
+    }
+
+    function animateExercise3() {
+      animateLogo('exercise-logo-3', 'shake');
+    }
+
+    function animateExercise4() {
+      animateLogo('exercise-logo-4', 'pulseGlow');
+    }
+
+    // Phase animations - reveal that specific phase
+    function animatePhase1() {
+      resetAllPhases('phase-logo-1');
+      setTimeout(() => {
+        fillPhase('phase-logo-1', 'fase1');
+        createConfetti('confetti-canvas-1', 30, ['#4f46e5']);
+      }, 100);
+    }
+
+    function animatePhase2() {
+      resetAllPhases('phase-logo-2');
+      setTimeout(() => {
+        fillPhase('phase-logo-2', 'fase1', false);
+        setTimeout(() => {
+          fillPhase('phase-logo-2', 'fase2');
+          createConfetti('confetti-canvas-2', 40, ['#14b8a6']);
+        }, 100);
+      }, 100);
+    }
+
+    function animatePhase3() {
+      resetAllPhases('phase-logo-3');
+      setTimeout(() => {
+        fillPhase('phase-logo-3', 'fase1', false);
+        fillPhase('phase-logo-3', 'fase2', false);
+        setTimeout(() => {
+          fillPhase('phase-logo-3', 'fase3');
+          createConfetti('confetti-canvas-3', 50, ['#f97316']);
+        }, 100);
+      }, 100);
+    }
+
+    function animatePhase4() {
+      resetAllPhases('phase-logo-4');
+      setTimeout(() => {
+        fillPhase('phase-logo-4', 'fase1', false);
+        fillPhase('phase-logo-4', 'fase2', false);
+        fillPhase('phase-logo-4', 'fase3', false);
+        setTimeout(() => {
+          fillPhase('phase-logo-4', 'fase4');
+          createConfetti('confetti-canvas-4', 60, ['#ec4899']);
+        }, 100);
+      }, 100);
+    }
+
+    // Session animations - epic reveals of all phases
+    function animateSession1() {
+      const logo = document.getElementById('session-logo-1');
+      resetAllPhases('session-logo-1');
+
+      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+      phases.forEach((phaseId, index) => {
+        setTimeout(() => {
+          fillPhase('session-logo-1', phaseId);
+          if (index === phases.length - 1) {
+            setTimeout(() => {
+              createConfetti('confetti-canvas-session-1', 150);
+            }, 300);
+          }
+        }, index * 500);
+      });
+    }
+
+    function animateSession2() {
+      const logo = document.getElementById('session-logo-2');
+      resetAllPhases('session-logo-2');
+
+      logo.style.animation = 'epicScale 1.5s ease-out';
+
+      setTimeout(() => {
+        const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+        phases.forEach(phaseId => {
+          fillPhase('session-logo-2', phaseId, false);
+        });
+        createConfetti('confetti-canvas-session-2', 200);
+      }, 800);
+    }
+
+    function animateSession3() {
+      const logo = document.getElementById('session-logo-3');
+      resetAllPhases('session-logo-3');
+
+      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+      phases.forEach((phaseId, index) => {
+        setTimeout(() => {
+          const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
+          if (phaseGroup) {
+            phaseGroup.style.animation = 'waveFloat 0.8s ease-in-out';
+          }
+          fillPhase('session-logo-3', phaseId);
+
+          if (index === phases.length - 1) {
+            setTimeout(() => {
+              createConfetti('confetti-canvas-session-3', 180);
+            }, 400);
+          }
+        }, index * 200);
+      });
+    }
+
+    function animateSession4() {
+      const logo = document.getElementById('session-logo-4');
+      resetAllPhases('session-logo-4');
+
+      logo.style.animation = 'explosiveRotate 1.2s ease-out';
+
+      setTimeout(() => {
+        const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
+        phases.forEach(phaseId => {
+          fillPhase('session-logo-4', phaseId, false);
+        });
+        createConfetti('confetti-canvas-session-4', 250);
+      }, 600);
+    }
+
+    // Confetti system
+    function createConfetti(canvasId, count, colors = ['#4f46e5', '#14b8a6', '#f97316', '#ec4899']) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+
+      const particles = [];
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 15,
+          vy: (Math.random() - 1) * 15,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10,
+          size: Math.random() * 10 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let aliveCount = 0;
+        particles.forEach(p => {
+          if (p.life <= 0) return;
+
+          aliveCount++;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.4; // gravity
+          p.rotation += p.rotationSpeed;
+          p.life -= 0.012;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        if (aliveCount > 0) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      animate();
+    }
+
+    // Make functions global
+    window.animateExercise1 = animateExercise1;
+    window.animateExercise2 = animateExercise2;
+    window.animateExercise3 = animateExercise3;
+    window.animateExercise4 = animateExercise4;
+    window.animatePhase1 = animatePhase1;
+    window.animatePhase2 = animatePhase2;
+    window.animatePhase3 = animatePhase3;
+    window.animatePhase4 = animatePhase4;
+    window.animateSession1 = animateSession1;
+    window.animateSession2 = animateSession2;
+    window.animateSession3 = animateSession3;
+    window.animateSession4 = animateSession4;
+  </script>
+</BaseLayout>

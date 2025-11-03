@@ -1,0 +1,557 @@
+---
+/**
+ * Guided Workout Page
+ * Full-screen automatic workout flow
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Logo from '../../components/Logo.astro';
+import WorkoutNavigator from '../../components/islands/WorkoutNavigator';
+import PhaseTransition from '../../components/workout/PhaseTransition.astro';
+import ExercisePrep from '../../components/workout/ExercisePrep.astro';
+import FullscreenExercise from '../../components/workout/FullscreenExercise.astro';
+import RestPeriod from '../../components/workout/RestPeriod.astro';
+import { getWorkout, getExerciseDetails } from '../../data';
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
+}
+
+const lang = getLangFromUrl(Astro.url) as 'en' | 'es';
+const t = useTranslations(lang);
+const workout = getWorkout(lang);
+const exerciseDetails = getExerciseDetails(lang);
+const phases = Object.entries(workout);
+
+const title = t('meta.title');
+const description = t('meta.description');
+---
+
+<BaseLayout title={title} description={description} lang={lang}>
+  <!-- Workout Container -->
+  <div id="workoutContainer" class="workout-container fixed inset-0 bg-white">
+    <!-- Navigation Header -->
+    <header class="workout-header fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+      <div class="flex items-center justify-between px-4 py-2">
+        <!-- Left: Exit Button (most important action) -->
+        <button
+          id="exitButton"
+          class="rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors"
+          title={t('guidedWorkout.navigation.exit')}
+        >
+          <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Center: Interactive Progress Logo with Navigation -->
+        <div class="flex-1 flex items-center justify-center">
+          <button
+            id="logoNavigationButton"
+            class="transition-all duration-200 hover:opacity-80"
+            title="Open workout navigation"
+          >
+            <Logo size="medium" showProgress={true} id="progressLogo" />
+          </button>
+        </div>
+
+        <!-- Right: Settings Button -->
+        <button
+          id="settingsButton"
+          class="rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors"
+          title={t('guidedWorkout.navigation.settings')}
+        >
+          <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Buttons (Left side) - Only visible when paused -->
+    <div id="navigationButtons" class="fixed bottom-6 left-4 z-50 flex-col gap-2 hidden">
+      <!-- Previous Exercise Button -->
+      <button
+        id="previousButton"
+        class="rounded-full bg-white/90 backdrop-blur p-3 shadow-lg hover:bg-white transition-all duration-200 hover:scale-105 active:scale-95"
+        title={t('guidedWorkout.navigation.back')}
+      >
+        <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Skip Exercise Button -->
+      <button
+        id="skipButton"
+        class="rounded-full bg-white/90 backdrop-blur p-3 shadow-lg hover:bg-white transition-all duration-200 hover:scale-105 active:scale-95"
+        title={t('guidedWorkout.navigation.skip')}
+      >
+        <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Floating Action Button (Pause/Play) - Right side -->
+    <button
+      id="pausePlayButton"
+      class="fixed bottom-6 right-4 z-50 rounded-full bg-indigo-600 p-4 text-white shadow-xl hover:bg-indigo-700 transition-all duration-200 hover:scale-110 active:scale-95"
+      title={t('guidedWorkout.navigation.pause')}
+    >
+      <!-- Pause Icon (shown when playing) -->
+      <svg id="pauseIcon" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+      </svg>
+      <!-- Play Icon (shown when paused) -->
+      <svg id="playIcon" class="h-7 w-7 hidden" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </button>
+
+    <!-- Workout Navigator Panel -->
+    <WorkoutNavigator lang={lang} client:load />
+
+    <!-- Main Workout Content Area -->
+    <main id="workoutContent" class="workout-content pt-12">
+      <!-- Content will be dynamically rendered based on workout state -->
+      <div id="stateContainer" class="h-full">
+        <!-- Initial state: loading -->
+        <div class="flex h-full items-center justify-center">
+          <div class="text-center">
+            <div class="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent mx-auto"></div>
+            <p class="text-gray-600">{lang === 'es' ? 'Cargando...' : 'Loading...'}</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings Modal (will be implemented) -->
+  <div id="settingsModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="mx-4 max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+      <h3 class="mb-4 text-xl font-bold">{t('guidedWorkout.settings.title')}</h3>
+      <!-- Settings content will be added -->
+      <button id="closeSettingsButton" class="mt-4 w-full rounded-lg bg-gray-200 px-4 py-2 font-semibold hover:bg-gray-300">
+        {t('common.close')}
+      </button>
+    </div>
+  </div>
+
+  <!-- Resume Session Modal -->
+  <div id="resumeModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="mx-4 max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+      <h3 class="mb-4 text-xl font-bold">{t('guidedWorkout.resumeSession')}</h3>
+      <div class="flex gap-3">
+        <button id="resumeButton" class="flex-1 rounded-lg bg-indigo-600 px-4 py-3 font-bold text-white hover:bg-indigo-700">
+          {t('guidedWorkout.resumeButton')}
+        </button>
+        <button id="startNewButton" class="flex-1 rounded-lg bg-gray-200 px-4 py-3 font-semibold text-gray-700 hover:bg-gray-300">
+          {t('guidedWorkout.startNewButton')}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercise Info Modal -->
+  <div id="exerciseInfoModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 p-4">
+    <div class="relative max-h-[90vh] max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+      <!-- Close Button -->
+      <button id="closeExerciseInfoButton" class="absolute right-4 top-4 rounded-full bg-gray-100 p-2 hover:bg-gray-200 transition-colors">
+        <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Modal Content (will be populated dynamically) -->
+      <div id="exerciseInfoContent">
+        <!-- Content injected by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Pass data to the client-side script -->
+  <script is:inline define:vars={{ workout, exerciseDetails, lang, exitConfirmText: t('guidedWorkout.navigation.exitConfirm') }}>
+    // Expose data globally for the module script
+    window.__WORKOUT_DATA__ = workout;
+    window.__EXERCISE_DETAILS__ = exerciseDetails;
+    window.__WORKOUT_LANG__ = lang;
+    window.__EXIT_CONFIRM_TEXT__ = exitConfirmText;
+  </script>
+
+  <!-- Main workout script as module -->
+  <script>
+    import { initializeWorkoutController, startWorkout, loadSessionState, pauseWorkout, resumeFromPause, skipExercise, previousExercise, exitWorkout, workoutSession, overallProgress } from '../../stores/workoutController';
+    import { toggleNavigator } from '../../stores/navigationStore';
+    import { soundController } from '../../utils/soundController';
+    import { initWorkoutOrchestrator } from '../../scripts/workoutOrchestrator';
+
+    // Get data from global
+    const workout = (window as any).__WORKOUT_DATA__;
+    const exerciseDetails = (window as any).__EXERCISE_DETAILS__;
+    const lang = (window as any).__WORKOUT_LANG__;
+    const exitConfirmText = (window as any).__EXIT_CONFIRM_TEXT__;
+
+    let isPaused = false;
+    let wasPausedBeforeModal = false;
+
+    // Expose functions globally for orchestrator to call
+    (window as any).showExerciseInfo = showExerciseInfo;
+    (window as any).updatePauseUI = updatePauseUI;
+
+    // Update pause UI elements
+    function updatePauseUI(paused: boolean) {
+      isPaused = paused;
+      const pauseIcon = document.getElementById('pauseIcon');
+      const playIcon = document.getElementById('playIcon');
+      const navButtons = document.getElementById('navigationButtons');
+
+      if (paused) {
+        // Show play icon and nav buttons
+        pauseIcon?.classList.add('hidden');
+        playIcon?.classList.remove('hidden');
+        navButtons?.classList.remove('hidden');
+        navButtons?.classList.add('flex');
+      } else {
+        // Show pause icon and hide nav buttons
+        pauseIcon?.classList.remove('hidden');
+        playIcon?.classList.add('hidden');
+        navButtons?.classList.remove('flex');
+        navButtons?.classList.add('hidden');
+      }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('Workout page loaded');
+
+      // Initialize workout controller with data
+      initializeWorkoutController(workout);
+
+      // Initialize orchestrator (connects state to UI)
+      initWorkoutOrchestrator();
+
+      // Load sound files (will fallback to synthesized if not found)
+      soundController.loadSounds();
+
+      // Check for existing session
+      const savedSession = loadSessionState();
+      if (savedSession && savedSession.workoutState !== 'IDLE') {
+        // Show resume modal
+        document.getElementById('resumeModal')?.classList.remove('hidden');
+        document.getElementById('resumeModal')?.classList.add('flex');
+      } else {
+        // Start new workout
+        startWorkout();
+      }
+
+      // Set up event listeners
+      setupEventListeners();
+
+      // Request wake lock
+      requestWakeLock();
+    });
+
+    function setupEventListeners() {
+      // Exit button
+      document.getElementById('exitButton')?.addEventListener('click', handleExit);
+
+      // Logo navigation button
+      document.getElementById('logoNavigationButton')?.addEventListener('click', () => {
+        toggleNavigator();
+      });
+
+      // Pause/Play button
+      document.getElementById('pausePlayButton')?.addEventListener('click', handlePausePlay);
+
+      // Settings button
+      document.getElementById('settingsButton')?.addEventListener('click', handleSettings);
+
+      // Navigation buttons
+      document.getElementById('previousButton')?.addEventListener('click', handleBack);
+      document.getElementById('skipButton')?.addEventListener('click', handleSkip);
+
+      // Modal buttons
+      document.getElementById('closeSettingsButton')?.addEventListener('click', closeSettings);
+      document.getElementById('closeExerciseInfoButton')?.addEventListener('click', closeExerciseInfo);
+      document.getElementById('resumeButton')?.addEventListener('click', handleResume);
+      document.getElementById('startNewButton')?.addEventListener('click', handleStartNew);
+    }
+
+    // Helper function to convert YouTube URLs to embed format
+    function getYouTubeEmbedUrl(url: string): string | null {
+      if (!url) return null;
+
+      let videoId: string | null = null;
+
+      // Handle YouTube Shorts
+      const shortsMatch = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+      if (shortsMatch) {
+        videoId = shortsMatch[1];
+      }
+
+      // Handle regular YouTube
+      if (!videoId) {
+        const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        if (watchMatch) {
+          videoId = watchMatch[1];
+        }
+      }
+
+      // If already an embed URL
+      if (!videoId && url.includes('youtube.com/embed/')) {
+        const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+        if (embedMatch) {
+          videoId = embedMatch[1];
+        }
+      }
+
+      if (!videoId) return null;
+
+      const params = new URLSearchParams({
+        autoplay: '0', // Don't autoplay in modal
+        mute: '0',
+        rel: '0'
+      });
+
+      return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+    }
+
+    function showExerciseInfo(exerciseId: string) {
+      const details = exerciseDetails[exerciseId];
+      if (!details) return;
+
+      // Pause workout if it's not already paused
+      import('../../stores/workoutController').then(({ workoutSession }) => {
+        const session = workoutSession.get();
+        wasPausedBeforeModal = session.isPaused;
+        if (!session.isPaused) {
+          pauseWorkout();
+          updatePauseUI(true);
+        }
+      });
+
+      // Get current exercise for video
+      import('../../stores/workoutController').then(({ currentExercise }) => {
+        const exercise = currentExercise.get();
+
+        // Get embed URL
+        let embedUrl = exercise?.videoEmbedUrl ? getYouTubeEmbedUrl(exercise.videoEmbedUrl) : null;
+        if (!embedUrl && exercise?.videoUrl) {
+          embedUrl = getYouTubeEmbedUrl(exercise.videoUrl);
+        }
+
+        const isVerticalVideo = (exercise?.videoEmbedUrl?.includes('/shorts/') || exercise?.videoUrl?.includes('/shorts/')) || false;
+        const aspectRatio = isVerticalVideo ? '177.78%' : '56.25%'; // 9:16 or 16:9
+
+        // Build modal content
+        const content = `
+          <h2 class="mb-4 pr-10 text-2xl font-bold text-gray-800">${exercise?.name || ''}</h2>
+
+          ${embedUrl ? `
+            <div class="mb-6 overflow-hidden rounded-lg">
+              <div class="relative w-full" style="padding-bottom: ${aspectRatio};">
+                <iframe
+                  src="${embedUrl}"
+                  class="absolute inset-0 h-full w-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="space-y-4">
+            ${details.muscles ? `
+              <div>
+                <h3 class="mb-2 font-bold text-gray-800">${lang === 'es' ? 'Músculos trabajados' : 'Muscles worked'}</h3>
+                <p class="text-gray-700">${details.muscles}</p>
+              </div>
+            ` : ''}
+
+            ${details.why ? `
+              <div>
+                <h3 class="mb-2 font-bold text-gray-800">${lang === 'es' ? 'Por qué es importante' : 'Why it matters'}</h3>
+                <p class="text-gray-700">${details.why}</p>
+              </div>
+            ` : ''}
+
+            ${details.evidence ? `
+              <div>
+                <h3 class="mb-2 font-bold text-gray-800">${lang === 'es' ? 'Evidencia científica' : 'Scientific evidence'}</h3>
+                <p class="text-gray-700 text-sm">${details.evidence}</p>
+              </div>
+            ` : ''}
+
+            ${details.tips ? `
+              <div>
+                <h3 class="mb-2 font-bold text-gray-800">${lang === 'es' ? 'Consejos técnicos' : 'Technical tips'}</h3>
+                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                  ${details.tips.split('\n').map((tip: string) => `<li>${tip.replace(/^[-•]\s*/, '')}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        const modalContent = document.getElementById('exerciseInfoContent');
+        if (modalContent) {
+          modalContent.innerHTML = content;
+        }
+
+        // Show modal
+        document.getElementById('exerciseInfoModal')?.classList.remove('hidden');
+        document.getElementById('exerciseInfoModal')?.classList.add('flex');
+      });
+    }
+
+    function closeExerciseInfo() {
+      // Hide modal
+      document.getElementById('exerciseInfoModal')?.classList.remove('flex');
+      document.getElementById('exerciseInfoModal')?.classList.add('hidden');
+
+      // Resume workout if it wasn't paused before opening modal
+      if (!wasPausedBeforeModal && isPaused) {
+        resumeFromPause();
+        updatePauseUI(false);
+      }
+    }
+
+    function handleExit() {
+      if (confirm(exitConfirmText)) {
+        exitWorkout();
+        window.location.href = `/${lang}/`;
+      }
+    }
+
+    function handlePausePlay() {
+      if (isPaused) {
+        // Resume
+        resumeFromPause();
+        updatePauseUI(false);
+      } else {
+        // Pause
+        pauseWorkout();
+        updatePauseUI(true);
+      }
+    }
+
+    function handleSettings() {
+      document.getElementById('settingsModal')?.classList.remove('hidden');
+      document.getElementById('settingsModal')?.classList.add('flex');
+    }
+
+    function closeSettings() {
+      document.getElementById('settingsModal')?.classList.remove('flex');
+      document.getElementById('settingsModal')?.classList.add('hidden');
+    }
+
+    function handleBack() {
+      previousExercise();
+    }
+
+    function handleSkip() {
+      skipExercise();
+    }
+
+    function handleResume() {
+      const savedSession = loadSessionState();
+      document.getElementById('resumeModal')?.classList.add('hidden');
+      if (savedSession) {
+        import('../../stores/workoutController').then(({ resumeWorkout }) => {
+          resumeWorkout(savedSession);
+        });
+      }
+    }
+
+    function handleStartNew() {
+      document.getElementById('resumeModal')?.classList.add('hidden');
+      startWorkout();
+    }
+
+    // Screen Wake Lock
+    let wakeLock: any = null;
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await (navigator as any).wakeLock.request('screen');
+          console.log('Wake lock acquired');
+        } catch (err) {
+          console.warn('Wake lock error:', err);
+        }
+      }
+    }
+
+    // Release wake lock when page is hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !wakeLock) {
+        requestWakeLock();
+      }
+    });
+  </script>
+
+  <style>
+    .workout-container {
+      overflow: hidden;
+    }
+
+    .workout-content {
+      /* Fallback for browsers that don't support dvh */
+      height: calc(100vh - 3rem);
+      /* Use dynamic viewport height to account for browser UI bars (Safari, Chrome 108+) */
+      height: calc(100dvh - 3rem);
+      overflow-y: hidden; /* No scroll - everything should fit */
+    }
+
+    /* Ensure container uses dynamic viewport too */
+    .workout-container {
+      height: 100vh; /* Fallback */
+      height: 100dvh; /* Dynamic viewport height */
+    }
+
+    /* Ensure FABs don't interfere with safe area */
+    #pausePlayButton,
+    #previousButton,
+    #skipButton {
+      margin-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Prevent pull-to-refresh on mobile */
+    html, body {
+      overscroll-behavior: none;
+    }
+
+    /* View Transitions - Keep video and title during transitions */
+    @supports (view-transition-name: none) {
+      #exerciseVideoWrapper {
+        view-transition-name: exercise-video;
+      }
+
+      [style*="view-transition-name: exercise-title"] {
+        view-transition-name: exercise-title;
+      }
+    }
+
+    /* Smooth transitions for the video */
+    ::view-transition-old(exercise-video),
+    ::view-transition-new(exercise-video) {
+      animation-duration: 0.3s;
+    }
+
+    /* Keep video in same position during transition */
+    ::view-transition-old(exercise-video) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
+    ::view-transition-new(exercise-video) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+  </style>
+</BaseLayout>

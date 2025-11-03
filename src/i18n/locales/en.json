@@ -111,5 +111,86 @@
     "resetButton": "Start new session",
     "sessionLocked": "Session completed! You can start a new session tomorrow or use the reset button.",
     "comeBackTomorrow": "Come back tomorrow for a new session! 💪"
+  },
+  "guidedWorkout": {
+    "startButton": "Start Guided Workout",
+    "startButtonSubtext": "Automatic 25-min flow with timers",
+    "viewOverview": "View exercises overview",
+    "resumeSession": "Resume where you left off?",
+    "resumeButton": "Resume workout",
+    "startNewButton": "Start from beginning",
+    "navigation": {
+      "pause": "Pause",
+      "play": "Resume",
+      "skip": "Skip",
+      "back": "Back",
+      "exit": "Exit",
+      "exitConfirm": "Are you sure you want to exit the workout?",
+      "settings": "Settings"
+    },
+    "progress": {
+      "exercise": "Exercise",
+      "of": "of",
+      "currentPhase": "Phase"
+    },
+    "phaseTransition": {
+      "title": "Phase {number}",
+      "upNext": "Up next:",
+      "exerciseCount": "{count} exercises",
+      "continueButton": "Continue",
+      "autoStart": "Auto-starting in {seconds}s..."
+    },
+    "exercisePrep": {
+      "getReady": "Get ready!",
+      "nextExercise": "Next exercise:",
+      "starting": "Starting in...",
+      "skipCountdown": "Skip countdown"
+    },
+    "rest": {
+      "title": "Rest",
+      "message": "Take a breath, prepare for the next exercise",
+      "nextUp": "Next up:",
+      "skipRest": "Skip rest"
+    },
+    "repCounter": {
+      "tapForRep": "Tap for each rep",
+      "repsCompleted": "{current} of {total} reps",
+      "set": "Set",
+      "setOf": "of",
+      "completedSet": "Set complete! Rest before next set",
+      "completeButton": "Exercise complete",
+      "nextSetIn": "Next set in {seconds}s..."
+    },
+    "timer": {
+      "timeRemaining": "Time remaining"
+    },
+    "settings": {
+      "title": "Workout Settings",
+      "restBetweenExercises": "Rest between exercises",
+      "restBetweenPhases": "Rest between phases",
+      "prepCountdown": "Get ready countdown",
+      "seconds": "seconds",
+      "sound": "Sound effects",
+      "voice": "Voice instructions",
+      "vibration": "Vibration feedback",
+      "autoAdvance": "Auto-advance exercises"
+    },
+    "voiceAnnouncements": {
+      "phaseIntro": "Phase {number}: {name}",
+      "nextExercise": "Next exercise: {name}",
+      "countdown": "Three... Two... One... Begin!",
+      "exerciseComplete": "Exercise complete. Good job!",
+      "phaseComplete": "Phase {number} complete!",
+      "workoutComplete": "Workout complete! Excellent work!",
+      "rest": "Rest for {seconds} seconds",
+      "getReady": "Get ready for {name}"
+    },
+    "workoutComplete": {
+      "title": "Workout Complete! 🎉",
+      "subtitle": "You crushed all 21 exercises!",
+      "message": "You just invested 25 minutes in your health. That's what consistency looks like!",
+      "backToOverview": "Back to overview",
+      "repeatWorkout": "Repeat workout"
+    }
   }
 }
