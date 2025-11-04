@@ -10,7 +10,11 @@ import PhaseTransition from '../../components/workout/PhaseTransition.astro';
 import ExercisePrep from '../../components/workout/ExercisePrep.astro';
 import FullscreenExercise from '../../components/workout/FullscreenExercise.astro';
 import RestPeriod from '../../components/workout/RestPeriod.astro';
-import { getWorkout, getExerciseDetails } from '../../data';
+import WorkoutSettingsModal from '../../components/modals/WorkoutSettingsModal.astro';
+import ReferencesModal from '../../components/modals/ReferencesModal.astro';
+import WorkoutOnboardingModal from '../../components/modals/WorkoutOnboardingModal.astro';
+import Toast from '../../components/Toast.astro';
+import { getWorkout, getExerciseDetails, getReferences } from '../../data';
 import { useTranslations, getLangFromUrl } from '../../i18n/utils';
 
 export function getStaticPaths() {
@@ -21,6 +25,7 @@ const lang = getLangFromUrl(Astro.url) as 'en' | 'es';
 const t = useTranslations(lang);
 const workout = getWorkout(lang);
 const exerciseDetails = getExerciseDetails(lang);
+const references = getReferences(lang);
 const phases = Object.entries(workout);
 
 const title = t('meta.title');
@@ -82,6 +87,17 @@ const description = t('meta.description');
         </svg>
       </button>
 
+      <!-- Complete Current Timer Button (for sides/sets) -->
+      <button
+        id="completeTimerButton"
+        class="rounded-full bg-white/90 backdrop-blur p-3 shadow-lg hover:bg-white transition-all duration-200 hover:scale-105 active:scale-95"
+        title={lang === 'es' ? 'Finalizar lado/serie actual' : 'Complete current side/set'}
+      >
+        <svg class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+        </svg>
+      </button>
+
       <!-- Skip Exercise Button -->
       <button
         id="skipButton"
@@ -94,21 +110,87 @@ const description = t('meta.description');
       </button>
     </div>
 
-    <!-- Floating Action Button (Pause/Play) - Right side -->
-    <button
-      id="pausePlayButton"
-      class="fixed bottom-6 right-4 z-50 rounded-full bg-indigo-600 p-4 text-white shadow-xl hover:bg-indigo-700 transition-all duration-200 hover:scale-110 active:scale-95"
-      title={t('guidedWorkout.navigation.pause')}
-    >
-      <!-- Pause Icon (shown when playing) -->
-      <svg id="pauseIcon" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-      </svg>
-      <!-- Play Icon (shown when paused) -->
-      <svg id="playIcon" class="h-7 w-7 hidden" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M8 5v14l11-7z"/>
-      </svg>
-    </button>
+    <!-- Floating Action Button (Pause/Play + Timer/Counter) - Right side -->
+    <div class="fixed bottom-6 right-4 z-50">
+      <!-- Side Indicators (Left/Right arrows for bilateral exercises) -->
+      <div id="leftSideIndicator" class="absolute -top-1 left-0 hidden pointer-events-none">
+        <svg id="leftSideArrow" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" style="color: rgb(79, 70, 229);">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </div>
+
+      <div id="rightSideIndicator" class="absolute -top-1 right-0 hidden pointer-events-none">
+        <svg id="rightSideArrow" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" style="color: rgb(79, 70, 229);">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </div>
+
+      <!-- Set Counter (above FAB for exercises with sets) -->
+      <div id="setCounterIndicator" class="absolute left-1/2 -translate-x-1/2 -top-10 hidden pointer-events-none">
+        <span id="setCounterText" class="text-xs font-semibold text-gray-500 bg-white/80 backdrop-blur px-2 py-0.5 rounded-full">1/3</span>
+      </div>
+
+      <!-- FAB Container -->
+      <div class="w-[88px] h-[88px]">
+        <!-- Circular Progress Ring -->
+        <svg id="fabProgressRing" class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none hidden" viewBox="0 0 88 88">
+          <!-- Background circle (pulsing) -->
+          <circle
+            id="fabProgressBg"
+            cx="44"
+            cy="44"
+            r="40"
+            fill="none"
+            stroke="rgba(79, 70, 229, 0.2)"
+            stroke-width="3"
+            style="transition: all 0.15s ease-out;"
+          />
+          <!-- Progress circle -->
+          <circle
+            id="fabProgressCircle"
+            cx="44"
+            cy="44"
+            r="40"
+            fill="none"
+            stroke="rgb(79, 70, 229)"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-dasharray="251.2"
+            stroke-dashoffset="251.2"
+            style="transition: stroke-dashoffset 1s linear, stroke-width 0.15s ease-out;"
+          />
+        </svg>
+
+        <button
+          id="pausePlayButton"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full text-white shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 flex flex-col items-center justify-center gap-1 p-4 w-[72px] h-[72px]"
+          style="background-color: rgb(79, 70, 229);"
+          title={t('guidedWorkout.navigation.pause')}
+        >
+          <!-- Timer/Counter Display (shown when active, in single line) -->
+          <div id="fabTimerDisplay" class="text-center hidden">
+            <div id="fabTimerText" class="font-mono text-xl font-bold leading-none" style="transition: transform 0.15s ease-out, font-size 0.2s ease-out, opacity 0.2s ease-out;">
+              <span id="fabTimer">00</span>
+            </div>
+          </div>
+
+          <!-- Pause Icon (smaller, shown when playing with timer) -->
+          <svg id="pauseIcon" class="h-6 w-6 transition-all duration-200" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+          </svg>
+
+          <!-- Check Icon (shown for manual completion) -->
+          <svg id="checkIcon" class="h-7 w-7 hidden transition-all duration-200" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+          </svg>
+
+          <!-- Play Icon (shown when paused, larger) -->
+          <svg id="playIcon" class="h-10 w-10 hidden transition-all duration-200" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
 
     <!-- Workout Navigator Panel -->
     <WorkoutNavigator lang={lang} client:load />
@@ -128,16 +210,17 @@ const description = t('meta.description');
     </main>
   </div>
 
-  <!-- Settings Modal (will be implemented) -->
-  <div id="settingsModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50">
-    <div class="mx-4 max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-      <h3 class="mb-4 text-xl font-bold">{t('guidedWorkout.settings.title')}</h3>
-      <!-- Settings content will be added -->
-      <button id="closeSettingsButton" class="mt-4 w-full rounded-lg bg-gray-200 px-4 py-2 font-semibold hover:bg-gray-300">
-        {t('common.close')}
-      </button>
-    </div>
-  </div>
+  <!-- Settings Modal -->
+  <WorkoutSettingsModal lang={lang} />
+
+  <!-- References Modal -->
+  <ReferencesModal lang={lang} references={references} />
+
+  <!-- Onboarding Modal -->
+  <WorkoutOnboardingModal lang={lang} />
+
+  <!-- Toast Notifications -->
+  <Toast />
 
   <!-- Resume Session Modal -->
   <div id="resumeModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50">
@@ -172,12 +255,13 @@ const description = t('meta.description');
   </div>
 
   <!-- Pass data to the client-side script -->
-  <script is:inline define:vars={{ workout, exerciseDetails, lang, exitConfirmText: t('guidedWorkout.navigation.exitConfirm') }}>
+  <script is:inline define:vars={{ workout, exerciseDetails, lang, exitConfirmText: t('guidedWorkout.navigation.exitConfirm'), resetConfirmText: t('progress.resetConfirm') }}>
     // Expose data globally for the module script
     window.__WORKOUT_DATA__ = workout;
     window.__EXERCISE_DETAILS__ = exerciseDetails;
     window.__WORKOUT_LANG__ = lang;
     window.__EXIT_CONFIRM_TEXT__ = exitConfirmText;
+    window.__RESET_CONFIRM_TEXT__ = resetConfirmText;
   </script>
 
   <!-- Main workout script as module -->
@@ -186,12 +270,14 @@ const description = t('meta.description');
     import { toggleNavigator } from '../../stores/navigationStore';
     import { soundController } from '../../utils/soundController';
     import { initWorkoutOrchestrator } from '../../scripts/workoutOrchestrator';
+    import { toast } from '../../utils/toast';
 
     // Get data from global
     const workout = (window as any).__WORKOUT_DATA__;
     const exerciseDetails = (window as any).__EXERCISE_DETAILS__;
     const lang = (window as any).__WORKOUT_LANG__;
     const exitConfirmText = (window as any).__EXIT_CONFIRM_TEXT__;
+    const resetConfirmText = (window as any).__RESET_CONFIRM_TEXT__;
 
     let isPaused = false;
     let wasPausedBeforeModal = false;
@@ -205,22 +291,271 @@ const description = t('meta.description');
       isPaused = paused;
       const pauseIcon = document.getElementById('pauseIcon');
       const playIcon = document.getElementById('playIcon');
+      const checkIcon = document.getElementById('checkIcon');
       const navButtons = document.getElementById('navigationButtons');
+      const fabTimerText = document.getElementById('fabTimerText');
 
       if (paused) {
-        // Show play icon and nav buttons
+        // Show play icon (LARGE) and nav buttons
+        // KEEP timer and progress visible but frozen
+        // Make timer smaller and play icon larger
         pauseIcon?.classList.add('hidden');
+        checkIcon?.classList.add('hidden');
         playIcon?.classList.remove('hidden');
         navButtons?.classList.remove('hidden');
         navButtons?.classList.add('flex');
+
+        // Make play icon LARGE (primary action)
+        if (playIcon) {
+          playIcon.style.width = '2.5rem'; // h-10
+          playIcon.style.height = '2.5rem';
+        }
+
+        // Shrink timer text when paused (secondary info)
+        if (fabTimerText) {
+          fabTimerText.style.fontSize = '0.875rem'; // text-sm
+          fabTimerText.style.opacity = '0.6';
+        }
       } else {
-        // Show pause icon and hide nav buttons
-        pauseIcon?.classList.remove('hidden');
+        // Hide play icon and nav buttons
         playIcon?.classList.add('hidden');
         navButtons?.classList.remove('flex');
         navButtons?.classList.add('hidden');
+
+        // Will show pause or check icon depending on exercise state
+        // (decided in updateFabDisplay)
+
+        // Restore timer text size when playing (primary info)
+        if (fabTimerText) {
+          fabTimerText.style.fontSize = '1.25rem'; // text-xl
+          fabTimerText.style.opacity = '1';
+        }
       }
     }
+
+    // Track last time left for pulse animation
+    let lastTimeLeft = -1;
+
+    // Update FAB (Floating Action Button) timer/counter display
+    function updateFabDisplay(state: any, timeLeft: number, currentSet?: number, totalSets?: number, totalDuration?: number, phaseColor?: string, currentSide?: number, totalSides?: number) {
+      const fabTimerDisplay = document.getElementById('fabTimerDisplay');
+      const fabTimer = document.getElementById('fabTimer');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const checkIcon = document.getElementById('checkIcon');
+      const playIcon = document.getElementById('playIcon');
+      const progressRing = document.getElementById('fabProgressRing');
+      const progressCircle = document.getElementById('fabProgressCircle');
+      const progressBg = document.getElementById('fabProgressBg');
+      const fabButton = document.getElementById('pausePlayButton');
+      const leftSideIndicator = document.getElementById('leftSideIndicator');
+      const rightSideIndicator = document.getElementById('rightSideIndicator');
+      const leftSideArrow = document.getElementById('leftSideArrow');
+      const rightSideArrow = document.getElementById('rightSideArrow');
+      const setCounterIndicator = document.getElementById('setCounterIndicator');
+      const setCounterText = document.getElementById('setCounterText');
+
+      if (!fabTimerDisplay || !fabTimer || !pauseIcon || !checkIcon) return;
+
+      const circumference = 2 * Math.PI * 40; // radius = 40
+
+      // Use phase color if provided, otherwise default indigo
+      const color = phaseColor || '#4f46e5';
+
+      // Update button background color with phase color
+      if (fabButton) {
+        fabButton.style.backgroundColor = color;
+      }
+
+      // Update side arrows color with phase color
+      if (leftSideArrow) {
+        leftSideArrow.style.color = color;
+      }
+      if (rightSideArrow) {
+        rightSideArrow.style.color = color;
+      }
+
+      // Update ring colors with phase color
+      if (progressCircle && progressBg) {
+        progressCircle.setAttribute('stroke', color);
+
+        // Convert hex to rgba for background
+        let bgColor = 'rgba(79, 70, 229, 0.2)';
+        if (color.startsWith('#')) {
+          // Hex color
+          const hex = color.replace('#', '');
+          const r = parseInt(hex.substring(0, 2), 16);
+          const g = parseInt(hex.substring(2, 4), 16);
+          const b = parseInt(hex.substring(4, 6), 16);
+          bgColor = `rgba(${r}, ${g}, ${b}, 0.2)`;
+        } else if (color.startsWith('rgb')) {
+          // RGB color - extract numbers
+          const rgbMatch = color.match(/\d+/g);
+          if (rgbMatch && rgbMatch.length >= 3) {
+            bgColor = `rgba(${rgbMatch[0]}, ${rgbMatch[1]}, ${rgbMatch[2]}, 0.2)`;
+          }
+        }
+        progressBg.setAttribute('stroke', bgColor);
+      }
+
+      // Pulse animation when time changes (not paused, and has active timer)
+      // Only pulse for exercises WITH timer (not for set counters)
+      const hasActiveTimer = timeLeft > 0 && totalDuration;
+      if (!isPaused && timeLeft !== lastTimeLeft && hasActiveTimer && progressCircle && progressBg) {
+        lastTimeLeft = timeLeft;
+
+        // Pulse effect on ring: briefly increase stroke width
+        progressCircle.setAttribute('stroke-width', '5');
+        progressBg.setAttribute('stroke-width', '5');
+
+        // Pulse effect on timer number: scale up slightly
+        const timerParent = fabTimer.parentElement as HTMLElement;
+        if (timerParent) {
+          timerParent.style.transform = 'scale(1.15)';
+        }
+
+        // Reset after animation
+        setTimeout(() => {
+          progressCircle.setAttribute('stroke-width', '3');
+          progressBg.setAttribute('stroke-width', '3');
+          if (timerParent) {
+            timerParent.style.transform = 'scale(1)';
+          }
+        }, 150);
+      }
+
+      switch (state) {
+        case 'EXERCISE_PREP':
+          fabTimerDisplay.classList.remove('hidden');
+          fabTimer.textContent = timeLeft.toString();
+          pauseIcon.classList.remove('hidden');
+          checkIcon.classList.add('hidden');
+          // Update progress ring (prep is usually 3 seconds)
+          if (progressCircle && progressRing && totalDuration) {
+            progressRing.classList.remove('hidden');
+            const progress = (totalDuration - timeLeft) / totalDuration;
+            const offset = circumference * (1 - progress);
+            progressCircle.style.strokeDashoffset = offset.toString();
+          }
+          break;
+        case 'EXERCISE_ACTIVE':
+          // Check if exercise has sides (bilateral)
+          if (totalSides && totalSides > 1) {
+            // Exercise with sides (left/right)
+            fabTimerDisplay.classList.remove('hidden');
+
+            // Show appropriate side indicator
+            const isLeftSide = currentSide === 1;
+            leftSideIndicator?.classList.toggle('hidden', !isLeftSide);
+            rightSideIndicator?.classList.toggle('hidden', isLeftSide);
+            setCounterIndicator?.classList.add('hidden');
+
+            if (timeLeft > 0) {
+              // Sides WITH timer (e.g., 120s/side)
+              // Show clean timer with pause icon
+              fabTimer.textContent = timeLeft.toString();
+              pauseIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+
+              // Update progress ring based on timer
+              if (progressCircle && progressRing && totalDuration) {
+                progressRing.classList.remove('hidden');
+                const progress = (totalDuration - timeLeft) / totalDuration;
+                const offset = circumference * (1 - progress);
+                progressCircle.style.strokeDashoffset = offset.toString();
+              }
+            } else {
+              // Sides WITHOUT timer (manual completion per side)
+              // Show side counter (1/2, 2/2) with check icon
+              fabTimer.textContent = `${currentSide}/${totalSides}`;
+              pauseIcon.classList.add('hidden');
+              checkIcon.classList.remove('hidden');
+              progressRing?.classList.add('hidden');
+            }
+          } else if (totalSets && totalSets > 1) {
+            // Exercise with sets (series) - no sides
+            fabTimerDisplay.classList.remove('hidden');
+            leftSideIndicator?.classList.add('hidden');
+            rightSideIndicator?.classList.add('hidden');
+
+            // Show set counter above FAB
+            if (setCounterIndicator && setCounterText) {
+              setCounterIndicator.classList.remove('hidden');
+              setCounterText.textContent = `${currentSet}/${totalSets}`;
+            }
+
+            if (timeLeft > 0) {
+              // Series WITH timer (e.g., 3x30s plank)
+              // Show clean timer with pause icon
+              fabTimer.textContent = timeLeft.toString();
+              pauseIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+
+              // Update progress ring based on timer
+              if (progressCircle && progressRing && totalDuration) {
+                progressRing.classList.remove('hidden');
+                const progress = (totalDuration - timeLeft) / totalDuration;
+                const offset = circumference * (1 - progress);
+                progressCircle.style.strokeDashoffset = offset.toString();
+              }
+            } else {
+              // Series WITHOUT timer (e.g., 3x10 squats)
+              // Show check icon for manual completion
+              fabTimer.textContent = '';
+              pauseIcon.classList.add('hidden');
+              checkIcon.classList.remove('hidden');
+              progressRing?.classList.add('hidden');
+            }
+          } else if (timeLeft > 0) {
+            // Single exercise WITH timer (no sets, no sides)
+            fabTimerDisplay.classList.remove('hidden');
+            fabTimer.textContent = timeLeft.toString();
+            pauseIcon.classList.remove('hidden');
+            checkIcon.classList.add('hidden');
+            leftSideIndicator?.classList.add('hidden');
+            rightSideIndicator?.classList.add('hidden');
+            setCounterIndicator?.classList.add('hidden');
+
+            // Update progress ring
+            if (progressCircle && progressRing && totalDuration) {
+              progressRing.classList.remove('hidden');
+              const progress = (totalDuration - timeLeft) / totalDuration;
+              const offset = circumference * (1 - progress);
+              progressCircle.style.strokeDashoffset = offset.toString();
+            }
+          } else {
+            // No timer, sets, or sides - manual completion
+            fabTimerDisplay.classList.add('hidden');
+            pauseIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            leftSideIndicator?.classList.add('hidden');
+            rightSideIndicator?.classList.add('hidden');
+            setCounterIndicator?.classList.add('hidden');
+            progressRing?.classList.add('hidden');
+          }
+          break;
+        case 'REST_PERIOD':
+          fabTimerDisplay.classList.remove('hidden');
+          fabTimer.textContent = timeLeft.toString();
+          pauseIcon.classList.remove('hidden');
+          checkIcon.classList.add('hidden');
+          // Update progress ring (rest is usually 5 seconds)
+          if (progressCircle && progressRing && totalDuration) {
+            progressRing.classList.remove('hidden');
+            const progress = (totalDuration - timeLeft) / totalDuration;
+            const offset = circumference * (1 - progress);
+            progressCircle.style.strokeDashoffset = offset.toString();
+          }
+          break;
+        default:
+          fabTimerDisplay.classList.add('hidden');
+          pauseIcon.classList.remove('hidden');
+          checkIcon.classList.add('hidden');
+          progressRing?.classList.add('hidden');
+      }
+    }
+
+    // Expose globally
+    (window as any).updateFabDisplay = updateFabDisplay;
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', async () => {
@@ -270,6 +605,7 @@ const description = t('meta.description');
 
       // Navigation buttons
       document.getElementById('previousButton')?.addEventListener('click', handleBack);
+      document.getElementById('completeTimerButton')?.addEventListener('click', handleCompleteTimer);
       document.getElementById('skipButton')?.addEventListener('click', handleSkip);
 
       // Modal buttons
@@ -277,6 +613,53 @@ const description = t('meta.description');
       document.getElementById('closeExerciseInfoButton')?.addEventListener('click', closeExerciseInfo);
       document.getElementById('resumeButton')?.addEventListener('click', handleResume);
       document.getElementById('startNewButton')?.addEventListener('click', handleStartNew);
+
+      // Settings modal - language selector
+      document.getElementById('workout-language-select')?.addEventListener('change', (e) => {
+        const target = e.target as HTMLSelectElement;
+        if (confirm(lang === 'es' ? '¿Cambiar idioma?' : 'Change language?')) {
+          window.location.href = `/${target.value}/workout`;
+        }
+      });
+
+      // Settings modal - references button
+      document.getElementById('show-references-btn-workout')?.addEventListener('click', () => {
+        closeSettings();
+        openReferencesModal();
+      });
+
+      // Settings modal - reset progress button
+      document.getElementById('reset-progress-btn-workout')?.addEventListener('click', handleResetProgress);
+
+      // References modal
+      document.getElementById('close-references-modal')?.addEventListener('click', closeReferencesModal);
+      document.getElementById('close-references-modal-btn')?.addEventListener('click', closeReferencesModal);
+
+      // Onboarding modal
+      document.getElementById('closeWorkoutOnboarding')?.addEventListener('click', closeOnboarding);
+      document.getElementById('startWorkoutOnboarding')?.addEventListener('click', closeOnboarding);
+
+      // Close modals on backdrop click
+      document.getElementById('settingsModal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('settingsModal')) {
+          closeSettings();
+        }
+      });
+
+      document.getElementById('references-modal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('references-modal')) {
+          closeReferencesModal();
+        }
+      });
+
+      document.getElementById('workoutOnboardingModal')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('workoutOnboardingModal')) {
+          closeOnboarding();
+        }
+      });
+
+      // Check if this is the first time visiting workout mode
+      checkOnboarding();
     }
 
     // Helper function to convert YouTube URLs to embed format
@@ -426,25 +809,120 @@ const description = t('meta.description');
     }
 
     function handlePausePlay() {
-      if (isPaused) {
-        // Resume
-        resumeFromPause();
-        updatePauseUI(false);
-      } else {
-        // Pause
-        pauseWorkout();
-        updatePauseUI(true);
-      }
+      // Check if we're in a manual completion state (no active timer)
+      import('../../stores/workoutController').then(({ workoutSession, currentExercise, completeCurrentExercise }) => {
+        const session = workoutSession.get();
+        const exercise = currentExercise.get();
+
+        // If no timer is running and not paused, this is a manual completion button
+        const hasActiveTimer = session.timeLeft > 0 && exercise?.duration && exercise.duration > 0;
+
+        if (!hasActiveTimer && !isPaused) {
+          // Manual completion
+          completeCurrentExercise();
+          return;
+        }
+
+        // Normal pause/play behavior
+        if (isPaused) {
+          // Resume
+          resumeFromPause();
+          updatePauseUI(false);
+        } else {
+          // Pause
+          pauseWorkout();
+          updatePauseUI(true);
+        }
+      });
     }
 
     function handleSettings() {
+      // Pause workout if not already paused
+      if (!isPaused) {
+        pauseWorkout();
+        updatePauseUI(true);
+        wasPausedBeforeModal = false;
+      } else {
+        wasPausedBeforeModal = true;
+      }
+
       document.getElementById('settingsModal')?.classList.remove('hidden');
       document.getElementById('settingsModal')?.classList.add('flex');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeSettings() {
       document.getElementById('settingsModal')?.classList.remove('flex');
       document.getElementById('settingsModal')?.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+
+      // Resume workout if it wasn't paused before
+      if (!wasPausedBeforeModal && isPaused) {
+        resumeFromPause();
+        updatePauseUI(false);
+      }
+    }
+
+    function openReferencesModal() {
+      const modal = document.getElementById('references-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeReferencesModal() {
+      const modal = document.getElementById('references-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    function handleResetProgress() {
+      if (confirm(resetConfirmText)) {
+        // Clear all localStorage data
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('unslump-') || key.startsWith('workout-'))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+
+        // Show success toast
+        toast.success(lang === 'es' ? '¡Progreso reseteado!' : 'Progress reset!', 2000);
+
+        // Reload page after a short delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    }
+
+    function checkOnboarding() {
+      const hasSeenOnboarding = localStorage.getItem('unslump-workout-onboarding-seen');
+      if (!hasSeenOnboarding) {
+        // Show onboarding modal
+        const modal = document.getElementById('workoutOnboardingModal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      }
+    }
+
+    function closeOnboarding() {
+      const modal = document.getElementById('workoutOnboardingModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        // Mark as seen
+        localStorage.setItem('unslump-workout-onboarding-seen', 'true');
+      }
     }
 
     function handleBack() {
@@ -453,6 +931,25 @@ const description = t('meta.description');
 
     function handleSkip() {
       skipExercise();
+    }
+
+    function handleCompleteTimer() {
+      // Complete current timer/side and move to next side or finish exercise
+      import('../../stores/workoutController').then(({ workoutSession }) => {
+        const session = workoutSession.get();
+
+        // Force timer to complete by setting timeLeft to 0
+        // This will trigger handleTimerComplete which handles sides logic
+        workoutSession.set({
+          ...session,
+          timeLeft: 0,
+        });
+
+        // Resume if paused to trigger the timer completion
+        if (session.isPaused) {
+          resumeFromPause();
+        }
+      });
     }
 
     function handleResume() {
