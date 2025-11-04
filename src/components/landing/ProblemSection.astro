@@ -1,0 +1,135 @@
+---
+import { useTranslations, type Language } from '../../i18n/utils';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="problem-section py-16 sm:py-20 bg-white">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+
+    <!-- Section title -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-balance">
+        {lang === 'en' ? 'Sound familiar?' : '¿Te suena familiar?'} 🤔
+      </h2>
+      <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto text-pretty">
+        {lang === 'en'
+          ? 'Hours at your desk are taking a toll on your body'
+          : 'Las horas en el escritorio están pasando factura a tu cuerpo'}
+      </p>
+    </div>
+
+    <!-- Problems grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Problem 1: Neck & Shoulders -->
+      <div class="problem-card bg-red-50 border-2 border-red-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">😣</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Stiff neck & shoulders' : 'Cuello y hombros tensos'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Constant tension from hunching over your screen all day'
+            : 'Tensión constante por estar encorvado frente a la pantalla'}
+        </p>
+      </div>
+
+      <!-- Problem 2: Back Pain -->
+      <div class="problem-card bg-orange-50 border-2 border-orange-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">😖</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Lower back pain' : 'Dolor lumbar'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Your spine isn\'t meant to sit for 8+ hours straight'
+            : 'Tu columna no está diseñada para estar sentada 8+ horas seguidas'}
+        </p>
+      </div>
+
+      <!-- Problem 3: Posture -->
+      <div class="problem-card bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">🙇</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Forward head posture' : 'Cabeza adelantada'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Your head creeps forward, adding pounds of pressure on your neck'
+            : 'Tu cabeza se adelanta, añadiendo kilos de presión en el cuello'}
+        </p>
+      </div>
+
+      <!-- Problem 4: Weak Core -->
+      <div class="problem-card bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">😴</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Weak, inactive muscles' : 'Músculos débiles e inactivos'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Your glutes and core shut down from sitting all day'
+            : 'Tus glúteos y core se apagan por estar sentado todo el día'}
+        </p>
+      </div>
+
+      <!-- Problem 5: Tight Hips -->
+      <div class="problem-card bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">🔒</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Tight hip flexors' : 'Flexores de cadera tensos'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Shortened hip muscles pull your pelvis out of alignment'
+            : 'Los músculos de la cadera acortados desalinean tu pelvis'}
+        </p>
+      </div>
+
+      <!-- Problem 6: Energy -->
+      <div class="problem-card bg-gray-100 border-2 border-gray-300 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+        <div class="text-4xl mb-4">🔋</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 text-balance">
+          {lang === 'en' ? 'Low energy & fatigue' : 'Baja energía y fatiga'}
+        </h3>
+        <p class="text-gray-700 text-sm text-pretty">
+          {lang === 'en'
+            ? 'Poor posture restricts breathing and circulation'
+            : 'La mala postura restringe la respiración y circulación'}
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Bottom text -->
+    <div class="mt-12 text-center">
+      <p class="text-lg text-gray-700 font-medium text-balance">
+        {lang === 'en'
+          ? 'You need a proven system to undo this damage.'
+          : 'Necesitas un sistema probado para revertir este daño.'}
+      </p>
+      <p class="text-base text-gray-600 mt-2 text-pretty">
+        {lang === 'en'
+          ? 'Not random stretches. Not generic exercises.'
+          : 'No estiramientos aleatorios. No ejercicios genéricos.'}
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .problem-card {
+    transition: all 0.3s ease;
+  }
+
+  .problem-card:hover {
+    transform: translateY(-4px);
+  }
+</style>
