@@ -112,6 +112,104 @@
     "sessionLocked": "¡Sesión completada! Puedes iniciar una nueva sesión mañana o usar el botón de resetear.",
     "comeBackTomorrow": "¡Vuelve mañana para una nueva sesión! 💪"
   },
+  "landing": {
+    "hero": {
+      "tagline": "Tu espalda está gritando. La escuchamos.",
+      "subtitle": "25 minutos para deshacer 8 horas de daño de escritorio",
+      "ctaPrimary": "¡Empieza Ahora!",
+      "ctaSecondary": "Soy usuario habitual, llévame al inicio",
+      "stats": {
+        "minutes": "25 min",
+        "exercises": "21 ejercicios",
+        "studies": "30+ estudios"
+      }
+    },
+    "phases": {
+      "title": "Cómo Funciona: El Sistema de 4 Fases",
+      "inhibit": {
+        "name": "Liberar",
+        "tagline": "Libera los nudos",
+        "description": "Calma músculos sobreactivos y prepara tu cuerpo para el movimiento"
+      },
+      "lengthen": {
+        "name": "Alargar",
+        "tagline": "Recupera tu rango",
+        "description": "Restaura la flexibilidad de músculos acortados por estar sentado"
+      },
+      "activate": {
+        "name": "Activar",
+        "tagline": "Despierta puntos débiles",
+        "description": "Fortalece los músculos que la vida de oficina olvidó"
+      },
+      "integrate": {
+        "name": "Integrar",
+        "tagline": "Muévete como humano",
+        "description": "Junta todo con movimiento funcional"
+      }
+    },
+    "trust": {
+      "scienceBacked": "100% respaldado por ciencia",
+      "deskApproved": "100% aprobado por oficinistas",
+      "studiesNote": "Basado en 30+ estudios peer-reviewed (sí, hicimos la tarea)",
+      "todayCounter": "{count} escritorios corregidos hoy"
+    },
+    "exercises": {
+      "title": "Qué Harás",
+      "subtitle": "21 ejercicios organizados por el sistema correctivo de 4 fases",
+      "viewAll": "Ver todos los ejercicios"
+    }
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido de vuelta!",
+    "continueWorkout": "Continuar Entrenamiento",
+    "startWorkout": "Iniciar Sesión de Hoy",
+    "stats": {
+      "streak": "Racha Actual",
+      "totalExercises": "Ejercicios Totales",
+      "totalTime": "Tiempo Total",
+      "level": "Tu Nivel",
+      "days": "días",
+      "exercises": "ejercicios",
+      "minutes": "min"
+    },
+    "quickActions": {
+      "title": "Acciones Rápidas",
+      "browseExercises": "Ver Todos los Ejercicios",
+      "viewProgress": "Ver Mi Progreso",
+      "settings": "Ajustes",
+      "goToLanding": "Acerca de unslump!"
+    },
+    "phaseProgress": {
+      "title": "Progreso por Fase",
+      "completed": "completado"
+    }
+  },
+  "gamification": {
+    "streakCounter": {
+      "title": "¡Estás en racha!",
+      "daysStreak": "Racha de {days} días",
+      "keepGoing": "¡Sigue así!"
+    },
+    "achievements": {
+      "title": "Logros",
+      "firstSession": "Primera Sesión",
+      "firstSessionDesc": "Completaste tu primer entrenamiento",
+      "weekWarrior": "Guerrero Semanal",
+      "weekWarriorDesc": "Racha de 7 días",
+      "postureProCreated": "Maestro de Postura",
+      "postureProDesc": "Racha de 30 días",
+      "consistencyKing": "Rey de la Consistencia",
+      "consistencyKingDesc": "Completaste 50 entrenamientos",
+      "locked": "Bloqueado",
+      "unlocked": "¡Desbloqueado!"
+    },
+    "challenges": {
+      "title": "Desafío de Hoy",
+      "completePhase": "Completa la fase {phase}",
+      "allExercises": "Completa los 21 ejercicios",
+      "noSkip": "Completa sin saltar"
+    }
+  },
   "guidedWorkout": {
     "startButton": "Iniciar Entrenamiento Guiado",
     "startButtonSubtext": "Flujo automático de 25 min con timers",

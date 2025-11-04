@@ -17,6 +17,7 @@ export interface Exercise {
   levels?: ExerciseLevels;
   videoUrl?: string;
   sets?: number;
+  sides?: number;  // Number of sides for bilateral exercises (duration will be split equally)
   imageUrl?: string;  // Static thumbnail image for quick reference
   gifUrl?: string;    // Animated GIF shown on hover/click (optional)
   videoEmbedUrl?: string;  // Embedded video URL (YouTube Short/video) for inline playback

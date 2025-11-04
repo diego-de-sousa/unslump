@@ -112,6 +112,104 @@
     "sessionLocked": "Session completed! You can start a new session tomorrow or use the reset button.",
     "comeBackTomorrow": "Come back tomorrow for a new session! 💪"
   },
+  "landing": {
+    "hero": {
+      "tagline": "Your back is screaming. We heard it.",
+      "subtitle": "25 minutes to undo 8 hours of desk damage",
+      "ctaPrimary": "Unslump Now!",
+      "ctaSecondary": "I'm a regular, take me home",
+      "stats": {
+        "minutes": "25 min",
+        "exercises": "21 exercises",
+        "studies": "30+ studies"
+      }
+    },
+    "phases": {
+      "title": "How It Works: The 4-Phase System",
+      "inhibit": {
+        "name": "Release",
+        "tagline": "Release the knots",
+        "description": "Calm overactive muscles and prepare your body for movement"
+      },
+      "lengthen": {
+        "name": "Stretch",
+        "tagline": "Reclaim your range",
+        "description": "Restore flexibility to shortened muscles from sitting"
+      },
+      "activate": {
+        "name": "Activate",
+        "tagline": "Wake up weak spots",
+        "description": "Strengthen the muscles that desk life forgot"
+      },
+      "integrate": {
+        "name": "Integrate",
+        "tagline": "Move like a human",
+        "description": "Put it all together with functional movement"
+      }
+    },
+    "trust": {
+      "scienceBacked": "100% science-backed",
+      "deskApproved": "100% desk-worker approved",
+      "studiesNote": "Based on 30+ peer-reviewed studies (yes, we did the homework)",
+      "todayCounter": "{count} desks unslumped today"
+    },
+    "exercises": {
+      "title": "What You'll Do",
+      "subtitle": "21 exercises organized by the 4-phase corrective system",
+      "viewAll": "View all exercises"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back!",
+    "continueWorkout": "Continue Workout",
+    "startWorkout": "Start Today's Session",
+    "stats": {
+      "streak": "Current Streak",
+      "totalExercises": "Total Exercises",
+      "totalTime": "Total Time",
+      "level": "Your Level",
+      "days": "days",
+      "exercises": "exercises",
+      "minutes": "min"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "browseExercises": "Browse All Exercises",
+      "viewProgress": "View My Progress",
+      "settings": "Settings",
+      "goToLanding": "About unslump!"
+    },
+    "phaseProgress": {
+      "title": "Phase Progress",
+      "completed": "completed"
+    }
+  },
+  "gamification": {
+    "streakCounter": {
+      "title": "You're on fire!",
+      "daysStreak": "{days}-day streak",
+      "keepGoing": "Keep it going!"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "firstSession": "First Session",
+      "firstSessionDesc": "Completed your first workout",
+      "weekWarrior": "Week Warrior",
+      "weekWarriorDesc": "7-day streak",
+      "postureProCreated": "Posture Pro",
+      "postureProDesc": "30-day streak",
+      "consistencyKing": "Consistency King",
+      "consistencyKingDesc": "Completed 50 workouts",
+      "locked": "Locked",
+      "unlocked": "Unlocked!"
+    },
+    "challenges": {
+      "title": "Today's Challenge",
+      "completePhase": "Complete the {phase} phase",
+      "allExercises": "Complete all 21 exercises",
+      "noSkip": "Complete without skipping"
+    }
+  },
   "guidedWorkout": {
     "startButton": "Start Guided Workout",
     "startButtonSubtext": "Automatic 25-min flow with timers",
