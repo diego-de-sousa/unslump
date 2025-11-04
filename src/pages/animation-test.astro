@@ -5,61 +5,65 @@ import Logo from '../components/Logo.astro';
 
 <BaseLayout
   title="Animation Tests - unslump!"
-  description="Testing celebration animations for user progress"
+  description="Testing analogical celebration animations"
   lang="en"
 >
   <div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-white text-4xl font-bold mb-4 text-center">Celebration Animations</h1>
-      <p class="text-gray-300 text-center mb-12">Test different animations for the real logo with phases</p>
+      <h1 class="text-white text-4xl font-bold mb-4 text-center">Dopamine Machine 🎉</h1>
+      <p class="text-gray-300 text-center mb-12">Analogical animations that mirror physiological actions</p>
 
-      <!-- Exercise Complete Animations (Small celebrations) -->
+      <!-- Exercise Complete Animations (Subtle) -->
       <div class="bg-white rounded-xl p-8 mb-8">
-        <h2 class="text-gray-700 text-2xl font-bold mb-6 text-center">Exercise Complete (Small Celebrations)</h2>
-        <p class="text-gray-600 text-sm text-center mb-8">Quick feedback when user completes an individual exercise</p>
+        <h2 class="text-gray-700 text-2xl font-bold mb-4 text-center">Level 1: Exercise Complete (Subtle)</h2>
+        <p class="text-gray-600 text-sm text-center mb-8">Quick, subtle feedback when completing an individual exercise</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
-          <!-- Animation 1: Bounce -->
+          <!-- Phase 1: Soft Release -->
           <div class="flex flex-col items-center gap-4">
-            <h3 class="text-gray-600 text-sm font-semibold">Bounce</h3>
+            <h3 class="text-indigo-600 text-sm font-bold">INHIBIR: Soft Release</h3>
+            <p class="text-gray-500 text-xs text-center italic mb-2">Like releasing tension in a muscle</p>
             <div class="animation-container">
-              <Logo size="medium" showProgress={false} id="exercise-logo-1" />
+              <Logo size="large" showProgress={true} id="exercise-logo-1" />
             </div>
-            <button onclick="animateExercise1()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+            <button onclick="triggerExercise1()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm">
               Trigger
             </button>
           </div>
 
-          <!-- Animation 2: Pop Scale -->
+          <!-- Phase 2: Gentle Stretch -->
           <div class="flex flex-col items-center gap-4">
-            <h3 class="text-gray-600 text-sm font-semibold">Pop & Scale</h3>
+            <h3 class="text-teal-500 text-sm font-bold">ALARGAR: Gentle Stretch</h3>
+            <p class="text-gray-500 text-xs text-center italic mb-2">Like elongating a tight muscle</p>
             <div class="animation-container">
-              <Logo size="medium" showProgress={false} id="exercise-logo-2" />
+              <Logo size="large" showProgress={true} id="exercise-logo-2" />
             </div>
-            <button onclick="animateExercise2()" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition">
+            <button onclick="triggerExercise2()" class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition text-sm">
               Trigger
             </button>
           </div>
 
-          <!-- Animation 3: Shake -->
+          <!-- Phase 3: Explosive Contraction -->
           <div class="flex flex-col items-center gap-4">
-            <h3 class="text-gray-600 text-sm font-semibold">Shake</h3>
+            <h3 class="text-orange-500 text-sm font-bold">ACTIVAR: Explosive Contraction</h3>
+            <p class="text-gray-500 text-xs text-center italic mb-2">Like a rapid muscle contraction burst</p>
             <div class="animation-container">
-              <Logo size="medium" showProgress={false} id="exercise-logo-3" />
+              <Logo size="large" showProgress={true} id="exercise-logo-3" />
             </div>
-            <button onclick="animateExercise3()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+            <button onclick="triggerExercise3()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm">
               Trigger
             </button>
           </div>
 
-          <!-- Animation 4: Pulse -->
+          <!-- Phase 4: Subtle Flow -->
           <div class="flex flex-col items-center gap-4">
-            <h3 class="text-gray-600 text-sm font-semibold">Pulse Glow</h3>
+            <h3 class="text-pink-500 text-sm font-bold">INTEGRAR: Subtle Flow</h3>
+            <p class="text-gray-500 text-xs text-center italic mb-2">Like coordinated movement</p>
             <div class="animation-container">
-              <Logo size="medium" showProgress={false} id="exercise-logo-4" />
+              <Logo size="large" showProgress={true} id="exercise-logo-4" />
             </div>
-            <button onclick="animateExercise4()" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+            <button onclick="triggerExercise4()" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition text-sm">
               Trigger
             </button>
           </div>
@@ -67,121 +71,245 @@ import Logo from '../components/Logo.astro';
         </div>
       </div>
 
-      <!-- Phase Complete Animations (Medium celebrations) -->
+      <!-- Phase Complete Animations (Medium) -->
       <div class="bg-white rounded-xl p-8 mb-8">
-        <h2 class="text-gray-700 text-2xl font-bold mb-6 text-center">Phase Complete (Medium Celebrations)</h2>
-        <p class="text-gray-600 text-sm text-center mb-8">Celebrate completing one of the 4 phases</p>
+        <h2 class="text-gray-700 text-2xl font-bold mb-4 text-center">Level 2: Phase Complete (Medium)</h2>
+        <p class="text-gray-600 text-sm text-center mb-8">Celebrate completing an entire phase with confetti from letter edge</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-          <!-- Phase 1: INHIBIR (un) - Indigo -->
+          <!-- Phase 1: INHIBIR -->
           <div class="flex flex-col items-center gap-4">
             <h3 class="text-indigo-600 text-lg font-bold">Phase 1: INHIBIR (un)</h3>
+            <p class="text-gray-500 text-sm text-center italic">Compression → Release</p>
             <div class="animation-container-large relative">
               <Logo size="large" showProgress={true} id="phase-logo-1" />
               <canvas id="confetti-canvas-1" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animatePhase1()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-              Trigger Phase 1
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Progress</span>
+                <span id="phase1-progress-value" class="text-indigo-600">0%</span>
+              </label>
+              <input type="range" id="phase1-progress" min="0" max="100" value="0" class="w-full accent-indigo-600" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetPhase1()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerPhase1()" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold">
+                Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Phase 2: ALARGAR (sl) - Teal -->
+          <!-- Phase 2: ALARGAR -->
           <div class="flex flex-col items-center gap-4">
             <h3 class="text-teal-500 text-lg font-bold">Phase 2: ALARGAR (sl)</h3>
+            <p class="text-gray-500 text-sm text-center italic">Lateral Stretch</p>
             <div class="animation-container-large relative">
               <Logo size="large" showProgress={true} id="phase-logo-2" />
               <canvas id="confetti-canvas-2" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animatePhase2()" class="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition">
-              Trigger Phase 2
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Progress</span>
+                <span id="phase2-progress-value" class="text-teal-500">0%</span>
+              </label>
+              <input type="range" id="phase2-progress" min="0" max="100" value="0" class="w-full accent-teal-500" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetPhase2()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerPhase2()" class="flex-1 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-semibold">
+                Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Phase 3: ACTIVAR (um) - Orange -->
+          <!-- Phase 3: ACTIVAR -->
           <div class="flex flex-col items-center gap-4">
             <h3 class="text-orange-500 text-lg font-bold">Phase 3: ACTIVAR (um)</h3>
+            <p class="text-gray-500 text-sm text-center italic">Rapid Activation Bursts</p>
             <div class="animation-container-large relative">
               <Logo size="large" showProgress={true} id="phase-logo-3" />
               <canvas id="confetti-canvas-3" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animatePhase3()" class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
-              Trigger Phase 3
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Progress</span>
+                <span id="phase3-progress-value" class="text-orange-500">0%</span>
+              </label>
+              <input type="range" id="phase3-progress" min="0" max="100" value="0" class="w-full accent-orange-500" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetPhase3()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerPhase3()" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-semibold">
+                Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Phase 4: INTEGRAR (p!) - Pink -->
+          <!-- Phase 4: INTEGRAR -->
           <div class="flex flex-col items-center gap-4">
             <h3 class="text-pink-500 text-lg font-bold">Phase 4: INTEGRAR (p!)</h3>
+            <p class="text-gray-500 text-sm text-center italic">Flowing Integration</p>
             <div class="animation-container-large relative">
               <Logo size="large" showProgress={true} id="phase-logo-4" />
               <canvas id="confetti-canvas-4" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animatePhase4()" class="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
-              Trigger Phase 4
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Progress</span>
+                <span id="phase4-progress-value" class="text-pink-500">0%</span>
+              </label>
+              <input type="range" id="phase4-progress" min="0" max="100" value="0" class="w-full accent-pink-500" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetPhase4()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerPhase4()" class="flex-1 px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition font-semibold">
+                Complete
+              </button>
+            </div>
           </div>
 
         </div>
       </div>
 
-      <!-- Session Complete Animation (Epic celebration) -->
-      <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-xl p-8">
-        <h2 class="text-white text-3xl font-bold mb-6 text-center">Session Complete (Epic Celebration)</h2>
-        <p class="text-gray-100 text-sm text-center mb-8">The ultimate celebration when all 4 phases are complete!</p>
+      <!-- Session Complete Animations (Epic) -->
+      <div class="bg-white rounded-xl p-8">
+        <h2 class="text-gray-700 text-3xl font-bold mb-4 text-center">Level 3: Session Complete (Epic)</h2>
+        <p class="text-gray-600 text-sm text-center mb-8">Massive celebrations for completing all 4 phases!</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-          <!-- Epic Animation 1: Sequential Reveal with Bounce -->
-          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <h3 class="text-white text-lg font-semibold">Sequential Reveal</h3>
-            <p class="text-gray-200 text-sm text-center">Each phase reveals one by one with bounce</p>
+          <!-- Sequential Story -->
+          <div class="flex flex-col items-center gap-4 border-2 border-gray-200 rounded-xl p-6">
+            <h3 class="text-gray-700 text-lg font-bold">Sequential Story</h3>
+            <p class="text-gray-500 text-sm text-center italic">Each phase animates in sequence</p>
             <div class="animation-container-epic relative">
               <Logo size="xl" showProgress={true} id="session-logo-1" />
               <canvas id="confetti-canvas-session-1" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animateSession1()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
-              🎉 Sequential Reveal
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Session Progress</span>
+                <span id="session1-progress-value" class="text-purple-600">0%</span>
+              </label>
+              <input type="range" id="session1-progress" min="0" max="100" value="0" class="w-full accent-purple-600" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetSession1()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerSession1()" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition font-bold shadow-lg">
+                🎉 Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Epic Animation 2: All at Once with Scale -->
-          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <h3 class="text-white text-lg font-semibold">Dramatic Scale</h3>
-            <p class="text-gray-200 text-sm text-center">All phases reveal at once with dramatic scale</p>
+          <!-- Transformation -->
+          <div class="flex flex-col items-center gap-4 border-2 border-gray-200 rounded-xl p-6">
+            <h3 class="text-gray-700 text-lg font-bold">Transformation</h3>
+            <p class="text-gray-500 text-sm text-center italic">From bad to perfect posture</p>
             <div class="animation-container-epic relative">
               <Logo size="xl" showProgress={true} id="session-logo-2" />
               <canvas id="confetti-canvas-session-2" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animateSession2()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
-              🎊 Dramatic Scale
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Session Progress</span>
+                <span id="session2-progress-value" class="text-purple-600">0%</span>
+              </label>
+              <input type="range" id="session2-progress" min="0" max="100" value="0" class="w-full accent-purple-600" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetSession2()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerSession2()" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition font-bold shadow-lg">
+                ✨ Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Epic Animation 3: Wave Reveal -->
-          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <h3 class="text-white text-lg font-semibold">Wave Reveal</h3>
-            <p class="text-gray-200 text-sm text-center">Phases reveal in a wave pattern</p>
+          <!-- Unity Wave -->
+          <div class="flex flex-col items-center gap-4 border-2 border-gray-200 rounded-xl p-6">
+            <h3 class="text-gray-700 text-lg font-bold">Unity Wave</h3>
+            <p class="text-gray-500 text-sm text-center italic">Bouncing wave + synchronized rotation</p>
             <div class="animation-container-epic relative">
               <Logo size="xl" showProgress={true} id="session-logo-3" />
               <canvas id="confetti-canvas-session-3" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animateSession3()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
-              🌊 Wave Reveal
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Session Progress</span>
+                <span id="session3-progress-value" class="text-purple-600">0%</span>
+              </label>
+              <input type="range" id="session3-progress" min="0" max="100" value="0" class="w-full accent-purple-600" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetSession3()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerSession3()" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition font-bold shadow-lg">
+                🌊 Complete
+              </button>
+            </div>
           </div>
 
-          <!-- Epic Animation 4: Explosive Reveal -->
-          <div class="flex flex-col items-center gap-6 bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <h3 class="text-white text-lg font-semibold">Explosive Reveal</h3>
-            <p class="text-gray-200 text-sm text-center">Fast reveal with rotation and massive confetti</p>
+          <!-- Dopamine Explosion -->
+          <div class="flex flex-col items-center gap-4 border-2 border-gray-200 rounded-xl p-6">
+            <h3 class="text-gray-700 text-lg font-bold">Dopamine Explosion</h3>
+            <p class="text-gray-500 text-sm text-center italic">720° rotation with massive confetti</p>
             <div class="animation-container-epic relative">
               <Logo size="xl" showProgress={true} id="session-logo-4" />
               <canvas id="confetti-canvas-session-4" class="absolute inset-0 pointer-events-none"></canvas>
             </div>
-            <button onclick="animateSession4()" class="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition shadow-lg">
-              💥 Explosive Reveal
-            </button>
+
+            <!-- Progress Control -->
+            <div class="w-full max-w-sm">
+              <label class="text-gray-700 text-sm font-semibold flex items-center justify-between mb-2">
+                <span>Session Progress</span>
+                <span id="session4-progress-value" class="text-purple-600">0%</span>
+              </label>
+              <input type="range" id="session4-progress" min="0" max="100" value="0" class="w-full accent-purple-600" />
+            </div>
+
+            <div class="flex gap-2 w-full max-w-sm">
+              <button onclick="resetSession4()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition text-sm font-semibold">
+                Reset
+              </button>
+              <button onclick="triggerSession4()" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition font-bold shadow-lg">
+                💥 Complete
+              </button>
+            </div>
           </div>
 
         </div>
@@ -192,7 +320,7 @@ import Logo from '../components/Logo.astro';
 
   <style>
     .animation-container {
-      min-height: 120px;
+      min-height: 150px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -214,327 +342,253 @@ import Logo from '../components/Logo.astro';
       position: relative;
     }
 
-    /* Exercise Animations */
-    @keyframes bounce {
+    /* Keyframe for bounce (used in wave animation) */
+    @keyframes bounceHigh {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      50% { transform: translateY(-30px); }
     }
 
-    @keyframes popScale {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0) rotate(0deg); }
-      25% { transform: translateX(-5px) rotate(-2deg); }
-      75% { transform: translateX(5px) rotate(2deg); }
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 10px currentColor); }
-    }
-
-    /* Phase Animations */
-    @keyframes phaseBounce {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-30px) scale(1.1); }
-    }
-
-    @keyframes phaseRotate {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(360deg) scale(1.15); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-
-    /* Session Animations */
-    @keyframes epicScale {
-      0% { transform: scale(0.8) rotate(-5deg); opacity: 0.5; }
-      50% { transform: scale(1.2) rotate(2deg); }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    @keyframes epicGlow {
-      0%, 100% { filter: drop-shadow(0 0 0 transparent); }
-      50% { filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.8)); }
-    }
-
-    @keyframes waveFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    @keyframes explosiveRotate {
-      0% { transform: scale(0.5) rotate(-180deg); opacity: 0; }
-      60% { transform: scale(1.3) rotate(10deg); }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    /* Keyframe for rotation (used in wave animation) */
+    @keyframes spin360 {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 
   <script>
-    // Helper: Animate logo with custom animation
-    function animateLogo(logoId, animation, duration = '0.6s') {
-      const logo = document.getElementById(logoId);
-      if (!logo) return;
+    // @ts-nocheck
+    import {
+      animateExerciseComplete,
+      animatePhaseComplete,
+      resetPhaseProgress,
+      setPhaseProgress,
+      resetSessionProgress,
+      setSessionProgress,
+      animateSessionSequential,
+      animateSessionTransformation,
+      animateSessionWave,
+      animateSessionExplosion,
+    } from '../utils/celebrationAnimations';
 
-      logo.style.animation = 'none';
-      setTimeout(() => {
-        logo.style.animation = `${animation} ${duration} ease-in-out`;
-      }, 10);
+    // Exercise animations
+    function triggerExercise1() {
+      animateExerciseComplete('exercise-logo-1', 'fase1');
     }
 
-    // Helper: Fill phase progress
-    function fillPhase(logoId, phaseId, animate = true) {
-      const logo = document.getElementById(logoId);
-      if (!logo) return;
-
-      const phaseElement = logo.querySelector(`[data-phase="${phaseId}"] .color-layer`);
-      if (phaseElement) {
-        const clipPath = phaseId === 'fase4' ? 'inset(-10% 0 -10% 0)' : 'inset(0 0 0 0)';
-        phaseElement.style.clipPath = clipPath;
-      }
-
-      const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
-      if (phaseGroup && animate) {
-        phaseGroup.style.animation = 'phaseBounce 0.6s ease-out';
-
-        const baseLayers = phaseGroup.querySelectorAll('.base-layer, .color-layer');
-        baseLayers.forEach(layer => {
-          layer.style.setProperty('--xrot', '0');
-          layer.style.setProperty('--yrot', '0');
-        });
-      }
+    function triggerExercise2() {
+      animateExerciseComplete('exercise-logo-2', 'fase2');
     }
 
-    // Helper: Reset all phases
-    function resetAllPhases(logoId) {
-      const logo = document.getElementById(logoId);
-      if (!logo) return;
+    function triggerExercise3() {
+      animateExerciseComplete('exercise-logo-3', 'fase3');
+    }
 
-      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
-      phases.forEach(phaseId => {
-        const phaseElement = logo.querySelector(`[data-phase="${phaseId}"] .color-layer`);
-        if (phaseElement) {
-          const clipPath = phaseId === 'fase4' ? 'inset(-10% 100% -10% 0)' : 'inset(0 100% 0 0)';
-          phaseElement.style.clipPath = clipPath;
-        }
+    function triggerExercise4() {
+      animateExerciseComplete('exercise-logo-4', 'fase4');
+    }
 
-        const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
-        if (phaseGroup) {
-          const baseLayers = phaseGroup.querySelectorAll('.base-layer, .color-layer');
-          baseLayers.forEach(layer => {
-            layer.style.setProperty('--xrot', '25');
-            layer.style.setProperty('--yrot', '-15');
-          });
-        }
+    // Phase animations
+    function triggerPhase1() {
+      animatePhaseComplete('phase-logo-1', 'fase1', 'confetti-canvas-1');
+    }
+
+    function triggerPhase2() {
+      animatePhaseComplete('phase-logo-2', 'fase2', 'confetti-canvas-2');
+    }
+
+    function triggerPhase3() {
+      animatePhaseComplete('phase-logo-3', 'fase3', 'confetti-canvas-3');
+    }
+
+    function triggerPhase4() {
+      animatePhaseComplete('phase-logo-4', 'fase4', 'confetti-canvas-4');
+    }
+
+    // Phase reset functions
+    function resetPhase1() {
+      resetPhaseProgress('phase-logo-1', 'fase1');
+      const slider = document.getElementById('phase1-progress') as HTMLInputElement;
+      const value = document.getElementById('phase1-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetPhase2() {
+      resetPhaseProgress('phase-logo-2', 'fase2');
+      const slider = document.getElementById('phase2-progress') as HTMLInputElement;
+      const value = document.getElementById('phase2-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetPhase3() {
+      resetPhaseProgress('phase-logo-3', 'fase3');
+      const slider = document.getElementById('phase3-progress') as HTMLInputElement;
+      const value = document.getElementById('phase3-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetPhase4() {
+      resetPhaseProgress('phase-logo-4', 'fase4');
+      const slider = document.getElementById('phase4-progress') as HTMLInputElement;
+      const value = document.getElementById('phase4-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    // Phase progress sliders
+    const phase1Slider = document.getElementById('phase1-progress') as HTMLInputElement;
+    const phase1Value = document.getElementById('phase1-progress-value');
+    if (phase1Slider && phase1Value) {
+      phase1Slider.addEventListener('input', () => {
+        const progress = parseInt(phase1Slider.value);
+        phase1Value.textContent = `${progress}%`;
+        setPhaseProgress('phase-logo-1', 'fase1', progress);
       });
     }
 
-    // Exercise animations - simple whole logo animations
-    function animateExercise1() {
-      animateLogo('exercise-logo-1', 'bounce');
-    }
-
-    function animateExercise2() {
-      animateLogo('exercise-logo-2', 'popScale');
-    }
-
-    function animateExercise3() {
-      animateLogo('exercise-logo-3', 'shake');
-    }
-
-    function animateExercise4() {
-      animateLogo('exercise-logo-4', 'pulseGlow');
-    }
-
-    // Phase animations - reveal that specific phase
-    function animatePhase1() {
-      resetAllPhases('phase-logo-1');
-      setTimeout(() => {
-        fillPhase('phase-logo-1', 'fase1');
-        createConfetti('confetti-canvas-1', 30, ['#4f46e5']);
-      }, 100);
-    }
-
-    function animatePhase2() {
-      resetAllPhases('phase-logo-2');
-      setTimeout(() => {
-        fillPhase('phase-logo-2', 'fase1', false);
-        setTimeout(() => {
-          fillPhase('phase-logo-2', 'fase2');
-          createConfetti('confetti-canvas-2', 40, ['#14b8a6']);
-        }, 100);
-      }, 100);
-    }
-
-    function animatePhase3() {
-      resetAllPhases('phase-logo-3');
-      setTimeout(() => {
-        fillPhase('phase-logo-3', 'fase1', false);
-        fillPhase('phase-logo-3', 'fase2', false);
-        setTimeout(() => {
-          fillPhase('phase-logo-3', 'fase3');
-          createConfetti('confetti-canvas-3', 50, ['#f97316']);
-        }, 100);
-      }, 100);
-    }
-
-    function animatePhase4() {
-      resetAllPhases('phase-logo-4');
-      setTimeout(() => {
-        fillPhase('phase-logo-4', 'fase1', false);
-        fillPhase('phase-logo-4', 'fase2', false);
-        fillPhase('phase-logo-4', 'fase3', false);
-        setTimeout(() => {
-          fillPhase('phase-logo-4', 'fase4');
-          createConfetti('confetti-canvas-4', 60, ['#ec4899']);
-        }, 100);
-      }, 100);
-    }
-
-    // Session animations - epic reveals of all phases
-    function animateSession1() {
-      const logo = document.getElementById('session-logo-1');
-      resetAllPhases('session-logo-1');
-
-      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
-      phases.forEach((phaseId, index) => {
-        setTimeout(() => {
-          fillPhase('session-logo-1', phaseId);
-          if (index === phases.length - 1) {
-            setTimeout(() => {
-              createConfetti('confetti-canvas-session-1', 150);
-            }, 300);
-          }
-        }, index * 500);
+    const phase2Slider = document.getElementById('phase2-progress') as HTMLInputElement;
+    const phase2Value = document.getElementById('phase2-progress-value');
+    if (phase2Slider && phase2Value) {
+      phase2Slider.addEventListener('input', () => {
+        const progress = parseInt(phase2Slider.value);
+        phase2Value.textContent = `${progress}%`;
+        setPhaseProgress('phase-logo-2', 'fase2', progress);
       });
     }
 
-    function animateSession2() {
-      const logo = document.getElementById('session-logo-2');
-      resetAllPhases('session-logo-2');
-
-      logo.style.animation = 'epicScale 1.5s ease-out';
-
-      setTimeout(() => {
-        const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
-        phases.forEach(phaseId => {
-          fillPhase('session-logo-2', phaseId, false);
-        });
-        createConfetti('confetti-canvas-session-2', 200);
-      }, 800);
-    }
-
-    function animateSession3() {
-      const logo = document.getElementById('session-logo-3');
-      resetAllPhases('session-logo-3');
-
-      const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
-      phases.forEach((phaseId, index) => {
-        setTimeout(() => {
-          const phaseGroup = logo.querySelector(`[data-phase="${phaseId}"]`);
-          if (phaseGroup) {
-            phaseGroup.style.animation = 'waveFloat 0.8s ease-in-out';
-          }
-          fillPhase('session-logo-3', phaseId);
-
-          if (index === phases.length - 1) {
-            setTimeout(() => {
-              createConfetti('confetti-canvas-session-3', 180);
-            }, 400);
-          }
-        }, index * 200);
+    const phase3Slider = document.getElementById('phase3-progress') as HTMLInputElement;
+    const phase3Value = document.getElementById('phase3-progress-value');
+    if (phase3Slider && phase3Value) {
+      phase3Slider.addEventListener('input', () => {
+        const progress = parseInt(phase3Slider.value);
+        phase3Value.textContent = `${progress}%`;
+        setPhaseProgress('phase-logo-3', 'fase3', progress);
       });
     }
 
-    function animateSession4() {
-      const logo = document.getElementById('session-logo-4');
-      resetAllPhases('session-logo-4');
-
-      logo.style.animation = 'explosiveRotate 1.2s ease-out';
-
-      setTimeout(() => {
-        const phases = ['fase1', 'fase2', 'fase3', 'fase4'];
-        phases.forEach(phaseId => {
-          fillPhase('session-logo-4', phaseId, false);
-        });
-        createConfetti('confetti-canvas-session-4', 250);
-      }, 600);
+    const phase4Slider = document.getElementById('phase4-progress') as HTMLInputElement;
+    const phase4Value = document.getElementById('phase4-progress-value');
+    if (phase4Slider && phase4Value) {
+      phase4Slider.addEventListener('input', () => {
+        const progress = parseInt(phase4Slider.value);
+        phase4Value.textContent = `${progress}%`;
+        setPhaseProgress('phase-logo-4', 'fase4', progress);
+      });
     }
 
-    // Confetti system
-    function createConfetti(canvasId, count, colors = ['#4f46e5', '#14b8a6', '#f97316', '#ec4899']) {
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-
-      const particles = [];
-
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: canvas.width / 2,
-          y: canvas.height / 2,
-          vx: (Math.random() - 0.5) * 15,
-          vy: (Math.random() - 1) * 15,
-          rotation: Math.random() * 360,
-          rotationSpeed: (Math.random() - 0.5) * 10,
-          size: Math.random() * 10 + 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          life: 1
-        });
-      }
-
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        let aliveCount = 0;
-        particles.forEach(p => {
-          if (p.life <= 0) return;
-
-          aliveCount++;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.4; // gravity
-          p.rotation += p.rotationSpeed;
-          p.life -= 0.012;
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.globalAlpha = p.life;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-          ctx.restore();
-        });
-
-        if (aliveCount > 0) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      }
-
-      animate();
+    // Session animations
+    function triggerSession1() {
+      animateSessionSequential('session-logo-1', 'confetti-canvas-session-1');
     }
 
-    // Make functions global
-    window.animateExercise1 = animateExercise1;
-    window.animateExercise2 = animateExercise2;
-    window.animateExercise3 = animateExercise3;
-    window.animateExercise4 = animateExercise4;
-    window.animatePhase1 = animatePhase1;
-    window.animatePhase2 = animatePhase2;
-    window.animatePhase3 = animatePhase3;
-    window.animatePhase4 = animatePhase4;
-    window.animateSession1 = animateSession1;
-    window.animateSession2 = animateSession2;
-    window.animateSession3 = animateSession3;
-    window.animateSession4 = animateSession4;
+    function triggerSession2() {
+      animateSessionTransformation('session-logo-2', 'confetti-canvas-session-2');
+    }
+
+    function triggerSession3() {
+      animateSessionWave('session-logo-3', 'confetti-canvas-session-3');
+    }
+
+    function triggerSession4() {
+      animateSessionExplosion('session-logo-4', 'confetti-canvas-session-4');
+    }
+
+    // Session reset functions
+    function resetSession1() {
+      resetSessionProgress('session-logo-1');
+      const slider = document.getElementById('session1-progress') as HTMLInputElement;
+      const value = document.getElementById('session1-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetSession2() {
+      resetSessionProgress('session-logo-2');
+      const slider = document.getElementById('session2-progress') as HTMLInputElement;
+      const value = document.getElementById('session2-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetSession3() {
+      resetSessionProgress('session-logo-3');
+      const slider = document.getElementById('session3-progress') as HTMLInputElement;
+      const value = document.getElementById('session3-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    function resetSession4() {
+      resetSessionProgress('session-logo-4');
+      const slider = document.getElementById('session4-progress') as HTMLInputElement;
+      const value = document.getElementById('session4-progress-value');
+      if (slider) slider.value = '0';
+      if (value) value.textContent = '0%';
+    }
+
+    // Session progress sliders
+    const session1Slider = document.getElementById('session1-progress') as HTMLInputElement;
+    const session1Value = document.getElementById('session1-progress-value');
+    if (session1Slider && session1Value) {
+      session1Slider.addEventListener('input', () => {
+        const progress = parseInt(session1Slider.value);
+        session1Value.textContent = `${progress}%`;
+        setSessionProgress('session-logo-1', progress);
+      });
+    }
+
+    const session2Slider = document.getElementById('session2-progress') as HTMLInputElement;
+    const session2Value = document.getElementById('session2-progress-value');
+    if (session2Slider && session2Value) {
+      session2Slider.addEventListener('input', () => {
+        const progress = parseInt(session2Slider.value);
+        session2Value.textContent = `${progress}%`;
+        setSessionProgress('session-logo-2', progress);
+      });
+    }
+
+    const session3Slider = document.getElementById('session3-progress') as HTMLInputElement;
+    const session3Value = document.getElementById('session3-progress-value');
+    if (session3Slider && session3Value) {
+      session3Slider.addEventListener('input', () => {
+        const progress = parseInt(session3Slider.value);
+        session3Value.textContent = `${progress}%`;
+        setSessionProgress('session-logo-3', progress);
+      });
+    }
+
+    const session4Slider = document.getElementById('session4-progress') as HTMLInputElement;
+    const session4Value = document.getElementById('session4-progress-value');
+    if (session4Slider && session4Value) {
+      session4Slider.addEventListener('input', () => {
+        const progress = parseInt(session4Slider.value);
+        session4Value.textContent = `${progress}%`;
+        setSessionProgress('session-logo-4', progress);
+      });
+    }
+
+    // Make functions global for onclick handlers
+    window.triggerExercise1 = triggerExercise1;
+    window.triggerExercise2 = triggerExercise2;
+    window.triggerExercise3 = triggerExercise3;
+    window.triggerExercise4 = triggerExercise4;
+    window.triggerPhase1 = triggerPhase1;
+    window.triggerPhase2 = triggerPhase2;
+    window.triggerPhase3 = triggerPhase3;
+    window.triggerPhase4 = triggerPhase4;
+    window.resetPhase1 = resetPhase1;
+    window.resetPhase2 = resetPhase2;
+    window.resetPhase3 = resetPhase3;
+    window.resetPhase4 = resetPhase4;
+    window.triggerSession1 = triggerSession1;
+    window.triggerSession2 = triggerSession2;
+    window.triggerSession3 = triggerSession3;
+    window.triggerSession4 = triggerSession4;
+    window.resetSession1 = resetSession1;
+    window.resetSession2 = resetSession2;
+    window.resetSession3 = resetSession3;
+    window.resetSession4 = resetSession4;
   </script>
 </BaseLayout>
