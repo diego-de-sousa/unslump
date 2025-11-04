@@ -28,6 +28,7 @@ export interface WorkoutSession {
   timeLeft: number; // for current timer (exercise, rest, or prep)
   currentReps: number; // for rep-based exercises
   currentSet: number; // for exercises with sets
+  currentSide: number; // for bilateral exercises (left=1, right=2)
 }
 
 // Settings
@@ -52,6 +53,7 @@ export const workoutSession = atom<WorkoutSession>({
   timeLeft: 0,
   currentReps: 0,
   currentSet: 1,
+  currentSide: 1,
 });
 
 export const workoutSettings = atom<WorkoutSettings>({
@@ -168,6 +170,7 @@ export function startWorkout(): void {
     timeLeft: 0,
     currentReps: 0,
     currentSet: 1,
+    currentSide: 1,
   });
 
   saveSessionState();
@@ -244,20 +247,24 @@ export function startExerciseFromPrep(): void {
 
   if (!exercise) return;
 
+  // Duration is already per-side, no need to divide
+  const exerciseDuration = exercise.duration || 0;
+
   // Set initial state for exercise
   const newSession: WorkoutSession = {
     ...session,
     workoutState: 'EXERCISE_ACTIVE',
     currentReps: 0,
     currentSet: 1,
-    timeLeft: exercise.duration || 0,
+    currentSide: 1,
+    timeLeft: exerciseDuration,
   };
 
   workoutSession.set(newSession);
 
   // Start timer for timed exercises
-  if (exercise.duration > 0) {
-    startTimer(exercise.duration);
+  if (exerciseDuration > 0) {
+    startTimer(exerciseDuration);
   }
 
   saveSessionState();
@@ -327,6 +334,7 @@ export function advanceToNextExercise(): void {
     timeLeft: exercise.duration || 0,
     currentReps: 0,
     currentSet: 1,
+    currentSide: 1,
   });
 
   // Start timer for timed exercises
@@ -477,6 +485,7 @@ export function jumpToExercise(phaseIndex: number, exerciseIndex: number): void 
     timeLeft: targetExercise.duration || 0,
     currentReps: 0,
     currentSet: 1,
+    currentSide: 1,
   });
 
   console.log('[jumpToExercise] State updated, starting timer for duration:', targetExercise.duration, 'Already completed:', alreadyCompleted);
@@ -593,6 +602,7 @@ export function exitWorkout(): void {
     timeLeft: 0,
     currentReps: 0,
     currentSet: 1,
+    currentSide: 1,
   });
   clearSessionState();
 }
@@ -638,12 +648,33 @@ function stopTimer(): void {
  */
 function handleTimerComplete(): void {
   const session = workoutSession.get();
+  const exercise = currentExercise.get();
 
   switch (session.workoutState) {
     case 'EXERCISE_PREP':
       startExerciseFromPrep();
       break;
     case 'EXERCISE_ACTIVE':
+      // Check if exercise has sides and we need to do more sides
+      if (exercise && exercise.sides && exercise.sides > 1) {
+        if (session.currentSide < exercise.sides) {
+          // More sides remaining - move to next side
+          // Duration is already per-side, no need to divide
+          const sideDuration = exercise.duration || 0;
+          workoutSession.set({
+            ...session,
+            currentSide: session.currentSide + 1,
+            timeLeft: sideDuration,
+          });
+          // Start timer for next side
+          if (sideDuration > 0) {
+            startTimer(sideDuration);
+          }
+          saveSessionState();
+          return; // Don't complete exercise yet
+        }
+      }
+      // All sides done (or no sides) - complete exercise
       completeCurrentExercise();
       break;
     case 'REST_PERIOD':

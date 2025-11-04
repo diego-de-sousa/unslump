@@ -13,6 +13,7 @@ import {
   calculateCompletionStats,
   isWorkoutCompleted
 } from '../utils/progress';
+import { recordWorkoutCompletion } from './userStore';
 
 // Core state atoms
 export const completedExercises = atom<Set<string>>(new Set());
@@ -128,7 +129,13 @@ function saveProgressState(): void {
 
   // Lock session if all exercises completed
   const locked = shouldLockSession(completed.length, total);
+  const wasLocked = sessionLocked.get();
   sessionLocked.set(locked);
+
+  // Record workout completion in user stats (only once when first locked)
+  if (locked && !wasLocked) {
+    recordWorkoutCompletion(completed.length);
+  }
 
   const state: any = {
     completed,

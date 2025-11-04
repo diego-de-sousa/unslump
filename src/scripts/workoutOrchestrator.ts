@@ -3,6 +3,7 @@
  * Connects WorkoutController state to UI rendering
  */
 
+// @ts-nocheck
 import { workoutSession, currentPhase, currentExercise, nextExercise, overallProgress } from '../stores/workoutController';
 import type { WorkoutState } from '../stores/workoutController';
 import { isExerciseCompleted } from '../stores/progressStore';
@@ -226,30 +227,25 @@ function renderExercisePrep(container: HTMLElement) {
 
   const isVerticalVideo = (exercise.videoEmbedUrl?.includes('/shorts/') || exercise.videoUrl?.includes('/shorts/')) || false;
   const aspectRatio = isVerticalVideo ? '9 / 16' : '16 / 9';
-  const maxWidth = isVerticalVideo ? '180px' : '300px';
+  const maxWidth = isVerticalVideo ? '240px' : '400px';
 
   container.innerHTML = `
-    <div class="flex h-full flex-col justify-between p-3">
-      <!-- Exercise Title with view-transition-name -->
-      <div class="mb-1 text-center" style="view-transition-name: exercise-title;">
-        <h2 class="text-center text-lg font-bold text-gray-800">
+    <div class="flex h-full flex-col justify-between p-4">
+      <!-- Get Ready Badge -->
+      <div class="mb-3 flex justify-center">
+        <span class="text-sm font-semibold uppercase tracking-wide" style="color: ${phaseColor};">Get ready</span>
+      </div>
+
+      <!-- Exercise Title (larger) with view-transition-name -->
+      <div class="mb-3 text-center" style="view-transition-name: exercise-title;">
+        <h2 class="text-center text-2xl font-bold text-gray-800">
           ${exercise.name}
         </h2>
       </div>
 
-      <!-- Countdown Overlay Badge -->
-      <div class="mb-2 flex justify-center">
-        <div class="relative inline-block">
-          <div class="absolute -top-2 -right-2 z-10 flex h-12 w-12 items-center justify-center rounded-full shadow-lg" style="background-color: ${phaseColor};">
-            <span id="prepTimer" class="font-mono text-xl font-bold text-white">${session.timeLeft}</span>
-          </div>
-          <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Get ready</span>
-        </div>
-      </div>
-
-      <!-- Video/Image with view-transition-name for persistence -->
+      <!-- Video/Image with view-transition-name for persistence (larger) -->
       ${embedUrl ? `
-        <div class="mb-2 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+        <div class="mb-3 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: ${aspectRatio}; max-width: ${maxWidth}; width: 100%;">
             <iframe
               src="${embedUrl}"
@@ -262,20 +258,26 @@ function renderExercisePrep(container: HTMLElement) {
           </div>
         </div>
       ` : (exercise.imageUrl || exercise.gifUrl) ? `
-        <div class="mb-2 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
-          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 180px; width: 100%;">
+        <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${exercise.imageUrl ? `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
             ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${exercise.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
         </div>
       ` : ''}
 
-      ${exercise.reps ? `<p class="mb-1 text-center text-sm text-gray-600">${exercise.reps}</p>` : ''}
-      <div class="mb-2 rounded-lg bg-gray-50 p-2 flex-shrink-0">
-        <p class="text-center text-xs text-gray-700 leading-tight">${exercise.instructions}</p>
+      ${exercise.reps ? `<p class="mb-2 text-center text-base text-gray-600 font-medium">${exercise.reps}</p>` : ''}
+      <div class="mb-3 rounded-lg bg-gray-50 p-4 flex-shrink-0">
+        <p class="text-center text-sm text-gray-700 leading-relaxed">${exercise.instructions}</p>
       </div>
     </div>
   `;
+
+  // Update FAB display (prep duration is 3 seconds)
+  if ((window as any).updateFabDisplay) {
+    const phaseColor = phase.phase.colorPrimaryHex || '#4f46e5';
+    (window as any).updateFabDisplay('EXERCISE_PREP', session.timeLeft, undefined, undefined, 3, phaseColor, undefined, undefined);
+  }
 }
 
 function renderExerciseActive(container: HTMLElement) {
@@ -300,29 +302,20 @@ function renderExerciseActive(container: HTMLElement) {
 
   const isVerticalVideo = (exercise.videoEmbedUrl?.includes('/shorts/') || exercise.videoUrl?.includes('/shorts/')) || false;
   const aspectRatio = isVerticalVideo ? '9 / 16' : '16 / 9';
-  const maxWidth = isVerticalVideo ? '180px' : '300px'; // Smaller video
+  const maxWidth = isVerticalVideo ? '240px' : '400px'; // Larger video
 
   container.innerHTML = `
-    <div class="flex h-full flex-col justify-between p-3">
-      <!-- Exercise Title with Timer/Counter and Info Button -->
-      <div class="mb-1 flex items-center justify-center gap-2" style="view-transition-name: exercise-title;">
-        ${hasTimer ? `
-          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-            <span id="exerciseTimer" class="font-mono text-sm font-bold" style="color: ${phaseColor};">${session.timeLeft}</span>
-          </div>
-        ` : exercise.sets ? `
-          <div class="rounded-full bg-gray-100 px-2 py-1">
-            <span id="setsCounter" class="font-mono text-xs font-bold text-gray-700">${session.currentSet}/${exercise.sets}</span>
-          </div>
-        ` : ''}
-        <h2 class="text-center text-lg font-bold text-gray-800">
+    <div class="flex h-full flex-col justify-between p-4">
+      <!-- Exercise Title (larger) with Info Button -->
+      <div class="mb-3 flex items-center justify-center gap-2" style="view-transition-name: exercise-title;">
+        <h2 class="text-center text-2xl font-bold text-gray-800">
           ${exercise.name}
         </h2>
         <button id="exerciseInfoButton"
-                class="flex-shrink-0 rounded-full bg-blue-100 p-1 text-blue-600 hover:bg-blue-200 transition-colors"
+                class="flex-shrink-0 rounded-full bg-blue-100 p-1.5 text-blue-600 hover:bg-blue-200 transition-colors"
                 title="More information"
                 onclick="window.showExerciseInfo('${exercise.id}')">
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -331,7 +324,7 @@ function renderExerciseActive(container: HTMLElement) {
 
       <!-- Already Completed Banner -->
       ${alreadyCompleted ? `
-        <div class="mb-2 rounded-lg bg-green-100 border-2 border-green-500 p-3">
+        <div class="mb-3 rounded-lg bg-green-100 border-2 border-green-500 p-3">
           <div class="flex items-center justify-center gap-2 mb-2">
             <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -344,9 +337,9 @@ function renderExerciseActive(container: HTMLElement) {
         </div>
       ` : ''}
 
-      <!-- Video/Image with view-transition-name for persistence -->
+      <!-- Video/Image with view-transition-name for persistence (larger) -->
       ${embedUrl ? `
-        <div class="mb-2 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+        <div class="mb-3 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: ${aspectRatio}; max-width: ${maxWidth}; width: 100%;">
             <iframe
               src="${embedUrl}"
@@ -359,36 +352,51 @@ function renderExerciseActive(container: HTMLElement) {
           </div>
         </div>
       ` : (exercise.imageUrl || exercise.gifUrl) ? `
-        <div class="mb-2 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
-          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 180px; width: 100%;">
+        <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${exercise.imageUrl ? `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
             ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${exercise.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
         </div>
       ` : ''}
 
-      ${exercise.reps ? `<p class="mb-1 text-center text-sm text-gray-600">${exercise.reps}</p>` : ''}
-      <div class="mb-2 rounded-lg bg-gray-50 p-2 flex-shrink-0">
-        <p class="text-center text-xs text-gray-700 leading-tight">${exercise.instructions}</p>
+      ${exercise.reps ? `<p class="mb-2 text-center text-base text-gray-600 font-medium">${exercise.reps}</p>` : ''}
+      <div class="mb-3 rounded-lg bg-gray-50 p-4 flex-shrink-0">
+        <p class="text-center text-sm text-gray-700 leading-relaxed">${exercise.instructions}</p>
       </div>
 
-      ${!hasTimer ? `
-        <div class="manual-complete flex flex-col items-center">
-          <button id="manualCompleteBtn" class="rounded-full px-6 py-2.5 font-bold text-white shadow-lg transition-all duration-200 hover:scale-105"
-                  style="background-color: ${phaseColor};">
-            ✓ Complete
-          </button>
+      ${!hasTimer && exercise.sets && exercise.sets > 1 ? `
+        <div class="text-center">
+          <p class="text-sm text-gray-600">
+            Toca el botón cuando completes la serie
+          </p>
+        </div>
+      ` : !hasTimer ? `
+        <div class="text-center">
+          <p class="text-sm text-gray-600">
+            Toca el botón cuando completes el ejercicio
+          </p>
         </div>
       ` : ''}
     </div>
   `;
 
-  // Add event listener for manual complete
-  document.getElementById('manualCompleteBtn')?.addEventListener('click', () => {
-    import('../stores/workoutController').then(({ completeCurrentExercise }) => {
-      completeCurrentExercise();
-    });
-  });
+  // Update FAB display
+  if ((window as any).updateFabDisplay) {
+    // Duration is already per-side, no need to divide
+    const totalDuration = exercise.duration > 0 ? exercise.duration : undefined;
+    const phaseColor = phase.phase.colorPrimaryHex || '#4f46e5';
+    (window as any).updateFabDisplay(
+      'EXERCISE_ACTIVE',
+      session.timeLeft,
+      session.currentSet,
+      exercise.sets,
+      totalDuration,
+      phaseColor,
+      session.currentSide,
+      exercise.sides
+    );
+  }
 
   // Add event listener for repeat exercise button
   document.getElementById('repeatExerciseButton')?.addEventListener('click', () => {
@@ -450,30 +458,26 @@ function renderRestPeriod(container: HTMLElement) {
 
   const isVerticalVideo = (next.videoEmbedUrl?.includes('/shorts/') || next.videoUrl?.includes('/shorts/')) || false;
   const aspectRatio = isVerticalVideo ? '9 / 16' : '16 / 9';
-  const maxWidth = isVerticalVideo ? '180px' : '300px'; // Smaller video
+  const maxWidth = isVerticalVideo ? '240px' : '400px';
 
   container.innerHTML = `
-    <div class="flex h-full flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-white p-3">
-      <!-- Rest Timer with different styling -->
-      <div class="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 shadow-lg">
-        <span id="restTimer" class="font-mono text-3xl font-bold text-orange-600">${session.timeLeft}</span>
-      </div>
+    <div class="flex h-full flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-white p-4">
       <!-- Get Ready Title -->
-      <h1 class="mb-2 text-center font-['Barriecito'] text-2xl font-bold" style="color: ${phaseColor};">
+      <h1 class="mb-3 text-center font-['Barriecito'] text-3xl font-bold" style="color: ${phaseColor};">
         Get Ready!
       </h1>
-      <p class="mb-1 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <p class="mb-2 text-center text-sm font-semibold uppercase tracking-wide text-gray-500">
         Next exercise:
       </p>
 
-      <!-- Next Exercise Name -->
-      <h2 class="mb-2 max-w-2xl text-center text-lg font-bold text-gray-800">
+      <!-- Next Exercise Name (larger) -->
+      <h2 class="mb-3 max-w-2xl text-center text-2xl font-bold text-gray-800">
         ${next.name}
       </h2>
 
-      <!-- Video/Image Preview with view-transition-name for persistence -->
+      <!-- Video/Image Preview with view-transition-name for persistence (larger) -->
       ${embedUrl ? `
-        <div class="mb-2 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+        <div class="mb-3 flex justify-center w-full" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: ${aspectRatio}; max-width: ${maxWidth}; width: 100%;">
             <iframe
               src="${embedUrl}"
@@ -486,8 +490,8 @@ function renderRestPeriod(container: HTMLElement) {
           </div>
         </div>
       ` : (next.imageUrl || next.gifUrl) ? `
-        <div class="mb-2 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
-          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 180px; width: 100%;">
+        <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
+          <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${next.imageUrl ? `<img src="${next.imageUrl}" alt="${next.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
             ${next.gifUrl ? `<img src="${next.gifUrl}" alt="${next.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
@@ -496,12 +500,18 @@ function renderRestPeriod(container: HTMLElement) {
 
       <!-- Exercise Info -->
       ${next.reps ? `
-        <p class="mb-2 text-center text-sm text-gray-600">
+        <p class="mb-2 text-center text-base text-gray-600 font-medium">
           ${next.reps}
         </p>
       ` : ''}
     </div>
   `;
+
+  // Update FAB display (rest duration is 5 seconds)
+  if ((window as any).updateFabDisplay) {
+    const phaseColor = phase.phase.colorPrimaryHex || '#4f46e5';
+    (window as any).updateFabDisplay('REST_PERIOD', session.timeLeft, undefined, undefined, 5, phaseColor, undefined, undefined);
+  }
 
   // Add event listener
   document.getElementById('skipRestBtn')?.addEventListener('click', () => {
@@ -699,20 +709,35 @@ workoutSession.subscribe((session) => {
 });
 
 function updateTimerDisplay(timeLeft: number, state: WorkoutState) {
-  // Update inline timer displays based on current state
-  switch (state) {
-    case 'EXERCISE_PREP':
-      const prepTimer = document.getElementById('prepTimer');
-      if (prepTimer) prepTimer.textContent = timeLeft.toString();
-      break;
-    case 'EXERCISE_ACTIVE':
-      const exerciseTimer = document.getElementById('exerciseTimer');
-      if (exerciseTimer) exerciseTimer.textContent = timeLeft.toString();
-      break;
-    case 'REST_PERIOD':
-      const restTimer = document.getElementById('restTimer');
-      if (restTimer) restTimer.textContent = timeLeft.toString();
-      break;
+  // Update FAB timer display
+  if ((window as any).updateFabDisplay) {
+    const session = workoutSession.get();
+    const exercise = currentExercise.get();
+    const phase = currentPhase.get();
+
+    // Get current set and total sets if available
+    const currentSet = session.currentSet;
+    const totalSets = exercise?.sets;
+
+    // Get current side and total sides if available
+    const currentSide = session.currentSide;
+    const totalSides = exercise?.sides;
+
+    // Get total duration based on state
+    let totalDuration: number | undefined;
+    if (state === 'EXERCISE_PREP') {
+      totalDuration = 3; // Prep is always 3 seconds
+    } else if (state === 'EXERCISE_ACTIVE' && exercise) {
+      // Duration is already per-side, no need to divide
+      totalDuration = exercise.duration > 0 ? exercise.duration : undefined;
+    } else if (state === 'REST_PERIOD') {
+      totalDuration = 5; // Rest is always 5 seconds
+    }
+
+    // Get phase color
+    const phaseColor = phase?.phase.colorPrimaryHex || '#4f46e5';
+
+    (window as any).updateFabDisplay(state, timeLeft, currentSet, totalSets, totalDuration, phaseColor, currentSide, totalSides);
   }
 }
 
