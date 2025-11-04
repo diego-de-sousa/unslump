@@ -1,0 +1,177 @@
+---
+/**
+ * Workout Settings Modal
+ * Settings modal for guided workout mode with level selector, language, and references
+ */
+import { useTranslations, type Language, languages } from '../../i18n/utils';
+import LevelSelector from '../islands/LevelSelector.tsx';
+import X from '../icons/X.astro';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div id="settingsModal" class="modal fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+
+    <!-- Header -->
+    <div class="flex-shrink-0 bg-white px-6 py-4 flex items-center justify-between border-b border-gray-200">
+      <h3 class="text-xl font-bold text-gray-900">
+        ⚙️ {t('guidedWorkout.navigation.settings')}
+      </h3>
+      <button id="closeSettingsButton" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <X size={20} />
+      </button>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+
+      <!-- Level Selector -->
+      <div>
+        <label class="text-sm font-semibold text-gray-700 mb-3 block flex items-center gap-2">
+          🎚️ {t('levels.selectLevel')}
+        </label>
+        <LevelSelector
+          client:load
+          levels={[
+            {
+              key: 'principiante',
+              label: t('levels.beginner'),
+              desc: t('levels.beginnerDescription'),
+              icon: '🌱',
+              gradient: 'from-green-50 to-emerald-50',
+              border: 'border-green-400',
+              ring: 'ring-green-400',
+              text: 'text-green-700',
+              textLight: 'text-green-600'
+            },
+            {
+              key: 'intermedio',
+              label: t('levels.intermediate'),
+              desc: t('levels.intermediateDescription'),
+              icon: '🔥',
+              gradient: 'from-orange-50 to-amber-50',
+              border: 'border-orange-400',
+              ring: 'ring-orange-400',
+              text: 'text-orange-700',
+              textLight: 'text-orange-600'
+            },
+            {
+              key: 'avanzado',
+              label: t('levels.advanced'),
+              desc: t('levels.advancedDescription'),
+              icon: '⚡',
+              gradient: 'from-purple-50 to-violet-50',
+              border: 'border-purple-400',
+              ring: 'ring-purple-400',
+              text: 'text-purple-700',
+              textLight: 'text-purple-600'
+            }
+          ]}
+        />
+        <p class="text-xs text-gray-500 italic mt-2">
+          {t('levels.description')}
+        </p>
+      </div>
+
+      <!-- Language Selector -->
+      <div>
+        <label for="workout-language-select" class="text-sm font-semibold text-gray-700 mb-2 block flex items-center gap-2">
+          🌐 {t('language.selector')}
+        </label>
+        <select
+          id="workout-language-select"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+        >
+          {Object.entries(languages).map(([code, name]) => (
+            <option value={code} selected={code === lang}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200"></div>
+
+      <!-- References Button -->
+      <div>
+        <button
+          id="show-references-btn-workout"
+          class="w-full px-4 py-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <span class="text-xl">📚</span>
+          <span>{t('modal.onboarding.referencesButton')}</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200"></div>
+
+      <!-- Reset Progress -->
+      <div>
+        <button
+          id="reset-progress-btn-workout"
+          class="w-full px-4 py-3 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 border-2 border-red-200 hover:border-red-300 transition-all font-semibold"
+        >
+          {t('modal.onboarding.resetProgress')}
+        </button>
+      </div>
+
+      <!-- Info Note -->
+      <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+        <div class="flex items-start gap-3">
+          <span class="text-xl flex-shrink-0">💡</span>
+          <p class="text-sm text-blue-800 leading-relaxed">
+            {lang === 'en'
+              ? 'Your settings and progress are saved automatically and sync across all your devices.'
+              : 'Tus ajustes y progreso se guardan automáticamente y se sincronizan en todos tus dispositivos.'}
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Handle level change events with toast
+  import { toast } from '../../utils/toast';
+
+  // Listen for level changes from the store
+  import { currentLevel } from '../../stores/levelStore';
+
+  let previousLevel = currentLevel.get();
+
+  currentLevel.subscribe((newLevel) => {
+    // Only show toast if level actually changed and it's not the initial load
+    if (previousLevel !== newLevel && previousLevel !== null) {
+      const levelNames: Record<string, { en: string; es: string }> = {
+        principiante: { en: 'Beginner', es: 'Principiante' },
+        intermedio: { en: 'Intermediate', es: 'Intermedio' },
+        avanzado: { en: 'Advanced', es: 'Avanzado' }
+      };
+
+      const lang = document.documentElement.lang || 'en';
+      const levelName = levelNames[newLevel]?.[lang as 'en' | 'es'] || newLevel;
+      const message = lang === 'es'
+        ? `Nivel cambiado a ${levelName}`
+        : `Level changed to ${levelName}`;
+
+      toast.success(message, 2500);
+    }
+    previousLevel = newLevel;
+  });
+</script>
+
+<style>
+  .modal {
+    backdrop-filter: blur(4px);
+  }
+</style>

@@ -1,0 +1,200 @@
+---
+/**
+ * Workout Onboarding Modal
+ * First-time tutorial for guided workout mode
+ */
+import { useTranslations, type Language } from '../../i18n/utils';
+import Logo from '../Logo.astro';
+import X from '../icons/X.astro';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div id="workoutOnboardingModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[110] hidden">
+  <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+
+    <!-- Header -->
+    <div class="flex-shrink-0 bg-white px-6 py-4 flex items-center justify-between border-b border-gray-200">
+      <div class="flex items-center gap-3">
+        <Logo id="onboarding-workout-logo" showProgress={false} size="small" />
+      </div>
+      <button id="closeWorkoutOnboarding" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <X size={24} />
+      </button>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+      <!-- Introduction -->
+      <div class="text-center">
+        <div class="text-5xl mb-3">🎯</div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">
+          {lang === 'en' ? 'Fully automated workout flow' : 'Flujo de entrenamiento totalmente automatizado'}
+        </h3>
+        <p class="text-gray-600 text-pretty">
+          {lang === 'en'
+            ? 'Follow along as the app guides you through all 21 exercises in the optimal sequence, with automatic timers and rest periods.'
+            : 'Sigue el flujo mientras la app te guía por los 21 ejercicios en la secuencia óptima, con timers automáticos y períodos de descanso.'}
+        </p>
+      </div>
+
+      <!-- How it works -->
+      <div class="space-y-4">
+        <h4 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+          📖 {lang === 'en' ? 'How it works:' : 'Cómo funciona:'}
+        </h4>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Feature 1: Auto timers -->
+          <div class="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-xl">
+            <div class="text-3xl mb-2">⏱️</div>
+            <h5 class="font-bold text-indigo-900 mb-1 text-balance">
+              {lang === 'en' ? 'Automatic timers' : 'Timers automáticos'}
+            </h5>
+            <p class="text-sm text-indigo-800 text-pretty">
+              {lang === 'en'
+                ? 'The app counts down exercises and rest periods for you'
+                : 'La app cuenta los ejercicios y períodos de descanso por ti'}
+            </p>
+          </div>
+
+          <!-- Feature 2: Video guidance -->
+          <div class="p-4 bg-teal-50 border-2 border-teal-200 rounded-xl">
+            <div class="text-3xl mb-2">📹</div>
+            <h5 class="font-bold text-teal-900 mb-1 text-balance">
+              {lang === 'en' ? 'Video guidance' : 'Guía en video'}
+            </h5>
+            <p class="text-sm text-teal-800 text-pretty">
+              {lang === 'en'
+                ? 'Watch demonstration videos embedded in each exercise'
+                : 'Mira videos de demostración integrados en cada ejercicio'}
+            </p>
+          </div>
+
+          <!-- Feature 3: Pause anytime -->
+          <div class="p-4 bg-orange-50 border-2 border-orange-200 rounded-xl">
+            <div class="text-3xl mb-2">⏸️</div>
+            <h5 class="font-bold text-orange-900 mb-1 text-balance">
+              {lang === 'en' ? 'Pause anytime' : 'Pausa cuando quieras'}
+            </h5>
+            <p class="text-sm text-orange-800 text-pretty">
+              {lang === 'en'
+                ? 'Need a break? Pause and resume whenever you want'
+                : '¿Necesitas un descanso? Pausa y reanuda cuando quieras'}
+            </p>
+          </div>
+
+          <!-- Feature 4: Navigation -->
+          <div class="p-4 bg-pink-50 border-2 border-pink-200 rounded-xl">
+            <div class="text-3xl mb-2">🧭</div>
+            <h5 class="font-bold text-pink-900 mb-1 text-balance">
+              {lang === 'en' ? 'Easy navigation' : 'Navegación fácil'}
+            </h5>
+            <p class="text-sm text-pink-800 text-pretty">
+              {lang === 'en'
+                ? 'Skip, go back, or jump to any exercise via the logo'
+                : 'Salta, regresa o ve a cualquier ejercicio vía el logo'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls guide -->
+      <div class="bg-gray-50 rounded-xl p-5 border-2 border-gray-200">
+        <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          🎮 {lang === 'en' ? 'Controls:' : 'Controles:'}
+        </h4>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+              <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">
+                {lang === 'en' ? 'Pause/Play button (bottom right)' : 'Botón Pausar/Reanudar (abajo derecha)'}
+              </p>
+              <p class="text-sm text-gray-600">
+                {lang === 'en' ? 'Pause the workout anytime' : 'Pausa el entrenamiento en cualquier momento'}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+              <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">
+                {lang === 'en' ? 'Settings button (top right)' : 'Botón de Ajustes (arriba derecha)'}
+              </p>
+              <p class="text-sm text-gray-600">
+                {lang === 'en' ? 'Change level, language, or reset progress' : 'Cambia nivel, idioma o resetea progreso'}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+              <span class="text-white text-xl font-bold">!</span>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900">
+                {lang === 'en' ? 'Logo (top center)' : 'Logo (arriba centro)'}
+              </p>
+              <p class="text-sm text-gray-600">
+                {lang === 'en' ? 'Jump to any exercise or see overall progress' : 'Salta a cualquier ejercicio o ve el progreso general'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl flex-shrink-0">💡</span>
+          <div>
+            <p class="font-semibold text-blue-900 mb-1">
+              {lang === 'en' ? 'Pro tip:' : 'Consejo profesional:'}
+            </p>
+            <p class="text-sm text-blue-800 text-pretty">
+              {lang === 'en'
+                ? 'Keep your phone unlocked during the workout. The app uses wake lock to prevent the screen from turning off.'
+                : 'Mantén tu teléfono desbloqueado durante el entrenamiento. La app usa wake lock para evitar que la pantalla se apague.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer with CTA -->
+    <div class="flex-shrink-0 px-6 py-4 border-t border-gray-200">
+      <button
+        id="startWorkoutOnboarding"
+        class="w-full px-6 py-4 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:from-green-600 hover:via-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+      >
+        {lang === 'en' ? "Got it, let's start! 🚀" : "¡Entendido, empecemos! 🚀"}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .modal {
+    backdrop-filter: blur(8px);
+  }
+</style>
