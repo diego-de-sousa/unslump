@@ -26,3 +26,8 @@ pnpm-debug.log*
 
 # jetbrains setting
 .idea/
+
+# testing
+test-results/
+playwright-report/
+coverage/
