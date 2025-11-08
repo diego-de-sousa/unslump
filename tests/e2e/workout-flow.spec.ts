@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 test.describe('Guided Workout Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe('Guided Workout Flow', () => {
   });
 
   // Helper to dismiss onboarding modal if present
-  async function dismissOnboardingIfPresent(page) {
+  async function dismissOnboardingIfPresent(page: Page) {
     const onboardingModal = page.locator('#workoutOnboardingModal');
     if (await onboardingModal.isVisible({ timeout: 2000 }).catch(() => false)) {
       const startButton = page.locator('#startWorkoutOnboarding, #closeWorkoutOnboarding').first();

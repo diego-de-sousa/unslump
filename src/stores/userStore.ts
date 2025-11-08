@@ -73,19 +73,19 @@ function saveUserProfile(profile: UserProfile): void {
  * Initialize user profile (call on app start)
  */
 export function initializeUserProfile(): void {
-  const profile = userProfile.get();
+  const current = userProfile.get();
   const now = new Date().toISOString();
 
-  // Set first visit date if not set
-  if (!profile.firstVisitDate) {
-    profile.firstVisitDate = now;
-  }
+  // Create a new profile object to avoid mutations
+  const updated = {
+    ...current,
+    firstVisitDate: current.firstVisitDate || now,
+    lastVisitDate: now,
+    unlockedAchievements: [...current.unlockedAchievements]
+  };
 
-  // Update last visit date
-  profile.lastVisitDate = now;
-
-  userProfile.set(profile);
-  saveUserProfile(profile);
+  userProfile.set(updated);
+  saveUserProfile(updated);
 }
 
 /**
@@ -95,9 +95,9 @@ function areConsecutiveDays(date1: string, date2: string): boolean {
   const d1 = new Date(date1);
   const d2 = new Date(date2);
 
-  // Reset times to midnight for accurate day comparison
-  d1.setHours(0, 0, 0, 0);
-  d2.setHours(0, 0, 0, 0);
+  // Reset times to midnight UTC for accurate day comparison
+  d1.setUTCHours(0, 0, 0, 0);
+  d2.setUTCHours(0, 0, 0, 0);
 
   const diffTime = Math.abs(d2.getTime() - d1.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -106,61 +106,62 @@ function areConsecutiveDays(date1: string, date2: string): boolean {
 }
 
 /**
- * Calculate if date is today
+ * Calculate if date is today (in UTC)
  */
 function isToday(dateStr: string): boolean {
   const date = new Date(dateStr);
   const today = new Date();
 
-  return date.getFullYear() === today.getFullYear() &&
-         date.getMonth() === today.getMonth() &&
-         date.getDate() === today.getDate();
+  return date.getUTCFullYear() === today.getUTCFullYear() &&
+         date.getUTCMonth() === today.getUTCMonth() &&
+         date.getUTCDate() === today.getUTCDate();
 }
 
 /**
  * Record workout completion
  */
 export function recordWorkoutCompletion(exercisesCompleted: number): void {
-  const profile = userProfile.get();
+  const current = userProfile.get();
   const now = new Date().toISOString();
 
   // Don't record if already completed today
-  if (profile.lastCompletionDate && isToday(profile.lastCompletionDate)) {
+  if (current.lastCompletionDate && isToday(current.lastCompletionDate)) {
     return;
   }
 
-  // Update totals
-  profile.totalWorkoutsCompleted++;
-  profile.totalExercisesCompleted += exercisesCompleted;
-  profile.totalTimeMinutes += WORKOUT_DURATION_MINUTES;
+  // Create updated profile (immutable update)
+  let currentStreak = current.currentStreak;
 
-  // Update streak
-  if (profile.lastCompletionDate) {
-    if (areConsecutiveDays(profile.lastCompletionDate, now)) {
+  // Update streak logic
+  if (current.lastCompletionDate) {
+    if (areConsecutiveDays(current.lastCompletionDate, now)) {
       // Consecutive day - increment streak
-      profile.currentStreak++;
-    } else if (!isToday(profile.lastCompletionDate)) {
+      currentStreak++;
+    } else if (!isToday(current.lastCompletionDate)) {
       // Broke the streak
-      profile.currentStreak = 1;
+      currentStreak = 1;
     }
   } else {
     // First workout ever
-    profile.currentStreak = 1;
+    currentStreak = 1;
   }
 
-  // Update longest streak
-  if (profile.currentStreak > profile.longestStreak) {
-    profile.longestStreak = profile.currentStreak;
-  }
-
-  // Update last completion date
-  profile.lastCompletionDate = now;
+  const updated: UserProfile = {
+    ...current,
+    totalWorkoutsCompleted: current.totalWorkoutsCompleted + 1,
+    totalExercisesCompleted: current.totalExercisesCompleted + exercisesCompleted,
+    totalTimeMinutes: current.totalTimeMinutes + WORKOUT_DURATION_MINUTES,
+    currentStreak,
+    longestStreak: Math.max(currentStreak, current.longestStreak),
+    lastCompletionDate: now,
+    unlockedAchievements: [...current.unlockedAchievements]
+  };
 
   // Check and unlock achievements
-  checkAndUnlockAchievements(profile);
+  checkAndUnlockAchievements(updated);
 
-  userProfile.set(profile);
-  saveUserProfile(profile);
+  userProfile.set(updated);
+  saveUserProfile(updated);
 }
 
 /**
@@ -196,10 +197,14 @@ function checkAndUnlockAchievements(profile: UserProfile): void {
  * Update preferred level
  */
 export function setPreferredLevel(level: 'beginner' | 'intermediate' | 'advanced'): void {
-  const profile = userProfile.get();
-  profile.preferredLevel = level;
-  userProfile.set(profile);
-  saveUserProfile(profile);
+  const current = userProfile.get();
+  const updated = {
+    ...current,
+    preferredLevel: level,
+    unlockedAchievements: [...current.unlockedAchievements]
+  };
+  userProfile.set(updated);
+  saveUserProfile(updated);
 }
 
 /**
@@ -212,18 +217,20 @@ export function hasUserProgress(): boolean {
 
 /**
  * Check if this is first visit
+ * User is considered a first visitor until they complete their first workout
  */
 export function isFirstVisit(): boolean {
   const profile = userProfile.get();
-  return profile.firstVisitDate === null || profile.totalWorkoutsCompleted === 0;
+  return profile.totalWorkoutsCompleted === 0;
 }
 
 /**
  * Reset all user data (nuclear option)
  */
 export function resetUserProfile(): void {
-  userProfile.set(defaultProfile);
-  saveUserProfile(defaultProfile);
+  const freshProfile = { ...defaultProfile, unlockedAchievements: [] };
+  userProfile.set(freshProfile);
+  saveUserProfile(freshProfile);
 }
 
 /**

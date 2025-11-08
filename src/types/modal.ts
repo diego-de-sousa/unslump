@@ -3,7 +3,7 @@
  * Types for modal state management
  */
 
-export type ModalId = 'exercise-info' | 'references' | 'onboarding';
+export type ModalId = 'exercise-info' | 'references' | 'onboarding' | 'help';
 
 export interface ModalState {
   isOpen: boolean;

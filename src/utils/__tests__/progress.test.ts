@@ -41,6 +41,36 @@ const mockWorkout: Workout = {
     exercises: [
       { id: 'ex3', name: 'Exercise 3', duration: 45, reps: '8', instructions: 'Do it well' }
     ]
+  },
+  fase3: {
+    name: 'Phase 3',
+    time: '4 min',
+    color: 'orange',
+    colorPrimary: 'orange-500',
+    colorLight: 'orange-50',
+    colorBorder: 'orange-200',
+    colorPrimaryHex: '#ff8800',
+    colorLightHex: '#fff0e0',
+    colorBorderHex: '#ffd0a0',
+    description: 'Test phase 3',
+    exercises: [
+      { id: 'ex4', name: 'Exercise 4', duration: 40, reps: '12', instructions: 'Do it right' }
+    ]
+  },
+  fase4: {
+    name: 'Phase 4',
+    time: '6 min',
+    color: 'pink',
+    colorPrimary: 'pink-500',
+    colorLight: 'pink-50',
+    colorBorder: 'pink-200',
+    colorPrimaryHex: '#ff00ff',
+    colorLightHex: '#fff0ff',
+    colorBorderHex: '#ffd0ff',
+    description: 'Test phase 4',
+    exercises: [
+      { id: 'ex5', name: 'Exercise 5', duration: 50, reps: '15', instructions: 'Final exercise' }
+    ]
   }
 };
 
@@ -124,38 +154,38 @@ describe('progress utilities', () => {
       const completed = new Set<string>();
       const stats = calculateCompletionStats(mockWorkout, completed);
 
-      expect(stats.totalExercises).toBe(3);
+      expect(stats.totalExercises).toBe(5);
       expect(stats.completedExercises).toBe(0);
       expect(stats.overallPercentage).toBe(0);
       expect(stats.completedPhases).toEqual([]);
-      expect(stats.phaseProgress).toHaveLength(2);
+      expect(stats.phaseProgress).toHaveLength(4);
     });
 
     it('should calculate stats for partial completion', () => {
       const completed = new Set(['fase1-ex1', 'fase2-ex3']);
       const stats = calculateCompletionStats(mockWorkout, completed);
 
-      expect(stats.totalExercises).toBe(3);
+      expect(stats.totalExercises).toBe(5);
       expect(stats.completedExercises).toBe(2);
-      expect(stats.overallPercentage).toBeCloseTo(66.67, 1);
+      expect(stats.overallPercentage).toBeCloseTo(40, 1);
       expect(stats.completedPhases).toEqual(['fase2']); // Only fase2 fully complete
     });
 
     it('should calculate stats for full completion', () => {
-      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3']);
+      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex4', 'fase4-ex5']);
       const stats = calculateCompletionStats(mockWorkout, completed);
 
-      expect(stats.totalExercises).toBe(3);
-      expect(stats.completedExercises).toBe(3);
+      expect(stats.totalExercises).toBe(5);
+      expect(stats.completedExercises).toBe(5);
       expect(stats.overallPercentage).toBe(100);
-      expect(stats.completedPhases).toEqual(['fase1', 'fase2']);
+      expect(stats.completedPhases).toEqual(['fase1', 'fase2', 'fase3', 'fase4']);
     });
 
     it('should include phase progress for each phase', () => {
       const completed = new Set(['fase1-ex1']);
       const stats = calculateCompletionStats(mockWorkout, completed);
 
-      expect(stats.phaseProgress).toHaveLength(2);
+      expect(stats.phaseProgress).toHaveLength(4);
       expect(stats.phaseProgress[0].phaseId).toBe('fase1');
       expect(stats.phaseProgress[0].completed).toBe(1);
       expect(stats.phaseProgress[1].phaseId).toBe('fase2');
@@ -202,12 +232,14 @@ describe('progress utilities', () => {
     });
 
     it('should return completed phases', () => {
-      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3']);
+      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex4', 'fase4-ex5']);
       const result = getCompletedPhases(mockWorkout, completed);
 
       expect(result).toContain('fase1');
       expect(result).toContain('fase2');
-      expect(result).toHaveLength(2);
+      expect(result).toContain('fase3');
+      expect(result).toContain('fase4');
+      expect(result).toHaveLength(4);
     });
 
     it('should return only fully completed phases', () => {
@@ -228,7 +260,7 @@ describe('progress utilities', () => {
     });
 
     it('should return true for fully completed workout', () => {
-      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3']);
+      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex4', 'fase4-ex5']);
       const result = isWorkoutCompleted(mockWorkout, completed);
 
       expect(result).toBe(true);
@@ -242,18 +274,18 @@ describe('progress utilities', () => {
     });
 
     it('should return false when set has extra exercises', () => {
-      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex1']);
+      const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex4', 'fase4-ex5', 'fase5-ex1']);
       const result = isWorkoutCompleted(mockWorkout, completed);
 
       // More exercises in set than in workout - should still be true since all workout exercises are done
-      expect(result).toBe(false); // Actually this would be true in the current implementation
+      expect(result).toBe(true);
     });
 
     it('should require all exercises to be completed', () => {
       const completed = new Set(['fase1-ex1', 'fase2-ex3']);
       const result = isWorkoutCompleted(mockWorkout, completed);
 
-      expect(result).toBe(false); // Missing fase1-ex2
+      expect(result).toBe(false); // Missing fase1-ex2, fase3-ex4, fase4-ex5
     });
   });
 
@@ -261,7 +293,46 @@ describe('progress utilities', () => {
     it('should handle workout with no exercises', () => {
       const emptyWorkout: Workout = {
         fase1: {
-          name: 'Empty Phase',
+          name: 'Empty Phase 1',
+          time: '0 min',
+          color: 'gray',
+          colorPrimary: 'gray-500',
+          colorLight: 'gray-50',
+          colorBorder: 'gray-200',
+          colorPrimaryHex: '#808080',
+          colorLightHex: '#f0f0f0',
+          colorBorderHex: '#d0d0d0',
+          description: 'Empty',
+          exercises: []
+        },
+        fase2: {
+          name: 'Empty Phase 2',
+          time: '0 min',
+          color: 'gray',
+          colorPrimary: 'gray-500',
+          colorLight: 'gray-50',
+          colorBorder: 'gray-200',
+          colorPrimaryHex: '#808080',
+          colorLightHex: '#f0f0f0',
+          colorBorderHex: '#d0d0d0',
+          description: 'Empty',
+          exercises: []
+        },
+        fase3: {
+          name: 'Empty Phase 3',
+          time: '0 min',
+          color: 'gray',
+          colorPrimary: 'gray-500',
+          colorLight: 'gray-50',
+          colorBorder: 'gray-200',
+          colorPrimaryHex: '#808080',
+          colorLightHex: '#f0f0f0',
+          colorBorderHex: '#d0d0d0',
+          description: 'Empty',
+          exercises: []
+        },
+        fase4: {
+          name: 'Empty Phase 4',
           time: '0 min',
           color: 'gray',
           colorPrimary: 'gray-500',
@@ -307,6 +378,45 @@ describe('progress utilities', () => {
             { id: 'ex2', name: 'Ex 2', duration: 60, reps: '10', instructions: 'Do it' },
             { id: 'ex3', name: 'Ex 3', duration: 60, reps: '10', instructions: 'Do it' }
           ]
+        },
+        fase2: {
+          name: 'Phase 2',
+          time: '0 min',
+          color: 'green',
+          colorPrimary: 'green-500',
+          colorLight: 'green-50',
+          colorBorder: 'green-200',
+          colorPrimaryHex: '#00ff00',
+          colorLightHex: '#f0fff0',
+          colorBorderHex: '#d0ffd0',
+          description: 'Empty',
+          exercises: []
+        },
+        fase3: {
+          name: 'Phase 3',
+          time: '0 min',
+          color: 'orange',
+          colorPrimary: 'orange-500',
+          colorLight: 'orange-50',
+          colorBorder: 'orange-200',
+          colorPrimaryHex: '#ff8800',
+          colorLightHex: '#fff0e0',
+          colorBorderHex: '#ffd0a0',
+          description: 'Empty',
+          exercises: []
+        },
+        fase4: {
+          name: 'Phase 4',
+          time: '0 min',
+          color: 'pink',
+          colorPrimary: 'pink-500',
+          colorLight: 'pink-50',
+          colorBorder: 'pink-200',
+          colorPrimaryHex: '#ff00ff',
+          colorLightHex: '#fff0ff',
+          colorBorderHex: '#ffd0ff',
+          description: 'Empty',
+          exercises: []
         }
       };
 

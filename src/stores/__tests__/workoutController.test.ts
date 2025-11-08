@@ -77,6 +77,36 @@ const mockWorkout: Workout = {
     exercises: [
       { id: 'ex3', name: 'Exercise 3', duration: 45, reps: '8', instructions: 'Do it well' }
     ]
+  },
+  fase3: {
+    name: 'Phase 3',
+    time: '4 min',
+    color: 'orange',
+    colorPrimary: 'orange-500',
+    colorLight: 'orange-50',
+    colorBorder: 'orange-200',
+    colorPrimaryHex: '#ff8800',
+    colorLightHex: '#fff0e0',
+    colorBorderHex: '#ffd0a0',
+    description: 'Test phase 3',
+    exercises: [
+      { id: 'ex4', name: 'Exercise 4', duration: 40, reps: '12', instructions: 'Do it right' }
+    ]
+  },
+  fase4: {
+    name: 'Phase 4',
+    time: '6 min',
+    color: 'pink',
+    colorPrimary: 'pink-500',
+    colorLight: 'pink-50',
+    colorBorder: 'pink-200',
+    colorPrimaryHex: '#ff00ff',
+    colorLightHex: '#fff0ff',
+    colorBorderHex: '#ffd0ff',
+    description: 'Test phase 4',
+    exercises: [
+      { id: 'ex5', name: 'Exercise 5', duration: 50, reps: '15', instructions: 'Final exercise' }
+    ]
   }
 };
 
@@ -496,8 +526,47 @@ describe('workoutController', () => {
         colorBorderHex: '#d0d0ff',
         description: 'Test phase 1',
         exercises: [
-          { id: 'ex1', name: 'Exercise 1', reps: '10', sets: 3, instructions: 'Do it' }
+          { id: 'ex1', name: 'Exercise 1', duration: 60, reps: '10', sets: 3, instructions: 'Do it' }
         ]
+      },
+      fase2: {
+        name: 'Phase 2',
+        time: '0 min',
+        color: 'green',
+        colorPrimary: 'green-500',
+        colorLight: 'green-50',
+        colorBorder: 'green-200',
+        colorPrimaryHex: '#00ff00',
+        colorLightHex: '#f0fff0',
+        colorBorderHex: '#d0ffd0',
+        description: 'Empty',
+        exercises: []
+      },
+      fase3: {
+        name: 'Phase 3',
+        time: '0 min',
+        color: 'orange',
+        colorPrimary: 'orange-500',
+        colorLight: 'orange-50',
+        colorBorder: 'orange-200',
+        colorPrimaryHex: '#ff8800',
+        colorLightHex: '#fff0e0',
+        colorBorderHex: '#ffd0a0',
+        description: 'Empty',
+        exercises: []
+      },
+      fase4: {
+        name: 'Phase 4',
+        time: '0 min',
+        color: 'pink',
+        colorPrimary: 'pink-500',
+        colorLight: 'pink-50',
+        colorBorder: 'pink-200',
+        colorPrimaryHex: '#ff00ff',
+        colorLightHex: '#fff0ff',
+        colorBorderHex: '#ffd0ff',
+        description: 'Empty',
+        exercises: []
       }
     };
 
