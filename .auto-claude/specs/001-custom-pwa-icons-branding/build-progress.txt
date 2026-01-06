@@ -32,7 +32,7 @@ Current manifest.json uses `"purpose": "any maskable"` which is NOT recommended:
 
 ## Implementation Plan (4 Phases)
 
-### Phase 1: Icon Audit and Analysis
+### Phase 1: Icon Audit and Analysis ✅ COMPLETE
 - [x] Verify current icon dimensions and quality
   - icon-192.png: 192x192 pixels, 5.7K file size ✅
   - icon-512.png: 512x512 pixels, 18K file size ✅
@@ -41,7 +41,11 @@ Current manifest.json uses `"purpose": "any maskable"` which is NOT recommended:
   - All icons have professional 4-color "u!" design
   - File sizes are optimized and appropriate for each resolution
   - Image quality is excellent with clean edges and proper RGBA format
-- [ ] Analyze manifest.json icon configuration
+- [x] Analyze manifest.json icon configuration
+  - **Issue identified:** Using `"purpose": "any maskable"` combined purpose
+  - Current icons NOT designed for maskable safe zone (80% inner circle)
+  - Logo extends to edges with only 4px padding - will get cropped
+  - Detailed findings documented in icon-audit-findings.md
 
 ### Phase 2: Create Maskable Icon Variants
 - [ ] Create maskable SVG template with safe zone padding
@@ -58,6 +62,27 @@ Current manifest.json uses `"purpose": "any maskable"` which is NOT recommended:
 ---
 
 ## Notes
-- Icons already look professional - main work is PWA compliance
-- Need to create maskable variants with proper padding
-- Estimated effort: 2-3 hours
+
+### Manifest Configuration Issues (Phase 1.2 Findings)
+**Problem:** Combined `"purpose": "any maskable"` is not recommended
+- "any" purpose: Icon displays as-is (current icons perfect for this)
+- "maskable" purpose: Icon will be cropped to circles/shapes (needs safe zone)
+- Current icons lack safe zone padding - logo extends to edges
+- Result: Logo will be cropped on Android adaptive icons
+
+**Solution:** Create separate maskable variants
+1. Keep icon-192.png and icon-512.png with purpose: "any"
+2. Create new maskable-192.png and maskable-512.png with:
+   - Logo scaled smaller to fit 80% safe zone circle
+   - Additional 15-20% padding on all sides
+   - Full-bleed white background (no rounded corners)
+3. Update manifest.json with 4 icon entries (2 any + 2 maskable)
+
+**Design Analysis:**
+- Current favicon.svg: logo at 105% scale with 4px padding
+- Maskable requirement: logo must fit within 40% radius circle
+- Gap: Logo extends 20-25px beyond safe zone
+- Maskable design: Scale logo to ~70% with centered positioning
+
+### Estimated Effort
+- 2-3 hours total (audit complete, ~1.5 hours remaining)
