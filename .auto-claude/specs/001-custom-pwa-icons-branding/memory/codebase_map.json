@@ -1,0 +1,15 @@
+{
+  "discovered_files": {
+    "public/manifest.json": {
+      "description": "Manifest uses 'any maskable' combined purpose for icons which is not PWA best practice. Should have separate icons: regular icons with 'any' purpose and maskable icons (with safe zone padding) with 'maskable' purpose.",
+      "category": "configuration",
+      "discovered_at": "2026-01-06T19:26:46.253123+00:00"
+    },
+    "public/icon-template.svg": {
+      "description": "SVG template for the unslump! logo using 4-color layered design (indigo #4f46e5, teal #14b8a6, orange #f97316, pink #ec4899). Can be used as base for generating maskable icon variants with proper safe zone padding.",
+      "category": "assets",
+      "discovered_at": "2026-01-06T19:26:46.273787+00:00"
+    }
+  },
+  "last_updated": "2026-01-06T19:26:46.273793+00:00"
+}

@@ -1,0 +1,154 @@
+{
+  "feature": "Custom PWA Icons & Branding",
+  "description": "Verify and optimize existing PWA icons for full compliance. The app already has professionally designed icons with the unslump! brand identity (4-color layered 'u!' design). This task focuses on ensuring proper icon configuration, adding maskable icon variants, and verifying Lighthouse PWA audit compliance.",
+  "created_at": "2026-01-06T19:23:40.660Z",
+  "updated_at": "2026-01-06T20:30:00.000Z",
+  "status": "in_progress",
+  "planStatus": "ready",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Icon Audit & Analysis",
+      "description": "Analyze current icons and identify gaps for PWA compliance",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "1.1",
+          "title": "Verify current icon dimensions and quality",
+          "description": "Check that icon-192.png is exactly 192x192, icon-512.png is exactly 512x512, apple-touch-icon.png is 180x180, and og-image.png is 1200x630. Verify image quality and file sizes.",
+          "status": "completed",
+          "acceptance_criteria": [
+            "icon-192.png is 192x192 pixels",
+            "icon-512.png is 512x512 pixels",
+            "apple-touch-icon.png is 180x180 pixels",
+            "og-image.png is 1200x630 pixels for social sharing",
+            "All images have appropriate file sizes (optimized but not over-compressed)"
+          ],
+          "notes": "Verified all icon dimensions and quality. icon-192.png (192x192, 5.7K), icon-512.png (512x512, 18K), apple-touch-icon.png (180x180, 5.3K), og-image.png (1200x630, 38K). All icons have excellent quality with professional 4-color 'u!' design and optimized file sizes.",
+          "updated_at": "2026-01-06T19:27:55.972573+00:00"
+        },
+        {
+          "id": "1.2",
+          "title": "Analyze manifest.json icon configuration",
+          "description": "Review the current manifest icon configuration. The current setup uses 'any maskable' combined purpose which is not recommended - maskable icons need special safe zone considerations.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "Identify issues with current 'any maskable' combined purpose",
+            "Document required changes for proper PWA compliance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Create Maskable Icon Variants",
+      "description": "Create properly designed maskable icons with content in the safe zone",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "2.1",
+          "title": "Create maskable SVG template",
+          "description": "Create a new SVG template for maskable icons where the logo content fits within the inner 80% safe zone circle. Maskable icons should have padding around the logo so it displays correctly when masked to circles, rounded squares, etc.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "New SVG template created with proper safe zone padding",
+            "Logo content centered within 80% inner circle",
+            "Background fills entire icon area"
+          ]
+        },
+        {
+          "id": "2.2",
+          "title": "Generate maskable PNG icons",
+          "description": "Generate maskable-192.png and maskable-512.png from the maskable SVG template. These will be used for Android adaptive icons and other platforms that apply masks.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "maskable-192.png created at 192x192 pixels",
+            "maskable-512.png created at 512x512 pixels",
+            "Icons display correctly when circular mask is applied"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Update Manifest & Configuration",
+      "description": "Update manifest.json with proper icon configuration separating any and maskable purposes",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "3.1",
+          "title": "Update manifest.json icon array",
+          "description": "Modify manifest.json to have separate icon entries: regular icons with 'any' purpose and maskable icons with 'maskable' purpose. This follows PWA best practices.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "icon-192.png listed with purpose 'any'",
+            "icon-512.png listed with purpose 'any'",
+            "maskable-192.png listed with purpose 'maskable'",
+            "maskable-512.png listed with purpose 'maskable'",
+            "Manifest validates correctly"
+          ]
+        },
+        {
+          "id": "3.2",
+          "title": "Update service worker cache",
+          "description": "Increment service worker version and add new maskable icons to the cache list for offline support.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "Service worker CACHE_NAME version incremented",
+            "New maskable icons added to urlsToCache array"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Verification & Testing",
+      "description": "Verify all icons work correctly and pass PWA audits",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "4.1",
+          "title": "Run Lighthouse PWA audit",
+          "description": "Build the project and run Lighthouse PWA audit to verify all icon requirements pass. Check for installability, icon presence, and maskable icon support.",
+          "status": "pending",
+          "acceptance_criteria": [
+            "Project builds successfully",
+            "Lighthouse PWA audit passes icon checks",
+            "No warnings about icon configuration",
+            "App is installable as PWA"
+          ]
+        },
+        {
+          "id": "4.2",
+          "title": "Visual verification across platforms",
+          "description": "Verify icons display correctly in different contexts: browser tab (favicon), iOS home screen (apple-touch-icon), Android home screen (maskable), and social sharing previews (og-image).",
+          "status": "pending",
+          "acceptance_criteria": [
+            "Favicon displays correctly in browser tab",
+            "Apple touch icon renders properly on iOS",
+            "Maskable icon displays correctly with circular mask",
+            "OG image shows correctly in link previews"
+          ]
+        }
+      ]
+    }
+  ],
+  "qa_checklist": [
+    "All PWA icons present: icon-192.png, icon-512.png, maskable-192.png, maskable-512.png",
+    "Apple touch icon (apple-touch-icon.png) properly sized at 180x180",
+    "Open Graph image (og-image.png) sized at 1200x630",
+    "Favicon (favicon.svg) displays in browser tabs",
+    "Manifest.json has correct icon configuration with separate purposes",
+    "Service worker caches all icon assets",
+    "Lighthouse PWA audit passes all icon-related checks",
+    "Icons maintain brand identity (4-color 'u!' design)",
+    "Maskable icons have proper safe zone padding"
+  ],
+  "qa_status": {
+    "status": "pending",
+    "tests_passed": "",
+    "issues": ""
+  },
+  "estimated_effort": "2-3 hours",
+  "last_updated": "2026-01-06T19:27:55.972579+00:00"
+}
