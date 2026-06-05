@@ -140,6 +140,7 @@ describe('workoutController', () => {
 
     // Clear mocks
     vi.clearAllMocks();
+    vi.useFakeTimers();
     vi.clearAllTimers();
 
     // Mock Date.now for consistent testing
@@ -203,7 +204,7 @@ describe('workoutController', () => {
     it('should return null for nextExercise when at last exercise', () => {
       workoutSession.set({
         ...workoutSession.get(),
-        currentPhaseIndex: 1,
+        currentPhaseIndex: 3,
         currentExerciseIndex: 0, // Last exercise of last phase
       });
 
@@ -213,14 +214,14 @@ describe('workoutController', () => {
     });
 
     it('should compute totalExercises', () => {
-      expect(totalExercises.get()).toBe(3); // 2 in phase 1 + 1 in phase 2
+      expect(totalExercises.get()).toBe(5); // All exercises across four phases
     });
 
     it('should compute overallProgress', () => {
       const progress = overallProgress.get();
 
       expect(progress.current).toBe(1);
-      expect(progress.total).toBe(3);
+      expect(progress.total).toBe(5);
     });
 
     it('should compute overallProgress for different position', () => {
@@ -233,7 +234,7 @@ describe('workoutController', () => {
       const progress = overallProgress.get();
 
       expect(progress.current).toBe(3); // 2 from phase 1 + 1 current
-      expect(progress.total).toBe(3);
+      expect(progress.total).toBe(5);
     });
   });
 
@@ -383,7 +384,7 @@ describe('workoutController', () => {
       // Move to last exercise of last phase
       workoutSession.set({
         ...workoutSession.get(),
-        currentPhaseIndex: 1,
+        currentPhaseIndex: 3,
         currentExerciseIndex: 0,
       });
 

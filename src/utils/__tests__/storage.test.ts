@@ -153,7 +153,7 @@ describe('storage', () => {
 
     it('should handle storage errors gracefully', () => {
       // Mock localStorage to throw an error
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+      const setItemSpy = vi.spyOn(localStorage, 'setItem');
       setItemSpy.mockImplementation(() => {
         throw new Error('Storage full');
       });
@@ -195,7 +195,7 @@ describe('storage', () => {
     });
 
     it('should handle removal errors gracefully', () => {
-      const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
+      const removeItemSpy = vi.spyOn(localStorage, 'removeItem');
       removeItemSpy.mockImplementation(() => {
         throw new Error('Cannot remove');
       });
@@ -230,7 +230,7 @@ describe('storage', () => {
     });
 
     it('should handle storage errors gracefully', () => {
-      const getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+      const getItemSpy = vi.spyOn(localStorage, 'getItem');
       getItemSpy.mockImplementation(() => {
         throw new Error('Storage error');
       });
@@ -257,7 +257,7 @@ describe('storage', () => {
     });
 
     it('should handle storage errors gracefully', () => {
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+      const setItemSpy = vi.spyOn(localStorage, 'setItem');
       setItemSpy.mockImplementation(() => {
         throw new Error('Storage full');
       });
@@ -284,7 +284,7 @@ describe('storage', () => {
     });
 
     it('should handle removal errors gracefully', () => {
-      const removeItemSpy = vi.spyOn(Storage.prototype, 'removeItem');
+      const removeItemSpy = vi.spyOn(localStorage, 'removeItem');
       removeItemSpy.mockImplementation(() => {
         throw new Error('Cannot remove');
       });
@@ -441,7 +441,7 @@ describe('storage', () => {
 
     it('should handle localStorage quota exceeded', () => {
       // Try to fill storage with huge data
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+      const setItemSpy = vi.spyOn(localStorage, 'setItem');
       let callCount = 0;
       setItemSpy.mockImplementation(() => {
         callCount++;

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { celebratePhase, celebrateComplete } from '../celebration';
-import type { PhaseId } from '../../types/workout';
 
 describe('celebration', () => {
   let mockConfetti: any;
@@ -45,10 +44,11 @@ describe('celebration', () => {
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    document.body.replaceChildren();
     delete (window as any).confetti;
     delete (window as any).motionAnimate;
     delete (window as any).motionStagger;
+    vi.useRealTimers();
   });
 
   describe('celebratePhase', () => {
@@ -144,7 +144,7 @@ describe('celebration', () => {
     });
 
     it('should not throw when letter group not found', () => {
-      document.body.innerHTML = '';
+      document.body.replaceChildren();
 
       expect(() => celebratePhase('fase1')).not.toThrow();
       expect(mockConfetti).not.toHaveBeenCalled();
@@ -202,8 +202,9 @@ describe('celebration', () => {
       vi.useFakeTimers();
 
       celebrateComplete();
+      vi.advanceTimersByTime(0);
 
-      // First phase confetti should fire immediately
+      // First phase confetti should fire on the first queued timeout.
       expect(mockConfetti).toHaveBeenCalledTimes(1);
 
       // Advance through each staggered delay
@@ -223,6 +224,7 @@ describe('celebration', () => {
       vi.useFakeTimers();
 
       celebrateComplete();
+      vi.advanceTimersByTime(0);
 
       // Check fase1 (indigo)
       expect(mockConfetti).toHaveBeenCalledWith(
@@ -262,7 +264,10 @@ describe('celebration', () => {
     });
 
     it('should use larger particle count for complete celebration', () => {
+      vi.useFakeTimers();
+
       celebrateComplete();
+      vi.advanceTimersByTime(0);
 
       expect(mockConfetti).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -293,7 +298,7 @@ describe('celebration', () => {
     });
 
     it('should handle missing letter groups gracefully', () => {
-      document.body.innerHTML = '';
+      document.body.replaceChildren();
 
       // Create only 2 out of 4 letter groups
       ['fase1', 'fase3'].forEach(phaseId => {

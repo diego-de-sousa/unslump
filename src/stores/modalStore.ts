@@ -15,9 +15,11 @@ export const exerciseInfoData = atom<ExerciseInfoModalData | null>(null);
 /**
  * Open a modal by ID
  */
-export function openModal(modalId: ModalId, data?: any): void {
-  if (modalId === 'exercise-info' && data) {
-    exerciseInfoData.set(data);
+export function openModal(modalId: ModalId, data?: ExerciseInfoModalData): void {
+  if (modalId === 'exercise-info') {
+    exerciseInfoData.set(data ?? null);
+  } else {
+    exerciseInfoData.set(null);
   }
   currentModal.set(modalId);
 

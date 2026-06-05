@@ -2,6 +2,17 @@
   "name": "unslump",
   "type": "module",
   "version": "1.0.0",
+  "packageManager": "pnpm@11.5.2",
+  "description": "A bilingual PWA with a science-backed 25-minute exercise routine for office workers.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cozarkd/unslump.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cozarkd/unslump/issues"
+  },
+  "homepage": "https://unslump.vercel.app",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

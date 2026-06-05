@@ -24,6 +24,7 @@ export default defineConfig({
       'dist',
       '.astro',
       'coverage',
+      'tests/e2e/**',
       '**/*.config.*'
     ],
 

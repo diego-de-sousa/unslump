@@ -139,28 +139,30 @@ describe('dateReset', () => {
       );
     });
 
-    it('should handle midnight boundary correctly', () => {
-      // Day 1 at 23:59
-      vi.setSystemTime(new Date('2025-01-15T23:59:00Z'));
+    it('should handle local midnight boundary correctly', () => {
+      // Day 1 at 23:59 in the user's local timezone.
+      const dayOneLateNight = new Date(2025, 0, 15, 23, 59, 0);
+      vi.setSystemTime(dayOneLateNight);
 
       vi.mocked(storage.loadProgress).mockReturnValue({
         completed: ['fase1-ex1'],
         level: 'principiante',
         sessionLocked: false,
-        lastSessionDate: '2025-01-15T23:59:00Z'
+        lastSessionDate: dayOneLateNight.toISOString()
       });
 
       let result = checkAndResetIfNewDay();
       expect(result).toBe(false);
 
-      // Day 2 at 00:01
-      vi.setSystemTime(new Date('2025-01-16T00:01:00Z'));
+      // Day 2 at 00:01 in the user's local timezone.
+      const dayTwoEarlyMorning = new Date(2025, 0, 16, 0, 1, 0);
+      vi.setSystemTime(dayTwoEarlyMorning);
 
       vi.mocked(storage.loadProgress).mockReturnValue({
         completed: ['fase1-ex1'],
         level: 'principiante',
         sessionLocked: false,
-        lastSessionDate: '2025-01-15T23:59:00Z'
+        lastSessionDate: dayOneLateNight.toISOString()
       });
 
       result = checkAndResetIfNewDay();

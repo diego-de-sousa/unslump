@@ -31,7 +31,7 @@ describe('toast', () => {
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    document.body.replaceChildren();
     vi.restoreAllMocks();
     vi.useRealTimers();
   });
@@ -49,29 +49,29 @@ describe('toast', () => {
       showToast({ message: 'Info message' });
 
       expect(mockToast.style.background).toBe('rgba(59, 130, 246, 0.95)');
-      expect(mockToast.style.borderColor).toBe('rgb(59, 130, 246)');
-      expect(mockTextElement.style.color).toBe('rgb(255, 255, 255)');
+      expect(mockToast.style.borderColor).toBe('#3b82f6');
+      expect(mockTextElement.style.color).toBe('#ffffff');
     });
 
     it('should apply success styles', () => {
       showToast({ message: 'Success!', type: 'success' });
 
       expect(mockToast.style.background).toBe('rgba(16, 185, 129, 0.95)');
-      expect(mockToast.style.borderColor).toBe('rgb(16, 185, 129)');
+      expect(mockToast.style.borderColor).toBe('#10b981');
     });
 
     it('should apply error styles', () => {
       showToast({ message: 'Error!', type: 'error' });
 
       expect(mockToast.style.background).toBe('rgba(239, 68, 68, 0.95)');
-      expect(mockToast.style.borderColor).toBe('rgb(239, 68, 68)');
+      expect(mockToast.style.borderColor).toBe('#ef4444');
     });
 
     it('should apply warning styles', () => {
       showToast({ message: 'Warning!', type: 'warning' });
 
       expect(mockToast.style.background).toBe('rgba(245, 158, 11, 0.95)');
-      expect(mockToast.style.borderColor).toBe('rgb(245, 158, 11)');
+      expect(mockToast.style.borderColor).toBe('#f59e0b');
     });
 
     it('should auto-hide after default duration (3000ms)', () => {
@@ -123,7 +123,7 @@ describe('toast', () => {
     });
 
     it('should handle missing DOM elements gracefully', () => {
-      document.body.innerHTML = '';
+      document.body.replaceChildren();
 
       expect(() => showToast({ message: 'No elements' })).not.toThrow();
       expect(console.warn).toHaveBeenCalledWith('Toast elements not found in DOM');
@@ -175,7 +175,7 @@ describe('toast', () => {
     });
 
     it('should handle missing container gracefully', () => {
-      document.body.innerHTML = '';
+      document.body.replaceChildren();
 
       expect(() => hideToast()).not.toThrow();
     });
@@ -252,8 +252,8 @@ describe('toast', () => {
 
       toast.success('Success', 1000);
 
-      // Info timeout should be cleared
-      vi.advanceTimersByTime(1500);
+      // Info timeout should be cleared; success timeout should still be active just before 1000ms.
+      vi.advanceTimersByTime(999);
       expect(mockContainer.style.opacity).toBe('1'); // Still showing
 
       vi.advanceTimersByTime(1);

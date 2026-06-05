@@ -366,7 +366,13 @@ describe('progressStore', () => {
     });
 
     it('isFullyCompleted should return true when all exercises completed', () => {
-      completedExercises.set(new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3']));
+      completedExercises.set(new Set([
+        'fase1-ex1',
+        'fase1-ex2',
+        'fase2-ex3',
+        'fase3-ex4',
+        'fase4-ex5'
+      ]));
 
       expect(isFullyCompleted.get()).toBe(true);
     });

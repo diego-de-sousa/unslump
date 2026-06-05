@@ -266,18 +266,18 @@ describe('progress utilities', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false for empty workout', () => {
+    it('should return false for an empty completed set', () => {
       const completed = new Set<string>();
       const result = isWorkoutCompleted(mockWorkout, completed);
 
       expect(result).toBe(false);
     });
 
-    it('should return false when set has extra exercises', () => {
+    it('should ignore extra completed exercises when all workout exercises are done', () => {
       const completed = new Set(['fase1-ex1', 'fase1-ex2', 'fase2-ex3', 'fase3-ex4', 'fase4-ex5', 'fase5-ex1']);
       const result = isWorkoutCompleted(mockWorkout, completed);
 
-      // More exercises in set than in workout - should still be true since all workout exercises are done
+      // Stale/unknown exercise keys should not block completion when all workout exercises are done.
       expect(result).toBe(true);
     });
 

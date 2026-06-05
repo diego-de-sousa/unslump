@@ -11,7 +11,7 @@ export default defineConfig({
       enabled: true
     }
   }),
-  site: 'https://desatrofiate.vercel.app',
+  site: 'https://unslump.vercel.app',
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es'],

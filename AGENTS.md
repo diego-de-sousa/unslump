@@ -1,10 +1,10 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Pi agent and compatible coding agents when working with code in this repository.
 
 ## Project Overview
 
-**unslump!** (formerly Desatrófiate) is a bilingual Progressive Web App (PWA) for office workers that provides a scientifically-backed 25-minute exercise routine designed to counteract hours of computer work and improve posture. The app is based on 30+ peer-reviewed scientific studies and is available in English and Spanish.
+**unslump!** is a bilingual Progressive Web App (PWA) for office workers that provides a scientifically-backed 25-minute exercise routine designed to counteract hours of computer work and improve posture. The app is based on 30+ peer-reviewed scientific studies and is available in English and Spanish.
 
 ## Tech Stack
 
@@ -350,12 +350,11 @@ The app supports English and Spanish with the following structure:
 
 ### State Management
 
-The app uses vanilla JavaScript with localStorage for state persistence:
-- Exercise completion status tracked per phase
-- User's selected difficulty level (beginner/intermediate/advanced)
-- Progress persists across sessions
-- Language preference handled by URL routing (no storage needed)
-- No external state management library needed
+The app uses Nanostores for client-side state and localStorage for persistence:
+- Store modules in `src/stores/` manage workout state, progress, user profile, navigation, level selection, and modals
+- Exercise completion and user/workout preferences persist in localStorage
+- Utility modules in `src/utils/` handle storage, date reset, progress calculations, toasts, and celebrations
+- Language preference is handled by URL routing rather than a global store
 
 ### Component Structure
 

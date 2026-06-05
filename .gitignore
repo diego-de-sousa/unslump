@@ -32,11 +32,13 @@ test-results/
 playwright-report/
 coverage/
 
-# Auto Claude data directory
+# local agent runtime state
 .auto-claude/
-.claude_settings.json
 .auto-claude-status
-
+.claude/
+.claude_settings.json
+.pi/
+.atl/
 
 # worktrees
 .worktrees/

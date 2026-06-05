@@ -110,9 +110,17 @@ export function isWorkoutCompleted(
   workout: Workout,
   completedExercises: Set<string>
 ): boolean {
-  const totalExercises = Object.values(workout).reduce(
-    (sum, phase) => sum + phase.exercises.length,
-    0
-  );
-  return completedExercises.size === totalExercises && totalExercises > 0;
+  let totalExercises = 0;
+
+  for (const [phaseId, phase] of Object.entries(workout)) {
+    for (const exercise of phase.exercises) {
+      totalExercises++;
+
+      if (!completedExercises.has(getExerciseKey(phaseId, exercise.id))) {
+        return false;
+      }
+    }
+  }
+
+  return totalExercises > 0;
 }

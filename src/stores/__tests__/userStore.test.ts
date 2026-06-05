@@ -306,6 +306,7 @@ describe('userStore', () => {
 
       // Check status today (didn't complete yet)
       vi.setSystemTime(new Date('2025-01-15T10:00:00Z'));
+      userProfile.set({ ...userProfile.get() });
 
       const status = streakStatus.get();
 

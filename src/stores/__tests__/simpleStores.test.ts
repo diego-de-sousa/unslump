@@ -5,8 +5,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   currentLevel,
   initializeLevel,
-  setLevel,
-  type Level
+  setLevel
 } from '../levelStore';
 
 // Modal Store
@@ -124,6 +123,15 @@ describe('levelStore', () => {
 });
 
 describe('modalStore', () => {
+  const exerciseInfoFixture = {
+    exerciseId: 'ex1',
+    exerciseName: 'Test Exercise',
+    muscles: 'Test muscles',
+    why: 'Test why',
+    evidence: 'Test evidence',
+    tips: 'Test tips'
+  };
+
   beforeEach(() => {
     // Reset stores
     currentModal.set(null);
@@ -147,16 +155,10 @@ describe('modalStore', () => {
     });
 
     it('should set exercise info data for exercise-info modal', () => {
-      const exerciseData = {
-        phaseId: 'fase1',
-        exerciseId: 'ex1',
-        exerciseName: 'Test Exercise'
-      };
-
-      openModal('exercise-info', exerciseData);
+      openModal('exercise-info', exerciseInfoFixture);
 
       expect(currentModal.get()).toBe('exercise-info');
-      expect(exerciseInfoData.get()).toEqual(exerciseData);
+      expect(exerciseInfoData.get()).toEqual(exerciseInfoFixture);
     });
 
     it('should open different modals', () => {
@@ -166,7 +168,7 @@ describe('modalStore', () => {
       openModal('references');
       expect(currentModal.get()).toBe('references');
 
-      openModal('exercise-info', {});
+      openModal('exercise-info', exerciseInfoFixture);
       expect(currentModal.get()).toBe('exercise-info');
     });
   });
@@ -187,7 +189,7 @@ describe('modalStore', () => {
     });
 
     it('should clear exercise info data', () => {
-      openModal('exercise-info', { exerciseId: 'ex1' });
+      openModal('exercise-info', exerciseInfoFixture);
       closeModal();
 
       expect(exerciseInfoData.get()).toBeNull();
@@ -243,7 +245,7 @@ describe('modalStore', () => {
     });
 
     it('should clear previous exercise info when switching modals', () => {
-      openModal('exercise-info', { exerciseId: 'ex1' });
+      openModal('exercise-info', exerciseInfoFixture);
       openModal('help');
 
       expect(exerciseInfoData.get()).toBeNull();

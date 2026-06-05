@@ -25,6 +25,12 @@ const localStorageMock = (() => {
   };
 })();
 
+Object.defineProperty(globalThis, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+  configurable: true
+});
+
 // Mock window.confetti (canvas-confetti library)
 const confettiMock = vi.fn(() => Promise.resolve());
 Object.assign(confettiMock, {
@@ -37,13 +43,15 @@ beforeEach(() => {
   // Mock localStorage
   Object.defineProperty(global, 'localStorage', {
     value: localStorageMock,
-    writable: true
+    writable: true,
+    configurable: true
   });
 
   // Mock confetti
   Object.defineProperty(global, 'confetti', {
     value: confettiMock,
-    writable: true
+    writable: true,
+    configurable: true
   });
 
   // Mock window.matchMedia (for responsive design tests)
