@@ -1,35 +1,64 @@
-# unslump!
+# unslump! 🧘‍♀️💻
 
-**unslump!** is a bilingual Progressive Web App (PWA) for office workers: a guided 25-minute exercise routine designed to counteract long hours at a desk and support better posture.
+**A science-backed 25-minute movement break for desk workers.**
 
-The routine is organized around a corrective exercise protocol and backed by 30+ peer-reviewed references. It is available in English and Spanish.
+unslump! is a bilingual Progressive Web App that guides office workers through a short corrective exercise routine designed to counteract long hours at a computer and support better posture.
 
-## Quick start
+<p align="center">
+  <img src="public/og-image.png" alt="unslump! preview" width="720" />
+</p>
+
+<p align="center">
+  <a href="https://unslump.vercel.app"><strong>🌐 Live demo</strong></a>
+  ·
+  <a href="#-quick-start"><strong>Run locally</strong></a>
+  ·
+  <a href="#-why-unslump"><strong>Why it exists</strong></a>
+</p>
+
+---
+
+## ✨ What it does
+
+- ⏱️ **Guides a full 25-minute routine** with timers, prep periods, rests, and exercise navigation.
+- 🧬 **Uses a 4-phase corrective protocol**: inhibit, lengthen, activate, integrate.
+- 🌎 **Supports English and Spanish** with localized routes and SEO metadata.
+- 📈 **Tracks progress locally** with `localStorage`, streaks, and completion state.
+- 📱 **Works as a PWA** with manifest, service worker, installable icons, and offline support.
+- 🧪 **Includes automated tests** with Vitest and Playwright.
+
+## 🧠 Why unslump?
+
+Desk work encourages the same posture for hours: rounded shoulders, forward head position, tight hip flexors, sleepy glutes, and stiff upper backs.
+
+unslump! turns corrective exercise principles into a simple app flow:
+
+| Phase | Goal |
+| --- | --- |
+| 1. Inhibit | Reduce overactivity in tight areas with myofascial release. |
+| 2. Lengthen | Restore range of motion with targeted stretching. |
+| 3. Activate | Wake up underused stabilizers and posture-supporting muscles. |
+| 4. Integrate | Reinforce better movement with functional patterns. |
+
+The routine references **30+ peer-reviewed studies** and keeps the user experience lightweight: open the app, press start, follow along.
+
+## 🚀 Quick start
 
 ```bash
 pnpm install
 pnpm run dev
 ```
 
-Open the local Astro server and choose one of the localized routes:
+Then open one of the localized routes:
 
-- `/en/` — English landing page
-- `/es/` — Spanish landing page
-- `/en/app` and `/es/app` — exercise browser
-- `/en/workout` and `/es/workout` — guided workout flow
+| Route | Purpose |
+| --- | --- |
+| `/en/` | English landing page |
+| `/es/` | Spanish landing page |
+| `/en/app` / `/es/app` | Exercise browser |
+| `/en/workout` / `/es/workout` | Guided workout flow |
 
-## What it includes
-
-- Science-backed 4-phase protocol: inhibit, lengthen, activate, integrate
-- Guided 25-minute workout with timers, rest periods, and exercise navigation
-- Exercise browser with progress tracking
-- Difficulty levels for scalable instructions
-- Local progress persistence with `localStorage`
-- English and Spanish content, SEO metadata, and localized routes
-- PWA manifest, service worker, installable icons, and offline support
-- Unit tests with Vitest and E2E tests with Playwright
-
-## Tech stack
+## 🛠️ Tech stack
 
 | Area | Tooling |
 | --- | --- |
@@ -42,7 +71,7 @@ Open the local Astro server and choose one of the localized routes:
 | Tests | Vitest + Playwright |
 | Package manager | pnpm |
 
-## Commands
+## 📦 Commands
 
 ```bash
 pnpm run dev            # Start development server
@@ -54,7 +83,7 @@ pnpm test:e2e           # Run Playwright E2E tests
 pnpm test:e2e:ui        # Run Playwright in UI mode
 ```
 
-## Project structure
+## 🗂️ Project structure
 
 ```text
 public/                 PWA icons, manifest, service worker, static assets
@@ -68,7 +97,7 @@ src/pages/              Localized Astro routes
 tests/e2e/              Playwright E2E tests
 ```
 
-## Deployment
+## 🚢 Deployment
 
 The project is configured for Vercel.
 
@@ -76,31 +105,28 @@ The project is configured for Vercel.
 pnpm run build
 ```
 
-Vercel settings:
-
-| Setting | Value |
+| Vercel setting | Value |
 | --- | --- |
 | Build command | `pnpm run build` |
 | Install command | `pnpm install` |
 | Framework | Astro |
-| Output | Vercel adapter output |
 
-The canonical site URL is configured in `astro.config.mjs`. Update it if the production deployment does not use `https://unslump.vercel.app`.
+The canonical production URL is configured in `astro.config.mjs`.
 
-## PWA notes
+## 📲 PWA notes
 
 - Increment `CACHE_NAME` in `public/sw.js` when deploying changes that must invalidate the offline cache.
 - Keep app icons in `public/`: `icon-192.png`, `icon-512.png`, `maskable-192.png`, `maskable-512.png`, `apple-touch-icon.png`, and `og-image.png`.
 - Test installability with Chrome DevTools → Application → Manifest and Lighthouse.
 
-## Agent instructions
+## 🤖 Agent instructions
 
-Project-specific coding-agent guidance lives in `AGENTS.md`. Pi loads `AGENTS.md` at startup, and it can also load compatible context files from parent directories.
+Project-specific coding-agent guidance lives in [`AGENTS.md`](AGENTS.md). Pi loads `AGENTS.md` at startup, and compatible agents can use it for project conventions, commands, architecture notes, and testing guidance.
 
-## Medical disclaimer
+## ⚕️ Medical disclaimer
 
 unslump! is an educational exercise app, not medical advice. Users with pain, injuries, medical conditions, or uncertainty about exercise safety should consult a qualified health professional.
 
-## License
+## 📄 License
 
 MIT — see [`LICENSE`](LICENSE).
