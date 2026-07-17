@@ -1,5 +1,31 @@
 import { test, expect } from '@playwright/test';
 
+interface ProgressState {
+  completed: string[];
+}
+
+interface WorkoutSessionState {
+  workoutState: string;
+  currentPhaseIndex: number;
+  currentExerciseIndex: number;
+  isPaused: boolean;
+  currentReps: number;
+  currentSet: number;
+  currentSide: number;
+}
+
+function parseStoredJson<T>(value: string | null, key: string): T {
+  if (value === null) {
+    throw new Error(`Expected localStorage key "${key}" to exist`);
+  }
+
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    throw new Error(`Expected localStorage key "${key}" to contain valid JSON`);
+  }
+}
+
 test.describe('Progress Persistence', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/');
@@ -24,19 +50,20 @@ test.describe('Progress Persistence', () => {
     await completeBtn.click();
 
     // Get the exercise key that was completed
-    const completedKey = await page.evaluate(() => {
-      const progress = JSON.parse(localStorage.getItem('unslump-progress') || '{}');
-      return progress.completed[0];
-    });
+    const savedProgress = parseStoredJson<ProgressState>(
+      await page.evaluate(() => localStorage.getItem('unslump-progress')),
+      'unslump-progress',
+    );
+    const completedKey = savedProgress.completed[0];
 
     // Reload page
     await page.reload();
 
     // Check that progress is still there
-    const progressAfterReload = await page.evaluate(() => {
-      const data = localStorage.getItem('unslump-progress');
-      return data ? JSON.parse(data) : null;
-    });
+    const progressAfterReload = parseStoredJson<ProgressState>(
+      await page.evaluate(() => localStorage.getItem('unslump-progress')),
+      'unslump-progress',
+    );
 
     expect(progressAfterReload.completed).toContain(completedKey);
   });
@@ -44,50 +71,44 @@ test.describe('Progress Persistence', () => {
   test('should save workout session state', async ({ page }) => {
     await page.goto('/en/workout');
 
-    // Wait longer for workout to fully start and reach active state
-    await page.waitForTimeout(10000);
+    await expect.poll(() => page.evaluate(() =>
+      localStorage.getItem('unslump-workout-session'),
+    )).not.toBeNull();
 
-    // Check that session state is saved (auto-saves during workout)
-    const sessionState = await page.evaluate(() => {
-      const data = localStorage.getItem('workout-session-state');
-      return data ? JSON.parse(data) : null;
+    const sessionState = parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    );
+    expect(sessionState).toMatchObject({
+      workoutState: 'PHASE_INTRO',
+      currentPhaseIndex: 0,
+      currentExerciseIndex: 0,
     });
-
-    // Session should be saved automatically during workout
-    if (sessionState) {
-      expect(sessionState.workoutState).toBeTruthy();
-    } else {
-      // If no session saved yet, just verify workout is running
-      const container = await page.locator('#workoutContainer').isVisible();
-      expect(container).toBe(true);
-    }
   });
 
   test('should restore workout session on reload', async ({ page }) => {
-    await page.goto('/en/workout');
-
-    // Wait longer for workout to reach active state and save
-    await page.waitForTimeout(10000);
-
-    // Manually save a session state to ensure we have something to restore
     await page.evaluate(() => {
-      localStorage.setItem('workout-session-state', JSON.stringify({
+      localStorage.setItem('unslump-workout-session', JSON.stringify({
         workoutState: 'EXERCISE_ACTIVE',
         currentPhaseIndex: 0,
-        currentExerciseIndex: 0,
+        currentExerciseIndex: 1,
         timeLeft: 30,
-        isPaused: false
+        isPaused: false,
+        startTime: Date.now(),
+        pausedTime: null,
+        currentReps: 0,
+        currentSet: 1,
+        currentSide: 1,
       }));
     });
 
-    // Reload page
     await page.goto('/en/workout');
 
-    // Resume modal should appear
-    await expect(page.locator('#resumeModal')).toBeVisible({ timeout: 10000 });
-
-    // Has resume button
-    await expect(page.locator('#resumeButton')).toBeVisible();
+    const resumeHeading = page.getByRole('heading', { name: 'Resume where you left off?' });
+    await expect(resumeHeading).toBeVisible({ timeout: 10000 });
+    await page.getByRole('button', { name: 'Resume workout' }).click();
+    await expect(resumeHeading).toBeHidden();
+    await expect(page.getByRole('heading', { name: 'Pectoral release' })).toBeVisible();
   });
 
   test('should handle browser navigation (back/forward)', async ({ page }) => {
@@ -112,10 +133,10 @@ test.describe('Progress Persistence', () => {
     await expect(page).toHaveURL(/\/en\/app/);
 
     // Progress should still be there in localStorage
-    const progress = await page.evaluate(() => {
-      const data = localStorage.getItem('unslump-progress');
-      return data ? JSON.parse(data) : null;
-    });
+    const progress = parseStoredJson<ProgressState>(
+      await page.evaluate(() => localStorage.getItem('unslump-progress')),
+      'unslump-progress',
+    );
     expect(progress.completed.length).toBeGreaterThan(0);
   });
 
@@ -178,45 +199,51 @@ test.describe('Progress Persistence', () => {
     await completeBtn2.click();
 
     // Progress should accumulate
-    const progress = await page.evaluate(() => {
-      const data = localStorage.getItem('unslump-progress');
-      return data ? JSON.parse(data) : null;
-    });
+    const progress = parseStoredJson<ProgressState>(
+      await page.evaluate(() => localStorage.getItem('unslump-progress')),
+      'unslump-progress',
+    );
 
     expect(progress.completed.length).toBe(2);
   });
 
   test('should clear workout session when starting new', async ({ page }) => {
-    // Create a saved session
-    await page.goto('/en/workout');
     await page.evaluate(() => {
-      localStorage.setItem('workout-session-state', JSON.stringify({
+      localStorage.setItem('unslump-workout-session', JSON.stringify({
         workoutState: 'EXERCISE_ACTIVE',
-        currentPhaseIndex: 0,
-        currentExerciseIndex: 0,
+        currentPhaseIndex: 2,
+        currentExerciseIndex: 3,
         timeLeft: 30,
-        isPaused: false
+        isPaused: true,
+        startTime: Date.now(),
+        pausedTime: Date.now(),
+        currentReps: 5,
+        currentSet: 2,
+        currentSide: 2,
       }));
     });
 
     await page.goto('/en/workout');
+    await page.getByRole('button', { name: 'Start from beginning' }).click();
 
-    // Click start new
-    await page.locator('#startNewButton').click();
-
-    // Modal should close
-    await expect(page.locator('#resumeModal')).toBeHidden();
-
-    // New session should be created
-    const sessionState = await page.evaluate(() => {
-      const data = localStorage.getItem('workout-session-state');
-      return data ? JSON.parse(data) : null;
-    });
-
-    expect(sessionState).toBeTruthy();
-    // Should have reset to initial state
-    expect(sessionState.currentPhaseIndex).toBe(0);
-    expect(sessionState.currentExerciseIndex).toBe(0);
+    await expect(
+      page.getByRole('heading', { name: 'Resume where you left off?' }),
+    ).toBeHidden();
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
+      return [
+        session.workoutState,
+        session.currentPhaseIndex,
+        session.currentExerciseIndex,
+        session.isPaused,
+        session.currentReps,
+        session.currentSet,
+        session.currentSide,
+      ];
+    }).toEqual(['PHASE_INTRO', 0, 0, false, 0, 1, 1]);
   });
 
   test('should handle storage quota exceeded', async ({ page }) => {

@@ -1,5 +1,23 @@
 import { test, expect, type Page } from '@playwright/test';
 
+interface WorkoutSessionState {
+  workoutState: string;
+  currentExerciseIndex: number;
+  isPaused: boolean;
+}
+
+function parseStoredJson<T>(value: string | null, key: string): T {
+  if (value === null) {
+    throw new Error(`Expected localStorage key "${key}" to exist`);
+  }
+
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    throw new Error(`Expected localStorage key "${key}" to contain valid JSON`);
+  }
+}
+
 test.describe('Guided Workout Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Clear localStorage before each test
@@ -37,56 +55,6 @@ test.describe('Guided Workout Flow', () => {
     await expect(page.locator('#pausePlayButton')).toBeVisible();
   });
 
-  test('should show resume modal if session exists', async ({ page }) => {
-    // Create a saved session
-    await page.goto('/en/workout');
-    await page.evaluate(() => {
-      localStorage.setItem('workout-session-state', JSON.stringify({
-        workoutState: 'EXERCISE_ACTIVE',
-        currentPhaseIndex: 0,
-        currentExerciseIndex: 0,
-        timeLeft: 30,
-        isPaused: false
-      }));
-    });
-
-    // Reload page
-    await page.goto('/en/workout');
-
-    // Resume modal should appear
-    const resumeModal = page.locator('#resumeModal');
-    await expect(resumeModal).toBeVisible({ timeout: 10000 });
-
-    // Should have resume and start new buttons
-    await expect(page.locator('#resumeButton')).toBeVisible();
-    await expect(page.locator('#startNewButton')).toBeVisible();
-  });
-
-  test('should start new workout from resume modal', async ({ page }) => {
-    // Create a saved session
-    await page.goto('/en/workout');
-    await page.evaluate(() => {
-      localStorage.setItem('workout-session-state', JSON.stringify({
-        workoutState: 'EXERCISE_ACTIVE',
-        currentPhaseIndex: 0,
-        currentExerciseIndex: 0,
-        timeLeft: 30,
-        isPaused: false
-      }));
-    });
-
-    await page.goto('/en/workout');
-
-    // Click start new
-    await page.locator('#startNewButton').click();
-
-    // Modal should close
-    await expect(page.locator('#resumeModal')).toBeHidden();
-
-    // Workout should be running
-    await expect(page.locator('#pausePlayButton')).toBeVisible();
-  });
-
   test('should open and close settings modal', async ({ page }) => {
     await page.goto('/en/workout');
 
@@ -116,10 +84,13 @@ test.describe('Guided Workout Flow', () => {
     await page.goto('/en/workout');
     await dismissOnboardingIfPresent(page);
     await page.locator('#continueFromPhaseBtn').click();
-    await expect.poll(() => page.evaluate(() => {
-      const session = localStorage.getItem('unslump-workout-session');
-      return session ? JSON.parse(session).workoutState : null;
-    }), { timeout: 10_000 }).toBe('EXERCISE_ACTIVE');
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
+      return session.workoutState;
+    }, { timeout: 10_000 }).toBe('EXERCISE_ACTIVE');
   }
 
   async function restoreActiveWorkout(page: Page, exerciseIndex: number) {
@@ -148,12 +119,18 @@ test.describe('Guided Workout Flow', () => {
     await page.locator('#pausePlayButton').click();
     await expect(page.locator('#playIcon')).toBeVisible();
     await expect(page.locator('#navigationButtons')).toBeVisible();
-    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('unslump-workout-session')!).isPaused)).toBe(true);
+    await expect.poll(async () => parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    ).isPaused).toBe(true);
 
     await page.locator('#pausePlayButton').click();
     await expect(page.locator('#playIcon')).toBeHidden();
     await expect(page.locator('#navigationButtons')).toBeHidden();
-    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('unslump-workout-session')!).isPaused)).toBe(false);
+    await expect.poll(async () => parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    ).isPaused).toBe(false);
   });
 
   test('should navigate to previous exercise when paused', async ({ page }) => {
@@ -163,10 +140,13 @@ test.describe('Guided Workout Flow', () => {
     await expect(previousButton).toBeVisible();
     await previousButton.click();
     await expect(page.locator('#playIcon')).toBeVisible();
-    await expect.poll(() => page.evaluate(() => {
-      const session = JSON.parse(localStorage.getItem('unslump-workout-session')!);
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
       return [session.currentExerciseIndex, session.workoutState, session.isPaused];
-    })).toEqual([0, 'EXERCISE_PREP', true]);
+    }).toEqual([0, 'EXERCISE_PREP', true]);
   });
 
   test('should skip exercise when paused', async ({ page }) => {
@@ -176,10 +156,13 @@ test.describe('Guided Workout Flow', () => {
     await expect(skipButton).toBeVisible();
     await skipButton.click();
     await expect(page.locator('#playIcon')).toBeVisible();
-    await expect.poll(() => page.evaluate(() => {
-      const session = JSON.parse(localStorage.getItem('unslump-workout-session')!);
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
       return [session.workoutState, session.isPaused];
-    })).toEqual(['REST_PERIOD', true]);
+    }).toEqual(['REST_PERIOD', true]);
   });
 
   test('should open workout navigator', async ({ page }) => {
@@ -224,10 +207,8 @@ test.describe('Guided Workout Flow', () => {
     // Progress ring might be visible for timed exercises
     const progressRing = page.locator('#fabProgressRing');
 
-    // Check if visible (depends on exercise type)
-    const isVisible = await progressRing.isVisible();
     // Just verify it exists
-    expect(progressRing).toBeTruthy();
+    await expect(progressRing).toBeAttached();
   });
 
   test('should confirm before exit', async ({ page }) => {
@@ -287,9 +268,10 @@ test.describe('Guided Workout Flow', () => {
 
     const contentBox = await content.boundingBox();
     const footerBox = await footer.boundingBox();
-    expect(contentBox).not.toBeNull();
-    expect(footerBox).not.toBeNull();
-    expect(contentBox!.y + contentBox!.height).toBeLessThanOrEqual(footerBox!.y);
+    if (!contentBox || !footerBox) {
+      throw new Error('Expected onboarding content and footer to have bounding boxes');
+    }
+    expect(contentBox.y + contentBox.height).toBeLessThanOrEqual(footerBox.y);
     await expect(page.locator('#startWorkoutOnboarding')).toBeInViewport();
   });
 
