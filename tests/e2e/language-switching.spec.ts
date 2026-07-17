@@ -79,6 +79,40 @@ test.describe('Language Switching', () => {
     await expect(esLink).toHaveCount(1);
   });
 
+  test('should preserve nested routes in canonical and alternate metadata', async ({ page }) => {
+    const routes = [
+      {
+        path: '/en/workout?source=e2e',
+        canonical: 'https://unslump.vercel.app/en/workout',
+        en: 'https://unslump.vercel.app/en/workout',
+        es: 'https://unslump.vercel.app/es/workout',
+      },
+      {
+        path: '/es/app?source=e2e',
+        canonical: 'https://unslump.vercel.app/es/app',
+        en: 'https://unslump.vercel.app/en/app',
+        es: 'https://unslump.vercel.app/es/app',
+      },
+    ];
+
+    for (const route of routes) {
+      await page.goto(route.path);
+
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', route.canonical);
+      await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute('href', route.en);
+      await expect(page.locator('link[rel="alternate"][hreflang="es"]')).toHaveAttribute('href', route.es);
+      await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', route.en);
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+        'content',
+        'https://unslump.vercel.app/og-image.png'
+      );
+      await expect(page.locator('meta[property="twitter:image"]')).toHaveAttribute(
+        'content',
+        'https://unslump.vercel.app/og-image.png'
+      );
+    }
+  });
+
   test('should have different meta descriptions for each language', async ({ page }) => {
     await page.goto('/en/');
     const descEN = await page.getAttribute('meta[name="description"]', 'content');
