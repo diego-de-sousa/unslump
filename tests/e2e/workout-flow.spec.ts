@@ -263,6 +263,36 @@ test.describe('Guided Workout Flow', () => {
     await expect(page.locator('.workout-header')).toBeVisible();
   });
 
+  test('should preserve onboarding modal spacing on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.evaluate(() => localStorage.removeItem('unslump-workout-onboarding-seen'));
+    await page.goto('/en/workout');
+
+    const modal = page.locator('#workoutOnboardingModal');
+    await expect(modal).toBeVisible();
+
+    const panel = modal.locator(':scope > div');
+    const header = panel.locator(':scope > div').nth(0);
+    const content = panel.locator(':scope > div').nth(1);
+    const footer = panel.locator(':scope > div').nth(2);
+    const firstCard = content.locator('.grid > div').first();
+    const introduction = content.locator(':scope > div').first();
+
+    await expect(modal).toHaveCSS('padding', '16px');
+    await expect(header).toHaveCSS('padding', '16px 24px');
+    await expect(content).toHaveCSS('padding', '24px');
+    await expect(introduction).toHaveCSS('margin-bottom', '24px');
+    await expect(firstCard).toHaveCSS('padding', '16px');
+    await expect(footer).toHaveCSS('padding', '16px 24px');
+
+    const contentBox = await content.boundingBox();
+    const footerBox = await footer.boundingBox();
+    expect(contentBox).not.toBeNull();
+    expect(footerBox).not.toBeNull();
+    expect(contentBox!.y + contentBox!.height).toBeLessThanOrEqual(footerBox!.y);
+    await expect(page.locator('#startWorkoutOnboarding')).toBeInViewport();
+  });
+
   test('should display correct language content', async ({ page }) => {
     await page.goto('/en/workout');
 
