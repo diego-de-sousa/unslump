@@ -112,71 +112,74 @@ test.describe('Guided Workout Flow', () => {
     await expect(settingsModal).toBeHidden();
   });
 
-  test.skip('should pause and resume workout', async ({ page }) => {
+  async function startActiveWorkout(page: Page) {
     await page.goto('/en/workout');
-
-    // Wait longer for workout to start and reach active state
-    await page.waitForTimeout(10000);
-
-    // Dismiss onboarding modal if present
     await dismissOnboardingIfPresent(page);
+    await page.locator('#continueFromPhaseBtn').click();
+    await expect.poll(() => page.evaluate(() => {
+      const session = localStorage.getItem('unslump-workout-session');
+      return session ? JSON.parse(session).workoutState : null;
+    }), { timeout: 10_000 }).toBe('EXERCISE_ACTIVE');
+  }
 
-    // Verify workout is running - FAB should be visible
-    await expect(page.locator('#pausePlayButton')).toBeVisible();
+  async function restoreActiveWorkout(page: Page, exerciseIndex: number) {
+    await page.evaluate((currentExerciseIndex) => {
+      localStorage.setItem('unslump-workout-session', JSON.stringify({
+        workoutState: 'EXERCISE_ACTIVE',
+        currentPhaseIndex: 0,
+        currentExerciseIndex,
+        timeLeft: 30,
+        isPaused: false,
+        startTime: Date.now(),
+        pausedTime: null,
+        currentReps: 0,
+        currentSet: 1,
+        currentSide: 1,
+      }));
+    }, exerciseIndex);
+    await page.goto('/en/workout');
+    await page.locator('#resumeButton').click();
+    await expect(page.locator('#resumeModal')).toBeHidden();
+  }
 
-    // Click pause button
+  test('should pause and resume workout', async ({ page }) => {
+    await startActiveWorkout(page);
+
     await page.locator('#pausePlayButton').click();
-    await page.waitForTimeout(500);
+    await expect(page.locator('#playIcon')).toBeVisible();
+    await expect(page.locator('#navigationButtons')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('unslump-workout-session')!).isPaused)).toBe(true);
 
-    // Check if paused - either playIcon visible OR navigation buttons visible
-    const playIconVisible = await page.locator('#playIcon').isVisible().catch(() => false);
-    const navButtonsVisible = await page.locator('#navigationButtons').isVisible().catch(() => false);
-
-    // At least one indicator of pause state should be visible
-    expect(playIconVisible || navButtonsVisible).toBe(true);
+    await page.locator('#pausePlayButton').click();
+    await expect(page.locator('#playIcon')).toBeHidden();
+    await expect(page.locator('#navigationButtons')).toBeHidden();
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('unslump-workout-session')!).isPaused)).toBe(false);
   });
 
-  test.skip('should navigate to previous exercise when paused', async ({ page }) => {
-    await page.goto('/en/workout');
-
-    // Wait for workout to progress
-    await page.waitForTimeout(8000);
-
-    // Pause
+  test('should navigate to previous exercise when paused', async ({ page }) => {
+    await restoreActiveWorkout(page, 1);
     await page.locator('#pausePlayButton').click();
-
-    // Previous button should be visible
     const previousButton = page.locator('#previousButton');
     await expect(previousButton).toBeVisible();
-
-    // Click previous
     await previousButton.click();
-
-    // Should still be paused
     await expect(page.locator('#playIcon')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => {
+      const session = JSON.parse(localStorage.getItem('unslump-workout-session')!);
+      return [session.currentExerciseIndex, session.workoutState, session.isPaused];
+    })).toEqual([0, 'EXERCISE_PREP', true]);
   });
 
-  test.skip('should skip exercise when paused', async ({ page }) => {
-    await page.goto('/en/workout');
-
-    // Wait for workout to start
-    await page.waitForTimeout(5000);
-
-    // Pause
+  test('should skip exercise when paused', async ({ page }) => {
+    await restoreActiveWorkout(page, 0);
     await page.locator('#pausePlayButton').click();
-
-    // Skip button should be visible
     const skipButton = page.locator('#skipButton');
     await expect(skipButton).toBeVisible();
-
-    // Click skip
     await skipButton.click();
-
-    // Should move to next exercise
-    await page.waitForTimeout(500);
-
-    // Should still be paused
     await expect(page.locator('#playIcon')).toBeVisible();
+    await expect.poll(() => page.evaluate(() => {
+      const session = JSON.parse(localStorage.getItem('unslump-workout-session')!);
+      return [session.workoutState, session.isPaused];
+    })).toEqual(['REST_PERIOD', true]);
   });
 
   test('should open workout navigator', async ({ page }) => {

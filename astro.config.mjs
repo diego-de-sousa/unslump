@@ -1,12 +1,17 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
 import preact from '@astrojs/preact';
+import tailwindcss from '@tailwindcss/vite';
+
+const isOfflineE2E = process.env.OFFLINE_E2E === 'true';
 
 export default defineConfig({
-  integrations: [tailwind(), preact()],
-  output: 'server',
-  adapter: vercel({
+  integrations: [preact()],
+  vite: {
+    plugins: [tailwindcss()]
+  },
+  output: isOfflineE2E ? 'static' : 'server',
+  adapter: isOfflineE2E ? undefined : vercel({
     webAnalytics: {
       enabled: true
     }

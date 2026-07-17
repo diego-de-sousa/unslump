@@ -21,8 +21,8 @@ const { showProgressBar = false } = Astro.props;
       </div>
     </div>
 
+    <!-- Progress bar by phases (HIDDEN - Uncomment to restore) -->
     {showProgressBar && (
-      <!-- Progress bar by phases (HIDDEN - Uncomment to restore) -->
       <div class="absolute bottom-0 left-0 right-0 h-1 grid grid-cols-4 bg-slate-200 hidden">
         <div class="phase-progress-bar relative bg-slate-200 overflow-hidden" data-phase="fase1">
           <div class="absolute inset-0 transition-transform duration-500 origin-left" style="background-color: #4f46e5; transform: scaleX(0);"></div>

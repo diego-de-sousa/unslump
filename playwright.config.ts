@@ -64,7 +64,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm run dev',
+    command: 'ASTRO_DEV_BACKGROUND=1 pnpm exec astro dev --ignore-lock',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,

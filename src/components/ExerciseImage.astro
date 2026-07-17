@@ -78,7 +78,6 @@ if (!embedUrl && !imageUrl) {
   data-exercise-id={exerciseId}
 >
   {embedUrl ? (
-    <!-- Priority 1: Embedded Video -->
     <iframe
       src={embedUrl}
       title={alt}
@@ -89,7 +88,6 @@ if (!embedUrl && !imageUrl) {
       loading="lazy"
     ></iframe>
   ) : (
-    <!-- Priority 2: Images (static + optional GIF on hover) -->
     <>
       {imageUrl && (
         <img

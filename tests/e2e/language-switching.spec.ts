@@ -166,10 +166,8 @@ test.describe('Language Switching', () => {
     expect(response).toBeTruthy();
   });
 
-  test.skip('should display correct workout language in settings', async ({ page }) => {
+  test('should display correct workout language in settings', async ({ page }) => {
     await page.goto('/en/workout');
-
-    await page.waitForTimeout(2000);
 
     // Open settings
     await page.locator('#settingsButton').click();
@@ -185,14 +183,15 @@ test.describe('Language Switching', () => {
     await page.locator('#closeSettingsButton').click();
 
     // Switch to Spanish workout
+    await page.evaluate(() => localStorage.removeItem('unslump-workout-session'));
     await page.goto('/es/workout');
-    await page.waitForTimeout(2000);
 
     // Open settings again
     await page.locator('#settingsButton').click();
 
     // Should show Spanish selected
     const langSelectES = page.locator('#workout-language-select');
+    await expect(langSelectES).toBeVisible();
     const selectedValueES = await langSelectES.inputValue();
     expect(selectedValueES).toBe('es');
   });

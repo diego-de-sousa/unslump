@@ -153,42 +153,6 @@ test.describe('Progress Persistence', () => {
     expect(onboardingSeen).toBe(true);
   });
 
-  test.skip('should work offline (PWA mode)', async ({ page, context }) => {
-    await page.goto('/en/app');
-
-    // Wait for service worker to be registered
-    await page.waitForTimeout(2000);
-
-    // Expand first phase
-    await page.locator('.phase-toggle').first().click();
-    await page.waitForTimeout(500);
-
-    // Complete an exercise
-    const completeBtn = page.locator('.complete-btn').first();
-    await completeBtn.waitFor({ state: 'visible' });
-    await completeBtn.click();
-
-    // Simulate offline mode
-    await context.setOffline(true);
-
-    // Reload page - should still work due to service worker cache
-    await page.reload();
-
-    // Check that page loaded
-    await expect(page.locator('#progress-logo')).toBeVisible();
-
-    // Progress should still be there
-    const progress = await page.evaluate(() => {
-      const data = localStorage.getItem('unslump-progress');
-      return data ? JSON.parse(data) : null;
-    });
-
-    expect(progress.completed.length).toBeGreaterThan(0);
-
-    // Restore online mode
-    await context.setOffline(false);
-  });
-
   test('should handle multiple sessions on same day (app)', async ({ page }) => {
     await page.goto('/en/app');
 
