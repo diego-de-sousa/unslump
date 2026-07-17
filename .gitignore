@@ -39,6 +39,7 @@ coverage/
 .claude_settings.json
 .pi/
 .atl/
+.codegraph/
 
 # worktrees
 .worktrees/
