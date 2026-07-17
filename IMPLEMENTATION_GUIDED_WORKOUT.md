@@ -1,5 +1,7 @@
 # Guided Workout Mode - Implementation Status
 
+> Historical implementation record. The guided workout is shipped; current runtime, dependency, test, and CI requirements are documented in `README.md` and `AGENTS.md`.
+
 ## Overview
 This document tracks the implementation of the new guided automatic workout mode for unslump!
 
@@ -94,7 +96,9 @@ This document tracks the implementation of the new guided automatic workout mode
   - Settings labels
   - Modal text
 
-## Pending Implementation ⏳
+## Historical Implementation Checklist (Completed)
+
+The following sections preserve the original implementation plan. They are not current pending work: the orchestration, settings, persistence, service-worker routes, and automated coverage now exist. See `src/pages/[lang]/workout.astro`, `src/scripts/workoutOrchestrator.ts`, `src/stores/workoutController.ts`, and the Playwright suites for the current implementation.
 
 ### 1. Main Orchestration Script ⚠️ **CRITICAL**
 **Location**: `src/pages/[lang]/workout.astro` (script section)
@@ -221,7 +225,9 @@ const urlsToCache = [
 - [ ] Test landscape orientation
 - [ ] Performance optimization (animations, transitions)
 
-## How to Complete Implementation
+## Historical Delivery Priorities
+
+These priorities record the sequence used to deliver the guided workout; they are not current instructions.
 
 ### Priority 1: Core Workout Flow 🔴
 1. Implement main orchestration script in `workout.astro`
@@ -298,9 +304,9 @@ public/
 └── sounds/                        ⏳ Empty (needs audio files)
 ```
 
-## Success Criteria
+## Historical Success Criteria
 
-The guided workout mode is complete when:
+The original completion checklist is retained below as a historical record. Current behavior is verified by the store tests and Playwright coverage.
 1. ✅ User can start a guided workout from main page
 2. ⏳ User can complete entire 21-exercise routine automatically
 3. ⏳ Timers advance automatically through exercises
@@ -314,7 +320,7 @@ The guided workout mode is complete when:
 
 ## Next Steps
 
-**Immediate next action**: Implement the main orchestration script in `/[lang]/workout.astro` to connect the state machine with the UI components. This is the critical missing piece that will make the entire system functional.
+The guided workout is shipped. Use `README.md` for product usage, `AGENTS.md` for current architecture and verification commands, and the implementation files linked above for maintenance.
 
 ---
 

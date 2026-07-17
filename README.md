@@ -44,6 +44,8 @@ The routine references **30+ peer-reviewed studies** and keeps the user experien
 
 ## 🚀 Quick start
 
+Requires Node.js 24.x and pnpm 11.13.1.
+
 ```bash
 pnpm install
 pnpm run dev
@@ -62,14 +64,15 @@ Then open one of the localized routes:
 
 | Area | Tooling |
 | --- | --- |
-| Framework | Astro v5 with server output and i18n routing |
-| UI islands | Preact |
-| Styling | Tailwind CSS v3 |
-| State | Nanostores + browser storage |
-| Motion | Motion One |
+| Framework | Astro 7 with server output and i18n routing |
+| UI islands | Preact 10 |
+| Styling | Tailwind CSS 4 |
+| State | Nanostores 1 + browser storage |
+| Motion | Motion 12 |
 | Deployment | Vercel adapter |
-| Tests | Vitest + Playwright |
-| Package manager | pnpm |
+| Tests | Vitest 4 + Playwright 1 |
+| Runtime | Node.js 24.x |
+| Package manager | pnpm 11.13.1 |
 
 ## 📦 Commands
 
@@ -82,6 +85,8 @@ pnpm test:coverage      # Run unit tests with coverage
 pnpm test:e2e           # Run Playwright E2E tests
 pnpm test:e2e:ui        # Run Playwright in UI mode
 ```
+
+The migration baseline is 264 passing unit tests, 49 passing Chromium browser-flow tests, and 1 passing production offline PWA test, with 0 skipped. GitHub Actions runs install, Astro check, unit tests, build, Chromium E2E, and the dedicated production offline PWA test on pull requests and pushes to `main`.
 
 ## 🗂️ Project structure
 
@@ -115,7 +120,7 @@ The canonical production URL is configured in `astro.config.mjs`.
 
 ## 📲 PWA notes
 
-- Increment `CACHE_NAME` in `public/sw.js` when deploying changes that must invalidate the offline cache.
+- The current service-worker cache is `unslump-v45`; increment `CACHE_NAME` in `public/sw.js` when deploying changes that must invalidate it.
 - Keep app icons in `public/`: `icon-192.png`, `icon-512.png`, `maskable-192.png`, `maskable-512.png`, `apple-touch-icon.png`, and `og-image.png`.
 - Test installability with Chrome DevTools → Application → Manifest and Lighthouse.
 

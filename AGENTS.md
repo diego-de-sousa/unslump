@@ -8,13 +8,14 @@ This file provides guidance to Pi agent and compatible coding agents when workin
 
 ## Tech Stack
 
-- **Framework**: Astro v5 with server-side rendering and built-in i18n routing
-- **Styling**: Tailwind CSS v3
-- **Animations**: Motion One for smooth UI interactions
+- **Framework**: Astro 7 with server-side rendering and built-in i18n routing
+- **Styling**: Tailwind CSS 4
+- **Animations**: Motion 12 for smooth UI interactions
 - **Fonts**: Barriecito (Google Fonts via @fontsource)
 - **Deployment**: Vercel with adapter
 - **Language**: TypeScript
-- **Package Manager**: pnpm
+- **Runtime**: Node.js 24.x
+- **Package Manager**: pnpm 11.13.1
 - **Internationalization**: Astro i18n with English (default) and Spanish
 
 ## Development Commands
@@ -53,9 +54,8 @@ The project uses **Vitest** for unit tests and **Playwright** for end-to-end tes
 
 ### Test Overview
 
-- **245+ total tests** across unit and E2E suites
-- **Unit tests**: 200+ tests covering stores and utilities
-- **E2E tests**: 45 passing tests (5 skipped edge cases)
+- **Unit tests**: 264 passing tests covering stores and utilities
+- **Chromium E2E tests**: 49 passing browser-flow tests plus 1 production offline PWA test; 0 skipped
 - **Target coverage**: 80% for critical business logic
 
 ### Test Structure
@@ -96,6 +96,7 @@ pnpm test:coverage     # Generate coverage report
 **E2E Tests** (Playwright):
 ```bash
 pnpm test:e2e          # Run all E2E tests (auto-starts dev server)
+pnpm test:e2e:offline  # Run production-build offline PWA coverage
 pnpm test:e2e:ui       # Interactive UI mode
 pnpm test:e2e:headed   # Run with visible browser
 ```
@@ -127,17 +128,17 @@ pnpm test:e2e:headed   # Run with visible browser
 - Mobile viewport compatibility
 - Bilingual content (EN/ES)
 
-**Workout Flow** (`workout-flow.spec.ts` - 13 tests, 3 skipped):
+**Workout Flow** (`workout-flow.spec.ts` - 13 tests):
 - Guided workout page load and initial state
 - Resume modal for saved sessions
 - Settings modal (language, preferences)
-- Pause/resume functionality (edge case - skipped)
-- Navigation buttons (edge case - skipped)
+- Pause/resume functionality
+- Navigation buttons while paused
 - FAB button behavior
 - Exit confirmation dialog
 - Mobile viewport support
 
-**Language Switching** (`language-switching.spec.ts` - 15 tests, 1 skipped):
+**Language Switching** (`language-switching.spec.ts` - 15 tests):
 - Root redirect to default locale (/en/)
 - EN/ES content rendering
 - Language selector functionality
@@ -146,27 +147,24 @@ pnpm test:e2e:headed   # Run with visible browser
 - Progress preservation across language switches
 - Bilingual URL routes (/en/app, /es/app, etc.)
 
-**Progress Persistence** (`progress-persistence.spec.ts` - 11 tests, 1 skipped):
+**Progress Persistence** (`progress-persistence.spec.ts` - 9 tests):
 - App progress saved in localStorage
 - Workout session state persistence
 - Session restoration on page reload
 - Browser navigation (back/forward)
 - Corrupted localStorage handling
 - Onboarding state persistence
-- PWA offline mode (skipped - requires service worker)
 - Multiple sessions on same day
 - Storage quota exceeded handling
 
-### Known Issues (Skipped Tests)
+**Offline PWA** (`tests/offline/offline-pwa.spec.ts` - 1 test):
+- Production-build service-worker activation
+- Offline exercise-browser reload
+- Progress persistence while offline
 
-5 tests are currently skipped due to timing/edge case issues:
+### Skipped Tests
 
-1. **Workout pause/resume**: Play/pause icon visibility timing in state machine
-2. **Navigation buttons**: Previous/skip button visibility when paused
-3. **Language settings modal**: Resume modal intercepts clicks after language switch
-4. **PWA offline mode**: Requires service worker setup in test environment
-
-These are documented for future investigation but don't affect core functionality.
+The intended Chromium CI coverage has no skipped tests. Offline behavior runs separately with `pnpm run test:e2e:offline` because service-worker registration is production-only.
 
 ### Testing Patterns
 
@@ -271,27 +269,9 @@ test.describe('My Feature', () => {
 });
 ```
 
-### CI/CD Integration (Future)
+### CI/CD Integration
 
-Tests can be integrated into:
-- Pre-commit hooks (lint-staged + husky)
-- Pull request CI (GitHub Actions)
-- Pre-deployment checks (Vercel build step)
-
-Example GitHub Actions workflow:
-```yaml
-name: Tests
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - run: pnpm install
-      - run: pnpm test
-      - run: pnpm test:e2e
-```
+`.github/workflows/ci.yml` runs a frozen install, Astro check, unit tests, production build, Chromium Playwright E2E, and isolated production offline PWA coverage on pull requests and pushes to `main`.
 
 ## Architecture
 
@@ -365,10 +345,12 @@ The app uses Nanostores for client-side state and localStorage for persistence:
 
 - **`src/pages/index.astro`**: Root redirect to default locale (`/en/`)
 
-- **`src/pages/[lang]/index.astro`**: Main application page with dynamic language routing
+- **`src/pages/[lang]/index.astro`**: Landing page with dynamic language routing
   - Uses `getStaticPaths()` to generate `/en/` and `/es/` routes
+- **`src/pages/[lang]/app.astro`**: Exercise browser at `/[lang]/app`
   - Loads localized data via helper functions
   - Contains all workout phases and interactive UI
+- **`src/pages/[lang]/workout.astro`**: Guided workout at `/[lang]/workout`
 
 - **`src/components/Logo.astro`**: Reusable "unslump!" logo component
   - Props: `size` (small/medium/large/xl), `showProgress` (boolean), `id`
@@ -391,7 +373,7 @@ The app uses Nanostores for client-side state and localStorage for persistence:
 
 ### Interactive Features
 
-The `[lang]/index.astro` page contains client-side JavaScript for:
+The `[lang]/app.astro` exercise browser contains client-side JavaScript for:
 - Timer functionality for timed exercises
 - Set counter for exercises with multiple sets
 - Phase collapse/expand toggles with smooth animations (Motion One)
@@ -410,7 +392,7 @@ The `[lang]/index.astro` page contains client-side JavaScript for:
   - `lang`: `en` (primary language)
   - `name`: "unslump! - Exercise Routine"
 
-- **`public/sw.js`**: Service worker for offline functionality (current version: v17)
+- **`public/sw.js`**: Service worker for offline functionality (current version: v45)
   - **Development**: Service worker is DISABLED in dev mode to avoid cache issues
   - **Production**: Cache-first strategy for offline support
   - **Cached URLs**: `/en/`, `/es/`, manifest, and icons

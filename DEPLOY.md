@@ -2,6 +2,8 @@
 
 This project is configured to deploy **unslump!** to Vercel as an Astro PWA.
 
+Use Node.js 24.x and pnpm 11.13.1. GitHub Actions runs the required checks on pull requests and pushes to `main`.
+
 ## Pre-deploy checklist
 
 - [ ] `pnpm install` completes successfully
@@ -55,7 +57,7 @@ vercel --prod
 
 ## PWA cache invalidation
 
-`public/sw.js` uses a versioned `CACHE_NAME`. Increment it whenever users must receive fresh cached content, such as after UI, route, icon, exercise-data, or localization changes.
+`public/sw.js` currently uses `unslump-v45`. Increment the versioned `CACHE_NAME` whenever users must receive fresh cached content, such as after UI, route, icon, exercise-data, or localization changes.
 
 ## Troubleshooting
 
