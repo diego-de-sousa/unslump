@@ -275,6 +275,7 @@ const description = t('meta.description');
   <!-- Main workout script as module -->
   <script>
     import { initializeWorkoutController, startWorkout, loadSessionState, pauseWorkout, resumeFromPause, skipExercise, previousExercise, exitWorkout, workoutSession, overallProgress } from '../../stores/workoutController';
+    import { initializeProgress } from '../../stores/progressStore';
     import { toggleNavigator } from '../../stores/navigationStore';
     import { soundController } from '../../utils/soundController';
     import { initWorkoutOrchestrator } from '../../scripts/workoutOrchestrator';
@@ -569,7 +570,8 @@ const description = t('meta.description');
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Workout page loaded');
 
-      // Initialize workout controller with data
+      // Initialize shared progress before the workout controller starts
+      initializeProgress(workout);
       initializeWorkoutController(workout);
 
       // Initialize orchestrator (connects state to UI)
