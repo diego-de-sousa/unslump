@@ -60,6 +60,14 @@ const description = t('meta.description');
           </button>
         </div>
 
+        <a
+          id="exploreModeLink"
+          href={`/${lang}/app`}
+          class="text-sm font-medium text-indigo-700 underline-offset-4 hover:underline"
+        >
+          {t('guidedWorkout.navigation.exploreMode')}
+        </a>
+
         <!-- Right: Settings Button -->
         <button
           id="settingsButton"
@@ -592,6 +600,9 @@ const description = t('meta.description');
       // Exit button
       document.getElementById('exitButton')?.addEventListener('click', handleExit);
 
+      // Mode switch
+      document.getElementById('exploreModeLink')?.addEventListener('click', handleModeSwitch);
+
       // Logo navigation button
       document.getElementById('logoNavigationButton')?.addEventListener('click', () => {
         toggleNavigator();
@@ -808,6 +819,14 @@ const description = t('meta.description');
       }
     }
 
+    function handleModeSwitch() {
+      const session = workoutSession.get();
+      const isActive = session.workoutState !== 'IDLE' && session.workoutState !== 'WORKOUT_COMPLETE';
+      if (isActive && !session.isPaused) {
+        pauseWorkout();
+      }
+    }
+
     function handlePausePlay() {
       // Check if we're in a manual completion state (no active timer)
       import('../../stores/workoutController').then(({ workoutSession, currentExercise, completeCurrentExercise }) => {
@@ -958,6 +977,7 @@ const description = t('meta.description');
       if (savedSession) {
         import('../../stores/workoutController').then(({ resumeWorkout }) => {
           resumeWorkout(savedSession);
+          resumeFromPause();
         });
       }
     }

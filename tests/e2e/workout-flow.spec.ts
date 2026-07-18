@@ -2,8 +2,10 @@ import { test, expect, type Page } from '@playwright/test';
 
 interface WorkoutSessionState {
   workoutState: string;
+  currentPhaseIndex: number;
   currentExerciseIndex: number;
   isPaused: boolean;
+  pausedTime: number | null;
 }
 
 function parseStoredJson<T>(value: string | null, key: string): T {
@@ -112,6 +114,29 @@ test.describe('Guided Workout Flow', () => {
     await page.locator('#resumeButton').click();
     await expect(page.locator('#resumeModal')).toBeHidden();
   }
+
+  test('should preserve an active session when switching to Explore mode', async ({ page }) => {
+    await restoreActiveWorkout(page, 1);
+
+    await page.getByRole('link', { name: 'Explore mode' }).click();
+    await expect(page).toHaveURL('/en/app');
+
+    const preservedSession = parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    );
+    expect(preservedSession.currentPhaseIndex).toBe(0);
+    expect(preservedSession.currentExerciseIndex).toBe(1);
+    expect(preservedSession.workoutState).toBe('EXERCISE_ACTIVE');
+    expect(preservedSession.isPaused).toBe(true);
+    expect(preservedSession.pausedTime).not.toBeNull();
+
+    await page.getByRole('link', { name: 'Start Guided Workout' }).click();
+    await expect(page.locator('#resumeModal')).toBeVisible();
+    await page.locator('#resumeButton').click();
+    await expect(page.locator('#fabTimer')).toHaveText('30');
+    await expect(page.locator('#fabTimer')).not.toHaveText('30', { timeout: 5_000 });
+  });
 
   test('should pause and resume workout', async ({ page }) => {
     await startActiveWorkout(page);
@@ -290,5 +315,6 @@ test.describe('Guided Workout Flow', () => {
 
     const langAttrES = await page.getAttribute('html', 'lang');
     expect(langAttrES).toBe('es');
+    await expect(page.getByRole('link', { name: 'Modo explorar' })).toHaveAttribute('href', '/es/app');
   });
 });

@@ -223,6 +223,7 @@
       "skip": "Saltar",
       "back": "Atrás",
       "exit": "Salir",
+      "exploreMode": "Modo explorar",
       "exitConfirm": "¿Seguro que quieres salir del entrenamiento?",
       "settings": "Ajustes"
     },

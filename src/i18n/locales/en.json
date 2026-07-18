@@ -223,6 +223,7 @@
       "skip": "Skip",
       "back": "Back",
       "exit": "Exit",
+      "exploreMode": "Explore mode",
       "exitConfirm": "Are you sure you want to exit the workout?",
       "settings": "Settings"
     },
