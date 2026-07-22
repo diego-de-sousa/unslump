@@ -122,7 +122,7 @@ test.describe('Guided Workout Flow', () => {
   test('should preserve an active session when switching to Explore mode', async ({ page }) => {
     await restoreActiveWorkout(page, 1);
 
-    await page.getByRole('link', { name: 'Explore mode' }).click();
+    await page.getByRole('link', { name: 'Explore exercises' }).click();
     await expect(page).toHaveURL('/en/app');
 
     const preservedSession = parseStoredJson<WorkoutSessionState>(
@@ -135,7 +135,7 @@ test.describe('Guided Workout Flow', () => {
     expect(preservedSession.isPaused).toBe(true);
     expect(preservedSession.pausedTime).not.toBeNull();
 
-    await page.getByRole('link', { name: 'Start Guided Workout' }).click();
+    await page.getByRole('link', { name: 'Guided workout' }).click();
     await expect(page.locator('#resumeModal')).toBeVisible();
     await page.locator('#resumeButton').click();
     await expect(page.locator('#fabTimer')).toHaveText('30');
@@ -169,7 +169,7 @@ test.describe('Guided Workout Flow', () => {
     expect(guidedSession.workoutState).toBe('REST_PERIOD');
     expect(guidedSession.currentExerciseIndex).toBe(0);
 
-    await page.getByRole('link', { name: 'Explore mode' }).click();
+    await page.getByRole('link', { name: 'Explore exercises' }).click();
     await expect(page).toHaveURL('/en/app');
     await expect(page.locator('.exercise-card[data-exercise-id="suboccipital"]'))
       .toHaveClass(/border-indigo-400/);
@@ -352,6 +352,6 @@ test.describe('Guided Workout Flow', () => {
 
     const langAttrES = await page.getAttribute('html', 'lang');
     expect(langAttrES).toBe('es');
-    await expect(page.getByRole('link', { name: 'Modo explorar' })).toHaveAttribute('href', '/es/app');
+    await expect(page.getByRole('link', { name: 'Explorar ejercicios' })).toHaveAttribute('href', '/es/app');
   });
 });

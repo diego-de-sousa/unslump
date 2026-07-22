@@ -44,27 +44,27 @@ const t = useTranslations(lang);
       </div>
     </div>
 
-    <!-- CTAs -->
-    <div class="hero-ctas flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
-      <!-- Primary CTA - Multicolor glow -->
-      <a
-        href={`/${lang}/workout`}
-        class="cta-primary inline-flex items-center gap-3 px-8 sm:px-12 py-4 sm:py-5 text-lg sm:text-xl font-bold text-gray-900 bg-white rounded-2xl transition-all duration-300 hover:scale-105 active:scale-95"
-      >
-        <svg class="h-6 w-6 sm:h-7 sm:w-7 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        {t('landing.hero.ctaPrimary')}
-      </a>
-
-      <!-- Secondary CTA -->
-      <a
-        href={`/${lang}/app`}
-        class="cta-secondary inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium text-gray-700 border-2 border-gray-300 rounded-2xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 hover:scale-105 active:scale-95"
-      >
-        {t('landing.hero.ctaSecondary')}
-      </a>
-    </div>
+    <section class="hero-ctas w-full max-w-2xl" aria-labelledby="workout-mode-title">
+      <h2 id="workout-mode-title" class="mb-4 text-center text-xl font-bold text-gray-900">
+        {t('workoutModes.title')}
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <a
+          href={`/${lang}/app`}
+          class="rounded-2xl border-2 border-indigo-200 bg-white p-5 text-left shadow-sm transition-all duration-300 hover:border-indigo-500 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-200"
+        >
+          <span class="block text-lg font-bold text-gray-900">{t('workoutModes.explore.name')}</span>
+          <span class="mt-2 block text-sm text-gray-600">{t('workoutModes.explore.description')}</span>
+        </a>
+        <a
+          href={`/${lang}/workout`}
+          class="rounded-2xl border-2 border-indigo-200 bg-white p-5 text-left shadow-sm transition-all duration-300 hover:border-indigo-500 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-200"
+        >
+          <span class="block text-lg font-bold text-gray-900">{t('workoutModes.guided.name')}</span>
+          <span class="mt-2 block text-sm text-gray-600">{t('workoutModes.guided.description')}</span>
+        </a>
+      </div>
+    </section>
 
     <!-- Scroll hint -->
     <div class="scroll-hint mt-16 sm:mt-20 animate-bounce">

@@ -12,6 +12,21 @@
     "moreInfo": "More information",
     "comingSoon": "Coming soon"
   },
+  "workoutModes": {
+    "title": "Choose your workout",
+    "explore": {
+      "name": "Explore exercises",
+      "description": "Move at your own pace and choose individual exercises.",
+      "action": "Explore exercises"
+    },
+    "guided": {
+      "name": "Guided workout",
+      "description": "Follow the complete routine with built-in timers.",
+      "action": "Start guided workout"
+    },
+    "switchToExplore": "Explore exercises",
+    "switchToGuided": "Guided workout"
+  },
   "levels": {
     "beginner": "Beginner",
     "intermediate": "Intermediate",
