@@ -575,7 +575,7 @@ const description = t('meta.description');
       initializeWorkoutController(workout);
 
       // Initialize orchestrator (connects state to UI)
-      initWorkoutOrchestrator();
+      initWorkoutOrchestrator(lang);
 
       // Load sound files (will fallback to synthesized if not found)
       soundController.loadSounds();

@@ -43,7 +43,8 @@
   "language": {
     "selector": "Language:",
     "current": "Current language",
-    "select": "Select language"
+    "select": "Select language",
+    "switchTo": "Switch to {language}"
   },
   "preferences": {
     "title": "Preferences"
@@ -260,6 +261,13 @@
       "starting": "Starting in...",
       "skipCountdown": "Skip countdown"
     },
+    "exerciseActive": {
+      "alreadyCompleted": "Already completed!",
+      "repeatExercise": "Repeat exercise",
+      "tapWhenSetComplete": "Tap the button when you complete the set",
+      "tapWhenExerciseComplete": "Tap the button when you complete the exercise",
+      "animatedAlt": "{name} (animated)"
+    },
     "rest": {
       "title": "Rest",
       "message": "Take a breath, prepare for the next exercise",
@@ -277,6 +285,25 @@
     },
     "timer": {
       "timeRemaining": "Time remaining"
+    },
+    "runtime": {
+      "initializing": "Initializing workout..."
+    },
+    "phaseComplete": {
+      "title": "Phase Complete! 🎉",
+      "message": "Great job completing {phase}!",
+      "continueButton": "Continue to Next Phase"
+    },
+    "verification": {
+      "completeTitle": "All Complete!",
+      "completeMessage": "You completed all {count} exercises",
+      "celebrate": "Celebrate! 🎊",
+      "of": "of {count}",
+      "almostThere": "Almost there!",
+      "onePending": "You have {count} exercise left",
+      "manyPending": "You have {count} exercises left",
+      "showPending": "Tap the logo to see which exercises are left",
+      "exit": "Exit"
     },
     "settings": {
       "title": "Workout Settings",

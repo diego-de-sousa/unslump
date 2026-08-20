@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, type Language } from '../../i18n/utils';
+import { formatTranslation, useTranslations, type Language } from '../../i18n/utils';
 
 // Landing components
 import Hero from '../../components/landing/Hero.astro';
@@ -32,24 +32,35 @@ const references = getReferences(lang);
   lang={lang}
 >
   <!-- Language selector - bottom left -->
-  <div class="fixed bottom-6 left-6 z-50 group">
-    <!-- Current language FAB -->
-    <button class="w-12 h-12 bg-white rounded-full shadow-lg border-2 border-indigo-500 flex items-center justify-center text-sm font-bold text-indigo-600 hover:scale-110 transition-all duration-300">
+  <details id="landing-language-menu" class="fixed bottom-6 left-6 z-50">
+    <summary
+      id="landing-language-toggle"
+      role="button"
+      aria-label={`${t('language.select')}. ${t('language.current')}: ${lang.toUpperCase()}`}
+      aria-controls="landing-language-options"
+      aria-expanded="false"
+      class="flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full border-2 border-indigo-500 bg-white text-sm font-bold text-indigo-600 shadow-lg transition-all duration-300 hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
       {lang.toUpperCase()}
-    </button>
+    </summary>
 
-    <!-- Language menu (appears on hover) -->
-    <div class="absolute bottom-14 left-0 bg-white rounded-xl shadow-xl border-2 border-gray-200 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 overflow-hidden">
+    <div
+      id="landing-language-options"
+      class="absolute bottom-14 left-0 overflow-hidden rounded-xl border-2 border-gray-200 bg-white shadow-xl"
+    >
       {['en', 'es'].filter(l => l !== lang).map((l) => (
         <a
           href={`/${l}/`}
           class="block px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors min-w-[60px] text-center"
+          aria-label={formatTranslation(lang, 'language.switchTo', {
+            language: l === 'en' ? 'English' : 'Español',
+          })}
         >
           {l.toUpperCase()}
         </a>
       ))}
     </div>
-  </div>
+  </details>
 
   <!-- Hero Section -->
   <Hero lang={lang} />
@@ -151,6 +162,13 @@ const references = getReferences(lang);
     };
 
     document.addEventListener('DOMContentLoaded', () => {
+      const languageMenu = document.getElementById('landing-language-menu') as HTMLDetailsElement | null;
+      const languageToggle = document.getElementById('landing-language-toggle');
+
+      languageMenu?.addEventListener('toggle', () => {
+        languageToggle?.setAttribute('aria-expanded', String(languageMenu.open));
+      });
+
       const closeBtn = document.getElementById('close-references-modal');
       const closeModalBtn = document.getElementById('close-references-modal-btn');
 
@@ -170,6 +188,7 @@ const references = getReferences(lang);
       // Close on Escape key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          if (languageMenu) languageMenu.open = false;
           closeReferencesModal();
         }
       });

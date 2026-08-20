@@ -15,6 +15,8 @@ export const ui = {
 
 export type Language = keyof typeof ui;
 
+export type TranslationVariables = Record<string, string | number>;
+
 export function getLangFromUrl(url: URL): Language {
   const [, lang] = url.pathname.split('/');
   if (lang in ui) return lang as Language;
@@ -36,6 +38,20 @@ export function useTranslations(lang: Language) {
 
     return value || key;
   };
+}
+
+export function formatTranslation(
+  lang: Language,
+  key: string,
+  variables: TranslationVariables = {},
+): string {
+  const value = useTranslations(lang)(key);
+
+  return Object.entries(variables).reduce(
+    (translation, [name, replacement]) =>
+      translation.replaceAll(`{${name}}`, String(replacement)),
+    value,
+  );
 }
 
 export function getLocalizedUrl(url: string, lang: Language): string {

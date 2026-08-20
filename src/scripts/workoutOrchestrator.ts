@@ -7,6 +7,12 @@
 import { workoutSession, currentPhase, currentExercise, nextExercise, overallProgress } from '../stores/workoutController';
 import type { WorkoutState } from '../stores/workoutController';
 import { isExerciseCompleted } from '../stores/progressStore';
+import {
+  defaultLang,
+  formatTranslation,
+  type Language,
+  type TranslationVariables,
+} from '../i18n/utils';
 
 // TypeScript types for View Transitions API
 declare global {
@@ -22,6 +28,11 @@ declare global {
 let lastRenderedState: WorkoutState | null = null;
 let lastRenderedPhaseIndex: number = -1;
 let lastRenderedExerciseIndex: number = -1;
+let currentLang: Language = defaultLang;
+
+function t(key: string, variables?: TranslationVariables): string {
+  return formatTranslation(currentLang, key, variables);
+}
 
 // Helper function to convert YouTube URLs to embed format
 function getYouTubeEmbedUrl(url: string): string | null {
@@ -89,7 +100,9 @@ async function updateUIWithTransition(state: WorkoutState) {
   }
 }
 
-export function initWorkoutOrchestrator() {
+export function initWorkoutOrchestrator(lang: Language = defaultLang) {
+  currentLang = lang;
+
   // Subscribe to workout session changes
   workoutSession.subscribe((session) => {
     // Re-render UI when state OR exercise changes
@@ -162,7 +175,7 @@ function renderIdle(container: HTMLElement) {
     <div class="flex h-full items-center justify-center">
       <div class="text-center">
         <div class="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent mx-auto"></div>
-        <p class="text-gray-600">Initializing workout...</p>
+        <p class="text-gray-600">${t('guidedWorkout.runtime.initializing')}</p>
       </div>
     </div>
   `;
@@ -191,12 +204,12 @@ function renderPhaseIntro(container: HTMLElement) {
         </p>
         <div class="mb-8 rounded-lg bg-white px-6 py-3 shadow-md inline-block" style="border-left: 4px solid ${primaryColor};">
           <p class="text-2xl font-bold" style="color: ${primaryColor};">
-            ${phase.phase.exercises.length} exercises
+             ${t('guidedWorkout.phaseTransition.exerciseCount', { count: phase.phase.exercises.length })}
           </p>
         </div>
         <button id="continueFromPhaseBtn" class="rounded-full px-8 py-4 text-lg font-bold text-white shadow-lg transition-all duration-200 hover:scale-105"
                 style="background-color: ${primaryColor};">
-          Continue
+           ${t('guidedWorkout.phaseTransition.continueButton')}
         </button>
       </div>
     </div>
@@ -233,7 +246,7 @@ function renderExercisePrep(container: HTMLElement) {
     <div class="flex h-full flex-col justify-between p-4">
       <!-- Get Ready Badge -->
       <div class="mb-3 flex justify-center">
-        <span class="text-sm font-semibold uppercase tracking-wide" style="color: ${phaseColor};">Get ready</span>
+        <span class="text-sm font-semibold uppercase tracking-wide" style="color: ${phaseColor};">${t('guidedWorkout.exercisePrep.getReady')}</span>
       </div>
 
       <!-- Exercise Title (larger) with view-transition-name -->
@@ -261,7 +274,7 @@ function renderExercisePrep(container: HTMLElement) {
         <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${exercise.imageUrl ? `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
-            ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${exercise.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
+             ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${t('guidedWorkout.exerciseActive.animatedAlt', { name: exercise.name })}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
         </div>
       ` : ''}
@@ -313,7 +326,7 @@ function renderExerciseActive(container: HTMLElement) {
         </h2>
         <button id="exerciseInfoButton"
                 class="flex-shrink-0 rounded-full bg-blue-100 p-1.5 text-blue-600 hover:bg-blue-200 transition-colors"
-                title="More information"
+                 title="${t('common.moreInfo')}"
                 onclick="window.showExerciseInfo('${exercise.id}')">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -329,10 +342,10 @@ function renderExerciseActive(container: HTMLElement) {
             <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
-            <span class="text-sm font-bold text-green-700">¡Ya completado!</span>
+            <span class="text-sm font-bold text-green-700">${t('guidedWorkout.exerciseActive.alreadyCompleted')}</span>
           </div>
           <button id="repeatExerciseButton" class="w-full rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors">
-            Repetir ejercicio
+             ${t('guidedWorkout.exerciseActive.repeatExercise')}
           </button>
         </div>
       ` : ''}
@@ -355,7 +368,7 @@ function renderExerciseActive(container: HTMLElement) {
         <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${exercise.imageUrl ? `<img src="${exercise.imageUrl}" alt="${exercise.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
-            ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${exercise.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
+             ${exercise.gifUrl ? `<img src="${exercise.gifUrl}" alt="${t('guidedWorkout.exerciseActive.animatedAlt', { name: exercise.name })}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
         </div>
       ` : ''}
@@ -368,13 +381,13 @@ function renderExerciseActive(container: HTMLElement) {
       ${!hasTimer && exercise.sets && exercise.sets > 1 ? `
         <div class="text-center">
           <p class="text-sm text-gray-600">
-            Toca el botón cuando completes la serie
+             ${t('guidedWorkout.exerciseActive.tapWhenSetComplete')}
           </p>
         </div>
       ` : !hasTimer ? `
         <div class="text-center">
           <p class="text-sm text-gray-600">
-            Toca el botón cuando completes el ejercicio
+             ${t('guidedWorkout.exerciseActive.tapWhenExerciseComplete')}
           </p>
         </div>
       ` : ''}
@@ -464,10 +477,10 @@ function renderRestPeriod(container: HTMLElement) {
     <div class="flex h-full flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-white p-4">
       <!-- Get Ready Title -->
       <h1 class="mb-3 text-center font-['Barriecito'] text-3xl font-bold" style="color: ${phaseColor};">
-        Get Ready!
+         ${t('guidedWorkout.exercisePrep.getReady')}
       </h1>
       <p class="mb-2 text-center text-sm font-semibold uppercase tracking-wide text-gray-500">
-        Next exercise:
+         ${t('guidedWorkout.exercisePrep.nextExercise')}
       </p>
 
       <!-- Next Exercise Name (larger) -->
@@ -493,7 +506,7 @@ function renderRestPeriod(container: HTMLElement) {
         <div class="mb-3 flex justify-center" id="exerciseVideoWrapper" style="view-transition-name: exercise-video;">
           <div class="relative overflow-hidden rounded-xl shadow-lg" style="aspect-ratio: 9 / 16; max-width: 240px; width: 100%;">
             ${next.imageUrl ? `<img src="${next.imageUrl}" alt="${next.name}" class="w-full h-full object-cover" loading="lazy" />` : ''}
-            ${next.gifUrl ? `<img src="${next.gifUrl}" alt="${next.name} (animated)" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
+             ${next.gifUrl ? `<img src="${next.gifUrl}" alt="${t('guidedWorkout.exerciseActive.animatedAlt', { name: next.name })}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />` : ''}
           </div>
         </div>
       ` : ''}
@@ -528,10 +541,10 @@ function renderPhaseComplete(container: HTMLElement) {
   container.innerHTML = `
     <div class="flex h-full items-center justify-center p-6">
       <div class="text-center">
-        <h1 class="mb-4 text-4xl font-bold text-green-600">Phase Complete! 🎉</h1>
-        <p class="mb-8 text-xl text-gray-700">Great job completing ${phase.phase.name}!</p>
+        <h1 class="mb-4 text-4xl font-bold text-green-600">${t('guidedWorkout.phaseComplete.title')}</h1>
+        <p class="mb-8 text-xl text-gray-700">${t('guidedWorkout.phaseComplete.message', { phase: phase.phase.name })}</p>
         <button id="nextPhaseBtn" class="rounded-full bg-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-lg hover:bg-indigo-700">
-          Continue to Next Phase
+          ${t('guidedWorkout.phaseComplete.continueButton')}
         </button>
       </div>
     </div>
@@ -579,12 +592,12 @@ function renderWorkoutVerification(container: HTMLElement) {
             <div class="mb-6 animate-bounce">
               <div class="text-8xl mb-4">🎉</div>
             </div>
-            <h1 class="mb-3 text-3xl font-bold text-green-600">¡Todo Completado!</h1>
+            <h1 class="mb-3 text-3xl font-bold text-green-600">${t('guidedWorkout.verification.completeTitle')}</h1>
             <p class="mb-6 text-lg text-gray-700">
-              Hiciste los <strong>${totalExercises} ejercicios</strong>
+              ${t('guidedWorkout.verification.completeMessage', { count: totalExercises })}
             </p>
             <button id="confirmCompleteBtn" class="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-4 font-bold text-white shadow-xl hover:from-green-600 hover:to-emerald-600 transition-all transform hover:scale-105">
-              ¡Celebrar! 🎊
+              ${t('guidedWorkout.verification.celebrate')}
             </button>
           ` : `
             <!-- Incomplete - Show Progress -->
@@ -608,29 +621,29 @@ function renderWorkoutVerification(container: HTMLElement) {
                 </svg>
                 <div class="absolute text-center">
                   <div class="text-4xl font-bold text-gray-800">${completedCount}</div>
-                  <div class="text-sm text-gray-500">de ${totalExercises}</div>
+                  <div class="text-sm text-gray-500">${t('guidedWorkout.verification.of', { count: totalExercises })}</div>
                 </div>
               </div>
             </div>
 
-            <h1 class="mb-2 text-2xl font-bold text-gray-800">¡Casi llegas!</h1>
+            <h1 class="mb-2 text-2xl font-bold text-gray-800">${t('guidedWorkout.verification.almostThere')}</h1>
             <p class="mb-4 text-base text-gray-600">
-              Te ${pendingCount === 1 ? 'falta' : 'faltan'} <strong class="text-orange-600">${pendingCount} ejercicio${pendingCount === 1 ? '' : 's'}</strong>
+              ${t(`guidedWorkout.verification.${pendingCount === 1 ? 'onePending' : 'manyPending'}`, { count: pendingCount })}
             </p>
 
             <!-- Message pointing to logo -->
             <div class="mb-6 flex flex-col items-center gap-3">
               <div class="rounded-lg bg-blue-100 border-2 border-blue-300 p-4 max-w-xs">
                 <p class="text-sm font-semibold text-blue-800">
-                  Toca el logo para ver qué ejercicios te faltan
+                  ${t('guidedWorkout.verification.showPending')}
                 </p>
               </div>
             </div>
           `}
 
           <!-- Exit Button -->
-          <a href="/" class="inline-block rounded-full ${allCompleted ? 'bg-gray-200 text-gray-700' : 'bg-gray-200 text-gray-700'} px-6 py-3 font-semibold hover:bg-gray-300 transition-colors ${allCompleted ? 'mt-4' : ''}">
-            Salir
+          <a href="/${currentLang}/" class="inline-block rounded-full ${allCompleted ? 'bg-gray-200 text-gray-700' : 'bg-gray-200 text-gray-700'} px-6 py-3 font-semibold hover:bg-gray-300 transition-colors ${allCompleted ? 'mt-4' : ''}">
+            ${t('guidedWorkout.verification.exit')}
           </a>
         </div>
       </div>
@@ -669,17 +682,17 @@ function renderWorkoutComplete(container: HTMLElement) {
   container.innerHTML = `
     <div class="flex h-full items-center justify-center p-6">
       <div class="text-center max-w-2xl">
-        <h1 class="mb-4 text-5xl font-bold text-green-600">Workout Complete! 🎉</h1>
-        <p class="mb-4 text-2xl font-semibold text-gray-800">You crushed all 21 exercises!</p>
+        <h1 class="mb-4 text-5xl font-bold text-green-600">${t('guidedWorkout.workoutComplete.title')}</h1>
+        <p class="mb-4 text-2xl font-semibold text-gray-800">${t('guidedWorkout.workoutComplete.subtitle')}</p>
         <p class="mb-8 text-lg text-gray-600">
-          You just invested 25 minutes in your health. That's what consistency looks like!
+          ${t('guidedWorkout.workoutComplete.message')}
         </p>
         <div class="flex gap-4 justify-center">
-          <a href="/" class="rounded-full bg-gray-200 px-8 py-4 font-bold text-gray-700 hover:bg-gray-300">
-            Back to overview
+          <a href="/${currentLang}/" class="rounded-full bg-gray-200 px-8 py-4 font-bold text-gray-700 hover:bg-gray-300">
+            ${t('guidedWorkout.workoutComplete.backToOverview')}
           </a>
           <button id="repeatWorkoutBtn" class="rounded-full bg-indigo-600 px-8 py-4 font-bold text-white hover:bg-indigo-700">
-            Repeat workout
+            ${t('guidedWorkout.workoutComplete.repeatWorkout')}
           </button>
         </div>
       </div>

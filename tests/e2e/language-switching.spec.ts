@@ -1,4 +1,45 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+interface GuidedSessionState {
+  workoutState: string;
+  currentPhaseIndex: number;
+  currentExerciseIndex: number;
+  timeLeft: number;
+  isPaused: boolean;
+  startTime: number;
+  pausedTime: number | null;
+  currentReps: number;
+  currentSet: number;
+  currentSide: number;
+}
+
+async function showGuidedState(
+  page: Page,
+  lang: 'en' | 'es',
+  overrides: Partial<GuidedSessionState>,
+): Promise<void> {
+  const session: GuidedSessionState = {
+    workoutState: 'PHASE_INTRO',
+    currentPhaseIndex: 0,
+    currentExerciseIndex: 0,
+    timeLeft: 30,
+    isPaused: true,
+    startTime: Date.now(),
+    pausedTime: Date.now(),
+    currentReps: 0,
+    currentSet: 1,
+    currentSide: 1,
+    ...overrides,
+  };
+
+  await page.evaluate((savedSession) => {
+    localStorage.setItem('unslump-workout-session', JSON.stringify(savedSession));
+    localStorage.setItem('unslump-workout-onboarding-seen', 'true');
+  }, session);
+  await page.goto(`/${lang}/workout`);
+  await page.locator('#resumeButton').click();
+  await expect(page.locator('#resumeModal')).toBeHidden();
+}
 
 test.describe('Language Switching', () => {
   test.beforeEach(async ({ page }) => {
@@ -37,25 +78,40 @@ test.describe('Language Switching', () => {
     await expect(page.locator('body')).toBeVisible();
   });
 
-  test('should switch from English to Spanish on landing page', async ({ page }) => {
+  test('should switch landing language by click without relying on hover', async ({ page }) => {
     await page.goto('/en/');
 
-    // Find language selector (FAB button in bottom left)
-    const langButton = page.locator('.fixed.bottom-6.left-6').locator('button').first();
+    const langButton = page.getByRole('button', {
+      name: 'Select language. Current language: EN',
+    });
+    await expect(langButton).toHaveAttribute('aria-expanded', 'false');
+    await langButton.click();
+    await expect(langButton).toHaveAttribute('aria-expanded', 'true');
+    await page.getByRole('link', { name: 'Switch to Español' }).click();
 
-    // Hover to show menu
-    await langButton.hover();
-
-    // Find ES link
-    const esLink = page.locator('a[href*="/es/"]').first();
-    await esLink.waitFor({ state: 'visible' });
-    await esLink.click();
-
-    // Should navigate to Spanish version
-    await expect(page).toHaveURL(/\/es\/?/);
-
-    // Content should be in Spanish
+    await expect(page).toHaveURL('/es/');
     await expect(page.locator('body')).toContainText(/ejercicio|rutina/i);
+  });
+
+  test('should operate the landing language selector with the keyboard', async ({ page }) => {
+    await page.goto('/en/');
+
+    const langButton = page.getByRole('button', {
+      name: 'Select language. Current language: EN',
+    });
+    await langButton.focus();
+    await page.keyboard.press('Enter');
+    await expect(langButton).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(langButton).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('should preserve the Explore route when switching languages', async ({ page }) => {
+    await page.goto('/en/app');
+    await page.locator('#show-onboarding-btn').click();
+    await page.locator('#language-select').selectOption('es');
+
+    await expect(page).toHaveURL('/es/app');
   });
 
   test('should have correct lang attribute on html element', async ({ page }) => {
@@ -232,29 +288,108 @@ test.describe('Language Switching', () => {
 
   test('should switch language from workout settings modal', async ({ page }) => {
     await page.goto('/en/workout');
-
-    await page.waitForTimeout(5000);
-
-    // Open settings
     await page.locator('#settingsButton').click();
-    await page.waitForTimeout(500);
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.locator('#workout-language-select').selectOption('es');
 
-    // Set up dialog handler BEFORE changing language
-    page.once('dialog', dialog => {
-      dialog.accept();
-    });
-
-    // Change language
-    const langSelect = page.locator('#workout-language-select');
-    await langSelect.selectOption('es');
-
-    // Wait for navigation with increased timeout
-    await page.waitForTimeout(2000);
-
-    // Check if language switched - might still be on /en/ if feature doesn't work yet
-    const currentUrl = page.url();
-    // Just verify page is still accessible
+    await expect(page).toHaveURL('/es/workout');
     await expect(page.locator('#workoutContainer')).toBeVisible();
+  });
+
+  test('should preserve an active Guided session and shared progress across a language switch', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('unslump-progress', JSON.stringify({
+        completed: ['fase1-pectoral'],
+        level: 'principiante',
+        sessionLocked: false,
+        lastSessionDate: new Date().toISOString(),
+      }));
+      localStorage.setItem('unslump-workout-session', JSON.stringify({
+        workoutState: 'EXERCISE_ACTIVE',
+        currentPhaseIndex: 0,
+        currentExerciseIndex: 1,
+        timeLeft: 30,
+        isPaused: true,
+        startTime: Date.now(),
+        pausedTime: Date.now(),
+        currentReps: 0,
+        currentSet: 1,
+        currentSide: 1,
+      }));
+    });
+    await page.goto('/en/workout');
+    await page.locator('#resumeButton').click();
+    await page.locator('#settingsButton').click();
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.locator('#workout-language-select').selectOption('es');
+
+    await expect(page).toHaveURL('/es/workout');
+    await expect(page.locator('#resumeModal')).toBeVisible();
+    const preserved = await page.evaluate(() => ({
+      session: JSON.parse(localStorage.getItem('unslump-workout-session') ?? '{}'),
+      progress: JSON.parse(localStorage.getItem('unslump-progress') ?? '{}'),
+    }));
+    expect(preserved.session.currentPhaseIndex).toBe(0);
+    expect(preserved.session.currentExerciseIndex).toBe(1);
+    expect(preserved.session.workoutState).toBe('EXERCISE_ACTIVE');
+    expect(preserved.progress.completed).toContain('fase1-pectoral');
+
+    await page.locator('#resumeButton').click();
+    await expect(page.locator('#stateContainer')).toContainText('Liberación de pectoral');
+  });
+
+  test('should render representative Spanish Guided states with exact dynamic copy', async ({ page }) => {
+    await showGuidedState(page, 'es', { workoutState: 'PHASE_INTRO' });
+    await expect(page.locator('#stateContainer')).toContainText('3 ejercicios');
+    await expect(page.locator('#continueFromPhaseBtn')).toHaveText('Continuar');
+
+    await showGuidedState(page, 'es', { workoutState: 'EXERCISE_PREP' });
+    await expect(page.locator('#stateContainer')).toContainText('¡Prepárate!');
+
+    await showGuidedState(page, 'es', {
+      workoutState: 'EXERCISE_ACTIVE',
+      currentPhaseIndex: 2,
+    });
+    await expect(page.locator('#stateContainer')).toContainText(
+      'Toca el botón cuando completes la serie',
+    );
+
+    await showGuidedState(page, 'es', { workoutState: 'REST_PERIOD' });
+    await expect(page.locator('#stateContainer')).toContainText('Siguiente ejercicio:');
+
+    await showGuidedState(page, 'es', { workoutState: 'PHASE_COMPLETE' });
+    await expect(page.locator('#stateContainer')).toContainText('¡Fase completada! 🎉');
+
+    await showGuidedState(page, 'es', { workoutState: 'WORKOUT_COMPLETE' });
+    await expect(page.locator('#stateContainer')).toContainText('¡Entrenamiento Completo! 🎉');
+    await expect(page.locator('#stateContainer')).toContainText('¡Completaste los 21 ejercicios!');
+  });
+
+  test('should keep representative English Guided states in English', async ({ page }) => {
+    await showGuidedState(page, 'en', { workoutState: 'PHASE_INTRO' });
+    await expect(page.locator('#stateContainer')).toContainText('3 exercises');
+    await expect(page.locator('#continueFromPhaseBtn')).toHaveText('Continue');
+
+    await showGuidedState(page, 'en', { workoutState: 'EXERCISE_PREP' });
+    await expect(page.locator('#stateContainer')).toContainText('Get ready!');
+
+    await showGuidedState(page, 'en', {
+      workoutState: 'EXERCISE_ACTIVE',
+      currentPhaseIndex: 2,
+    });
+    await expect(page.locator('#stateContainer')).toContainText(
+      'Tap the button when you complete the set',
+    );
+
+    await showGuidedState(page, 'en', { workoutState: 'REST_PERIOD' });
+    await expect(page.locator('#stateContainer')).toContainText('Next exercise:');
+
+    await showGuidedState(page, 'en', { workoutState: 'PHASE_COMPLETE' });
+    await expect(page.locator('#stateContainer')).toContainText('Phase Complete! 🎉');
+
+    await showGuidedState(page, 'en', { workoutState: 'WORKOUT_COMPLETE' });
+    await expect(page.locator('#stateContainer')).toContainText('Workout Complete! 🎉');
+    await expect(page.locator('#stateContainer')).toContainText('You crushed all 21 exercises!');
   });
 
   test('should have bilingual URLs in sitemap/routes', async ({ page }) => {
@@ -272,5 +407,22 @@ test.describe('Language Switching', () => {
       const response = await page.goto(route);
       expect(response?.status()).toBeLessThan(400);
     }
+  });
+});
+
+test.describe('Landing language selector touch input', () => {
+  test.use({ hasTouch: true });
+
+  test('should switch landing language by touch', async ({ page }) => {
+    await page.goto('/en/');
+
+    const langButton = page.getByRole('button', {
+      name: 'Select language. Current language: EN',
+    });
+    await langButton.tap();
+    await expect(langButton).toHaveAttribute('aria-expanded', 'true');
+    await page.getByRole('link', { name: 'Switch to Español' }).tap();
+
+    await expect(page).toHaveURL('/es/');
   });
 });

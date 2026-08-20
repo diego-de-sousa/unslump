@@ -34,7 +34,7 @@ test('keeps the exercise browser and progress available offline', async ({ page,
 
   expect(requiredResourceUrls.some((url) => new URL(url).pathname.startsWith('/_astro/'))).toBe(true);
   await expect.poll(() => page.evaluate(async (urls) => {
-    const cache = await caches.open('unslump-v46');
+    const cache = await caches.open('unslump-v47');
     const matches = await Promise.all(urls.map((url) => cache.match(url)));
     return matches.every(Boolean);
   }, requiredResourceUrls)).toBe(true);

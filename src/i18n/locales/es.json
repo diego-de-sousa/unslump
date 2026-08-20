@@ -43,7 +43,8 @@
   "language": {
     "selector": "Idioma:",
     "current": "Idioma actual",
-    "select": "Seleccionar idioma"
+    "select": "Seleccionar idioma",
+    "switchTo": "Cambiar a {language}"
   },
   "preferences": {
     "title": "Preferencias"
@@ -260,6 +261,13 @@
       "starting": "Comenzando en...",
       "skipCountdown": "Saltar cuenta atrás"
     },
+    "exerciseActive": {
+      "alreadyCompleted": "¡Ya completado!",
+      "repeatExercise": "Repetir ejercicio",
+      "tapWhenSetComplete": "Toca el botón cuando completes la serie",
+      "tapWhenExerciseComplete": "Toca el botón cuando completes el ejercicio",
+      "animatedAlt": "{name} (animado)"
+    },
     "rest": {
       "title": "Descanso",
       "message": "Respira, prepárate para el siguiente ejercicio",
@@ -277,6 +285,25 @@
     },
     "timer": {
       "timeRemaining": "Tiempo restante"
+    },
+    "runtime": {
+      "initializing": "Iniciando entrenamiento..."
+    },
+    "phaseComplete": {
+      "title": "¡Fase completada! 🎉",
+      "message": "¡Buen trabajo al completar {phase}!",
+      "continueButton": "Continuar a la siguiente fase"
+    },
+    "verification": {
+      "completeTitle": "¡Todo completado!",
+      "completeMessage": "Completaste los {count} ejercicios",
+      "celebrate": "¡Celebrar! 🎊",
+      "of": "de {count}",
+      "almostThere": "¡Casi llegas!",
+      "onePending": "Te falta {count} ejercicio",
+      "manyPending": "Te faltan {count} ejercicios",
+      "showPending": "Toca el logo para ver qué ejercicios te faltan",
+      "exit": "Salir"
     },
     "settings": {
       "title": "Ajustes de Entrenamiento",
