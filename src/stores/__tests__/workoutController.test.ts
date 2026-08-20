@@ -17,6 +17,8 @@ import {
   continueFromPhaseIntro,
   startExerciseFromPrep,
   completeCurrentExercise,
+  completeCurrentStep,
+  createCompletionCallback,
   advanceToNextExercise,
   advanceToNextPhase,
   skipExercise,
@@ -310,6 +312,7 @@ describe('workoutController', () => {
 
     it('should advance to next phase', () => {
       advanceToNextPhase();
+      vi.advanceTimersByTime(10000);
 
       const session = workoutSession.get();
 
@@ -586,7 +589,7 @@ describe('workoutController', () => {
 
       const session = workoutSession.get();
 
-      expect(session.currentSet).toBe(2);
+      expect(session.currentSet).toBe(1);
       expect(session.currentReps).toBe(0);
       expect(session.workoutState).toBe('REST_PERIOD');
     });
@@ -741,5 +744,70 @@ describe('workoutController', () => {
 
       expect(timeAfterPause).toBe(timeBeforePause);
     });
+  });
+
+  describe('guarded completion', () => {
+    beforeEach(() => {
+      initializeWorkoutController(mockWorkout);
+      startWorkout();
+      continueFromPhaseIntro();
+      vi.advanceTimersByTime(5000);
+    });
+
+    it('accepts a timer and manual race only once', () => {
+      const timerCompletion = createCompletionCallback('timer');
+      const manualCompletion = createCompletionCallback('manual');
+
+      timerCompletion();
+      manualCompletion();
+
+      expect(progressStore.completeExercise).toHaveBeenCalledTimes(1);
+      expect(workoutSession.get()).toMatchObject({
+        workoutState: 'REST_PERIOD',
+        currentExerciseIndex: 0,
+        restPurpose: 'between-exercises',
+      });
+    });
+
+    it('rejects a stale callback after navigation and keeps the new exercise active', () => {
+      const staleCompletion = createCompletionCallback('timer');
+
+      jumpToExercise(0, 1);
+      staleCompletion();
+
+      expect(progressStore.completeExercise).not.toHaveBeenCalled();
+      expect(workoutSession.get()).toMatchObject({
+        currentExerciseIndex: 1,
+        workoutState: 'EXERCISE_ACTIVE',
+      });
+    });
+
+    it('progresses bilateral multi-set work through sides, set rest, and completion once', () => {
+      initializeWorkoutController({
+        ...mockWorkout,
+        fase1: {
+          ...mockWorkout.fase1,
+          exercises: [{ ...mockWorkout.fase1.exercises[0], sides: 2, sets: 2, duration: 5 }],
+        },
+      });
+      startWorkout();
+      continueFromPhaseIntro();
+      vi.advanceTimersByTime(5000);
+
+      completeCurrentStep();
+      expect(workoutSession.get()).toMatchObject({ currentSide: 2, currentSet: 1, workoutState: 'EXERCISE_ACTIVE' });
+
+      completeCurrentStep(undefined, 'timer');
+      expect(workoutSession.get()).toMatchObject({ currentSide: 1, currentSet: 1, workoutState: 'REST_PERIOD', restPurpose: 'between-sets' });
+
+      completeCurrentStep(undefined, 'timer');
+      expect(workoutSession.get()).toMatchObject({ currentSide: 1, currentSet: 2, workoutState: 'EXERCISE_ACTIVE' });
+
+      completeCurrentStep();
+      completeCurrentStep();
+      expect(progressStore.completeExercise).toHaveBeenCalledTimes(1);
+      expect(workoutSession.get()).toMatchObject({ workoutState: 'PHASE_COMPLETE' });
+    });
+
   });
 });

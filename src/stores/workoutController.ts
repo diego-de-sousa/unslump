@@ -7,6 +7,21 @@ import { atom, computed } from 'nanostores';
 import type { Workout, Exercise } from '../types/workout';
 import { completeExercise, skipExercise as markExerciseSkipped, isExerciseCompleted } from './progressStore';
 
+export const COMPLETION_SOURCE = {
+  MANUAL: 'manual',
+  TIMER: 'timer',
+} as const;
+
+export type CompletionSource = (typeof COMPLETION_SOURCE)[keyof typeof COMPLETION_SOURCE];
+
+export const REST_PURPOSE = {
+  BETWEEN_SETS: 'between-sets',
+  BETWEEN_EXERCISES: 'between-exercises',
+  BETWEEN_PHASES: 'between-phases',
+} as const;
+
+export type RestPurpose = (typeof REST_PURPOSE)[keyof typeof REST_PURPOSE];
+
 // Workout States
 export type WorkoutState =
   | 'IDLE'
@@ -29,6 +44,8 @@ export interface WorkoutSession {
   currentReps: number; // for rep-based exercises
   currentSet: number; // for exercises with sets
   currentSide: number; // for bilateral exercises (left=1, right=2)
+  stepRevision?: number;
+  restPurpose?: RestPurpose;
 }
 
 // Settings
@@ -70,11 +87,31 @@ export const currentWorkoutData = atom<Workout | null>(null);
 
 // Timer interval reference (for cleanup)
 let timerInterval: ReturnType<typeof setInterval> | null = null;
+let generation = 0;
+
+interface CompletionToken {
+  generation: number;
+  stepRevision: number;
+}
+
+function invalidateCallbacks(): void {
+  generation += 1;
+  stopTimer();
+}
+
+function transition(session: WorkoutSession, updates: Partial<WorkoutSession>): WorkoutSession {
+  return {
+    ...session,
+    ...updates,
+    stepRevision: (session.stepRevision ?? 0) + 1,
+  };
+}
 
 /**
  * Initialize workout controller with workout data
  */
 export function initializeWorkoutController(workout: Workout): void {
+  invalidateCallbacks();
   currentWorkoutData.set(workout);
 }
 
@@ -160,6 +197,7 @@ export const overallProgress = computed([workoutSession, currentWorkoutData], (s
  * Start the workout from beginning
  */
 export function startWorkout(): void {
+  invalidateCallbacks();
   workoutSession.set({
     currentPhaseIndex: 0,
     currentExerciseIndex: 0,
@@ -171,6 +209,7 @@ export function startWorkout(): void {
     currentReps: 0,
     currentSet: 1,
     currentSide: 1,
+    stepRevision: 0,
   });
 
   saveSessionState();
@@ -192,13 +231,11 @@ export function resumeWorkout(savedSession: WorkoutSession): void {
  */
 export function pauseWorkout(): void {
   const session = workoutSession.get();
-  workoutSession.set({
-    ...session,
+  invalidateCallbacks();
+  workoutSession.set(transition(session, {
     isPaused: true,
     pausedTime: Date.now(),
-  });
-
-  stopTimer();
+  }));
   saveSessionState();
 }
 
@@ -207,17 +244,18 @@ export function pauseWorkout(): void {
  */
 export function resumeFromPause(): void {
   const session = workoutSession.get();
-  workoutSession.set({
-    ...session,
+  invalidateCallbacks();
+  const resumed = transition(session, {
     isPaused: false,
     pausedTime: null,
   });
+  workoutSession.set(resumed);
 
   // Restart timer if in active state
-  if (session.workoutState === 'EXERCISE_ACTIVE' ||
-      session.workoutState === 'REST_PERIOD' ||
-      session.workoutState === 'EXERCISE_PREP') {
-    startTimer(session.timeLeft);
+  if (resumed.workoutState === 'EXERCISE_ACTIVE' ||
+      resumed.workoutState === 'REST_PERIOD' ||
+      resumed.workoutState === 'EXERCISE_PREP') {
+    startTimer(resumed.timeLeft);
   }
 
   saveSessionState();
@@ -228,13 +266,14 @@ export function resumeFromPause(): void {
  */
 export function continueFromPhaseIntro(): void {
   const session = workoutSession.get();
-  workoutSession.set({
-    ...session,
+  const prepDuration = workoutSettings.get().prepDuration;
+  const next = transition(session, {
     workoutState: 'EXERCISE_PREP',
-    timeLeft: workoutSettings.get().prepDuration,
+    timeLeft: prepDuration,
   });
+  workoutSession.set(next);
 
-  startTimer(workoutSettings.get().prepDuration);
+  startTimer(prepDuration);
   saveSessionState();
 }
 
@@ -251,14 +290,13 @@ export function startExerciseFromPrep(): void {
   const exerciseDuration = exercise.duration || 0;
 
   // Set initial state for exercise
-  const newSession: WorkoutSession = {
-    ...session,
+  const newSession = transition(session, {
     workoutState: 'EXERCISE_ACTIVE',
     currentReps: 0,
     currentSet: 1,
     currentSide: 1,
     timeLeft: exerciseDuration,
-  };
+  });
 
   workoutSession.set(newSession);
 
@@ -274,13 +312,66 @@ export function startExerciseFromPrep(): void {
  * Complete current exercise (from timer or manual)
  */
 export function completeCurrentExercise(): void {
+  createCompletionCallback(COMPLETION_SOURCE.MANUAL)();
+}
+
+export function createCompletionCallback(source: CompletionSource): () => void {
+  const session = workoutSession.get();
+  const token: CompletionToken = { generation, stepRevision: session.stepRevision ?? 0 };
+  return () => completeCurrentStep(token, source);
+}
+
+export function completeCurrentStep(token?: CompletionToken, source: CompletionSource = COMPLETION_SOURCE.MANUAL): void {
   const session = workoutSession.get();
   const phase = currentPhase.get();
   const exercise = currentExercise.get();
 
-  if (!phase || !exercise) return;
+  if (token && (token.generation !== generation || token.stepRevision !== (session.stepRevision ?? 0))) return;
+  if (session.isPaused || !phase || !exercise) return;
+  if (source === COMPLETION_SOURCE.MANUAL && session.workoutState !== 'EXERCISE_ACTIVE') return;
 
-  // Mark as completed in progress store
+  if (session.workoutState === 'EXERCISE_PREP') {
+    startExerciseFromPrep();
+    return;
+  }
+
+  if (session.workoutState === 'REST_PERIOD') {
+    if (session.restPurpose === REST_PURPOSE.BETWEEN_SETS) {
+      const duration = exercise.duration || 0;
+      const next = transition(session, { workoutState: 'EXERCISE_ACTIVE', currentSet: session.currentSet + 1, currentSide: 1, timeLeft: duration, restPurpose: undefined });
+      workoutSession.set(next);
+      if (duration > 0) startTimer(duration);
+    } else if (session.restPurpose === REST_PURPOSE.BETWEEN_EXERCISES) {
+      advanceToNextExercise();
+    } else if (session.restPurpose === REST_PURPOSE.BETWEEN_PHASES) {
+      workoutSession.set(transition(session, { currentPhaseIndex: session.currentPhaseIndex + 1, currentExerciseIndex: 0, workoutState: 'PHASE_INTRO', restPurpose: undefined, timeLeft: 0 }));
+    }
+    saveSessionState();
+    return;
+  }
+
+  if (session.workoutState !== 'EXERCISE_ACTIVE') return;
+
+  const sideCount = (exercise as Exercise & { sides?: number }).sides ?? 1;
+  if (session.currentSide < sideCount) {
+    const duration = exercise.duration || 0;
+    const next = transition(session, { currentSide: session.currentSide + 1, timeLeft: duration });
+    workoutSession.set(next);
+    if (duration > 0) startTimer(duration);
+    saveSessionState();
+    return;
+  }
+
+  const setCount = exercise.sets ?? 1;
+  if (session.currentSet < setCount) {
+    const restDuration = workoutSettings.get().restDuration;
+    const next = transition(session, { workoutState: 'REST_PERIOD', currentSide: 1, timeLeft: restDuration, restPurpose: REST_PURPOSE.BETWEEN_SETS });
+    workoutSession.set(next);
+    startTimer(restDuration);
+    saveSessionState();
+    return;
+  }
+
   completeExercise(phase.id, exercise.id);
 
   // Check if this is the last exercise in the phase
@@ -293,25 +384,23 @@ export function completeCurrentExercise(): void {
 
     if (isLastPhase) {
       // Go to verification screen to check if user really completed everything
-      workoutSession.set({
-        ...session,
+      workoutSession.set(transition(session, {
         workoutState: 'WORKOUT_VERIFICATION',
-      });
+      }));
     } else {
       // Phase complete
-      workoutSession.set({
-        ...session,
+      workoutSession.set(transition(session, {
         workoutState: 'PHASE_COMPLETE',
-      });
+      }));
     }
   } else {
     // Start rest period before next exercise
     const restDuration = workoutSettings.get().restDuration;
-    workoutSession.set({
-      ...session,
+    workoutSession.set(transition(session, {
       workoutState: 'REST_PERIOD',
       timeLeft: restDuration,
-    });
+      restPurpose: REST_PURPOSE.BETWEEN_EXERCISES,
+    }));
     startTimer(restDuration);
   }
 
@@ -327,15 +416,15 @@ export function advanceToNextExercise(): void {
 
   if (!exercise) return;
 
-  workoutSession.set({
-    ...session,
+  workoutSession.set(transition(session, {
     currentExerciseIndex: session.currentExerciseIndex + 1,
     workoutState: 'EXERCISE_ACTIVE',
     timeLeft: exercise.duration || 0,
     currentReps: 0,
     currentSet: 1,
     currentSide: 1,
-  });
+    restPurpose: undefined,
+  }));
 
   // Start timer for timed exercises
   if (exercise.duration > 0) {
@@ -361,13 +450,13 @@ function getExerciseAtIndex(phaseIndex: number, exerciseIndex: number) {
  */
 export function advanceToNextPhase(): void {
   const session = workoutSession.get();
-
-  workoutSession.set({
-    ...session,
-    currentPhaseIndex: session.currentPhaseIndex + 1,
-    currentExerciseIndex: 0,
-    workoutState: 'PHASE_INTRO',
-  });
+  const duration = workoutSettings.get().phaseRestDuration;
+  workoutSession.set(transition(session, {
+    workoutState: 'REST_PERIOD',
+    timeLeft: duration,
+    restPurpose: REST_PURPOSE.BETWEEN_PHASES,
+  }));
+  startTimer(duration);
 
   saveSessionState();
 }
@@ -376,7 +465,7 @@ export function advanceToNextPhase(): void {
  * Skip current exercise (marks as skipped, not completed)
  */
 export function skipExercise(): void {
-  stopTimer();
+  invalidateCallbacks();
 
   const session = workoutSession.get();
   const phase = currentPhase.get();
@@ -400,11 +489,11 @@ export function skipExercise(): void {
     }
   } else {
     const restDuration = workoutSettings.get().restDuration;
-    workoutSession.set({
-      ...session,
+    workoutSession.set(transition(session, {
       workoutState: 'REST_PERIOD',
       timeLeft: restDuration,
-    });
+      restPurpose: REST_PURPOSE.BETWEEN_EXERCISES,
+    }));
     startTimer(restDuration);
   }
 
@@ -415,7 +504,7 @@ export function skipExercise(): void {
  * Go to previous exercise
  */
 export function previousExercise(): void {
-  stopTimer();
+  invalidateCallbacks();
 
   const session = workoutSession.get();
 
@@ -451,7 +540,7 @@ export function previousExercise(): void {
  * Goes directly to the exercise without prep countdown
  */
 export function jumpToExercise(phaseIndex: number, exerciseIndex: number): void {
-  stopTimer();
+  invalidateCallbacks();
 
   const workout = currentWorkoutData.get();
   if (!workout) return;
@@ -476,8 +565,7 @@ export function jumpToExercise(phaseIndex: number, exerciseIndex: number): void 
   const shouldPause = alreadyCompleted; // Pause if already completed to show completed state
 
   // Jump directly to the exercise (no prep countdown for manual navigation)
-  workoutSession.set({
-    ...session,
+  workoutSession.set(transition(session, {
     currentPhaseIndex: phaseIndex,
     currentExerciseIndex: exerciseIndex,
     workoutState: 'EXERCISE_ACTIVE',
@@ -486,7 +574,7 @@ export function jumpToExercise(phaseIndex: number, exerciseIndex: number): void 
     currentReps: 0,
     currentSet: 1,
     currentSide: 1,
-  });
+  }));
 
   console.log('[jumpToExercise] State updated, starting timer for duration:', targetExercise.duration, 'Already completed:', alreadyCompleted);
 
@@ -537,15 +625,14 @@ export function incrementRep(): void {
     if (newReps >= repsPerSet) {
       // Completed a set
       if (session.currentSet < exercise.sets) {
-        // More sets remaining - brief rest between sets
-        workoutSession.set({
-          ...session,
-          currentSet: session.currentSet + 1,
+        const restDuration = workoutSettings.get().restDuration;
+        workoutSession.set(transition(session, {
           currentReps: 0,
           workoutState: 'REST_PERIOD',
-          timeLeft: 10, // 10 seconds between sets
-        });
-        startTimer(10);
+          timeLeft: restDuration,
+          restPurpose: REST_PURPOSE.BETWEEN_SETS,
+        }));
+        startTimer(restDuration);
       } else {
         // All sets complete - finish exercise
         completeCurrentExercise();
@@ -573,25 +660,14 @@ export function confirmRepExerciseComplete(): void {
  * Skip rest period
  */
 export function skipRest(): void {
-  stopTimer();
-
-  const session = workoutSession.get();
-
-  // If resting between sets, go back to exercise
-  const exercise = currentExercise.get();
-  if (exercise && exercise.sets && session.currentSet <= exercise.sets) {
-    startExerciseFromPrep();
-  } else {
-    // Otherwise advance to next exercise
-    advanceToNextExercise();
-  }
+  createCompletionCallback(COMPLETION_SOURCE.TIMER)();
 }
 
 /**
  * Exit workout
  */
 export function exitWorkout(): void {
-  stopTimer();
+  invalidateCallbacks();
   workoutSession.set({
     currentPhaseIndex: 0,
     currentExerciseIndex: 0,
@@ -611,10 +687,11 @@ export function exitWorkout(): void {
  * Timer management
  */
 function startTimer(seconds: number): void {
-  stopTimer(); // Clear any existing timer
+  stopTimer();
 
   let remaining = seconds;
   const session = workoutSession.get();
+  const completion = createCompletionCallback(COMPLETION_SOURCE.TIMER);
 
   workoutSession.set({ ...session, timeLeft: remaining });
 
@@ -622,7 +699,7 @@ function startTimer(seconds: number): void {
     remaining--;
     const currentSession = workoutSession.get();
 
-    if (currentSession.isPaused) {
+    if (currentSession.isPaused || currentSession.stepRevision !== session.stepRevision) {
       stopTimer();
       return;
     }
@@ -631,7 +708,7 @@ function startTimer(seconds: number): void {
 
     if (remaining <= 0) {
       stopTimer();
-      handleTimerComplete();
+      completion();
     }
   }, 1000);
 }
@@ -646,43 +723,6 @@ function stopTimer(): void {
 /**
  * Handle timer completion
  */
-function handleTimerComplete(): void {
-  const session = workoutSession.get();
-  const exercise = currentExercise.get();
-
-  switch (session.workoutState) {
-    case 'EXERCISE_PREP':
-      startExerciseFromPrep();
-      break;
-    case 'EXERCISE_ACTIVE':
-      // Check if exercise has sides and we need to do more sides
-      if (exercise && exercise.sides && exercise.sides > 1) {
-        if (session.currentSide < exercise.sides) {
-          // More sides remaining - move to next side
-          // Duration is already per-side, no need to divide
-          const sideDuration = exercise.duration || 0;
-          workoutSession.set({
-            ...session,
-            currentSide: session.currentSide + 1,
-            timeLeft: sideDuration,
-          });
-          // Start timer for next side
-          if (sideDuration > 0) {
-            startTimer(sideDuration);
-          }
-          saveSessionState();
-          return; // Don't complete exercise yet
-        }
-      }
-      // All sides done (or no sides) - complete exercise
-      completeCurrentExercise();
-      break;
-    case 'REST_PERIOD':
-      advanceToNextExercise();
-      break;
-  }
-}
-
 /**
  * Update settings
  */

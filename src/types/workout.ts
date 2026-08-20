@@ -18,6 +18,7 @@ export interface Exercise {
   levels?: ExerciseLevels;
   videoUrl?: string;
   sets?: number;
+  sides?: number;
   imageUrl?: string;  // Static thumbnail image for quick reference
   gifUrl?: string;    // Animated GIF shown on hover/click (optional)
   videoEmbedUrl?: string;  // Embedded video URL (YouTube Short/video) for inline playback
