@@ -831,7 +831,7 @@ const description = t('meta.description');
 
     function handlePausePlay() {
       // Check if we're in a manual completion state (no active timer)
-      import('../../stores/workoutController').then(({ workoutSession, currentExercise, completeCurrentExercise }) => {
+      import('../../stores/workoutController').then(({ workoutSession, currentExercise, createCompletionCallback }) => {
         const session = workoutSession.get();
         const exercise = currentExercise.get();
 
@@ -840,7 +840,7 @@ const description = t('meta.description');
 
         if (!hasActiveTimer && !isPaused) {
           // Manual completion
-          completeCurrentExercise();
+          createCompletionCallback('manual')();
           return;
         }
 
@@ -955,21 +955,10 @@ const description = t('meta.description');
     }
 
     function handleCompleteTimer() {
-      // Complete current timer/side and move to next side or finish exercise
-      import('../../stores/workoutController').then(({ workoutSession }) => {
-        const session = workoutSession.get();
-
-        // Force timer to complete by setting timeLeft to 0
-        // This will trigger handleTimerComplete which handles sides logic
-        workoutSession.set({
-          ...session,
-          timeLeft: 0,
-        });
-
-        // Resume if paused to trigger the timer completion
-        if (session.isPaused) {
-          resumeFromPause();
-        }
+      import('../../stores/workoutController').then(({ createCompletionCallback, resumeFromPause }) => {
+        resumeFromPause();
+        createCompletionCallback('manual')();
+        updatePauseUI(false);
       });
     }
 
