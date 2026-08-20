@@ -1,0 +1,64 @@
+schema: spec-driven
+project: unslump
+
+session:
+  execution_mode: auto
+  artifact_store: hybrid
+  delivery_strategy: auto-chain
+  review_budget_lines: 800
+
+context: |
+  Stack: Astro 7 SSR, Preact 10, TypeScript 6 strict, Tailwind CSS 4, Nanostores, Motion 12.
+  Runtime: Node.js 24.x with pnpm 11.13.1; deployed through the Vercel adapter.
+  Architecture: locale-prefixed EN/ES routes, Astro/Preact UI, Nanostores plus localStorage, production PWA.
+  Testing: Vitest/happy-dom unit tests, Playwright browser E2E, and a production offline PWA suite.
+  Conventions: colocated unit tests, tests/e2e browser tests, synchronized EN/ES behavior, guarded browser APIs.
+
+testing:
+  strict_tdd: true
+  test_command: pnpm test
+  focused_unit_command: pnpm exec vitest run <test-file>
+  e2e_command: pnpm exec playwright test --project=chromium
+  offline_pwa_command: pnpm run test:e2e:offline
+  coverage_command: pnpm test:coverage
+  typecheck_command: pnpm exec astro check
+  build_command: pnpm run build
+  coverage:
+    provider: v8
+    lines: 80
+    statements: 80
+    functions: 75
+    branches: 75
+  layers:
+    unit: Vitest 4 with happy-dom
+    component: Testing Library for Preact through Vitest
+    end_to_end: Playwright 1.61.1
+    offline: Playwright against a production static build and service worker
+
+rules:
+  proposal:
+    - Include rollback plans for risky changes and identify affected modules.
+  specs:
+    - Use Given/When/Then scenarios and RFC 2119 requirement keywords.
+    - Cover both English and Spanish behavior when user-visible behavior changes.
+  design:
+    - Preserve Astro server/client boundaries and document state ownership.
+    - Include sequence diagrams for complex flows and rationale for architecture decisions.
+  tasks:
+    - Group work into strict-TDD slices with hierarchical numbering.
+    - Forecast authored changed lines against the 800-line review budget.
+  apply:
+    guidelines:
+      - Follow AGENTS.md and existing project patterns.
+      - Preserve unrelated work and existing change history.
+      - Use RED-GREEN-REFACTOR and record focused test evidence.
+    tdd: true
+    test_command: pnpm test
+  verify:
+    test_command: pnpm test
+    e2e_command: pnpm exec playwright test --project=chromium
+    offline_command: pnpm run test:e2e:offline
+    build_command: pnpm run build
+    coverage_threshold: 80
+  archive:
+    - Warn before destructive delta merges and preserve the archive as immutable history.

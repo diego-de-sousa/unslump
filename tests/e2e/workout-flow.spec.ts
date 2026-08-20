@@ -6,6 +6,7 @@ interface WorkoutSessionState {
   currentExerciseIndex: number;
   isPaused: boolean;
   pausedTime: number | null;
+  currentSide: number;
 }
 
 interface ProgressState {
@@ -99,7 +100,7 @@ test.describe('Guided Workout Flow', () => {
     }, { timeout: 10_000 }).toBe('EXERCISE_ACTIVE');
   }
 
-  async function restoreActiveWorkout(page: Page, exerciseIndex: number) {
+  async function restoreActiveWorkout(page: Page, exerciseIndex: number, lang = 'en') {
     await page.evaluate((currentExerciseIndex) => {
       localStorage.setItem('unslump-workout-session', JSON.stringify({
         workoutState: 'EXERCISE_ACTIVE',
@@ -114,7 +115,7 @@ test.describe('Guided Workout Flow', () => {
         currentSide: 1,
       }));
     }, exerciseIndex);
-    await page.goto('/en/workout');
+    await page.goto(`/${lang}/workout`);
     await page.locator('#resumeButton').click();
     await expect(page.locator('#resumeModal')).toBeHidden();
   }
@@ -171,6 +172,51 @@ test.describe('Guided Workout Flow', () => {
 
     await page.getByRole('link', { name: 'Explore exercises' }).click();
     await expect(page).toHaveURL('/en/app');
+    await expect(page.locator('.exercise-card[data-exercise-id="suboccipital"]'))
+      .toHaveClass(/border-indigo-400/);
+  });
+
+  test('should preserve Spanish Guided completion semantics and shared progress', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('unslump-progress', JSON.stringify({
+        completed: ['fase1-pectoral'],
+        level: 'beginner',
+        sessionLocked: false,
+        lastSessionDate: new Date().toISOString(),
+      }));
+    });
+
+    await restoreActiveWorkout(page, 0, 'es');
+    await page.locator('#pausePlayButton').click();
+    await expect(page.locator('#playIcon')).toBeVisible();
+    await expect(page.locator('#navigationButtons')).toBeVisible();
+    await page.locator('#completeTimerButton').click();
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
+      return [session.workoutState, session.currentExerciseIndex, session.currentSide];
+    }).toEqual(['EXERCISE_ACTIVE', 0, 2]);
+    await expect(page.locator('#playIcon')).toBeHidden();
+    await page.locator('#pausePlayButton').click();
+    await expect(page.locator('#completeTimerButton')).toBeVisible();
+    await page.locator('#completeTimerButton').click();
+
+    await expect.poll(async () => parseStoredJson<ProgressState>(
+      await page.evaluate(() => localStorage.getItem('unslump-progress')),
+      'unslump-progress',
+    ).completed).toEqual(expect.arrayContaining(['fase1-pectoral', 'fase1-suboccipital']));
+    await expect.poll(async () => {
+      const session = parseStoredJson<WorkoutSessionState>(
+        await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+        'unslump-workout-session',
+      );
+      return [session.workoutState, session.currentExerciseIndex];
+    }).toEqual(['REST_PERIOD', 0]);
+
+    await page.getByRole('link', { name: 'Explorar ejercicios' }).click();
+    await expect(page).toHaveURL('/es/app');
     await expect(page.locator('.exercise-card[data-exercise-id="suboccipital"]'))
       .toHaveClass(/border-indigo-400/);
   });
