@@ -60,6 +60,14 @@ const description = t('meta.description');
           </button>
         </div>
 
+        <a
+          id="exploreModeLink"
+          href={`/${lang}/app`}
+          class="text-sm font-medium text-indigo-700 underline-offset-4 hover:underline"
+        >
+          {t('workoutModes.switchToExplore')}
+        </a>
+
         <!-- Right: Settings Button -->
         <button
           id="settingsButton"
@@ -267,6 +275,7 @@ const description = t('meta.description');
   <!-- Main workout script as module -->
   <script>
     import { initializeWorkoutController, startWorkout, loadSessionState, pauseWorkout, resumeFromPause, skipExercise, previousExercise, exitWorkout, workoutSession, overallProgress } from '../../stores/workoutController';
+    import { initializeProgress } from '../../stores/progressStore';
     import { toggleNavigator } from '../../stores/navigationStore';
     import { soundController } from '../../utils/soundController';
     import { initWorkoutOrchestrator } from '../../scripts/workoutOrchestrator';
@@ -561,7 +570,8 @@ const description = t('meta.description');
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Workout page loaded');
 
-      // Initialize workout controller with data
+      // Initialize shared progress before the workout controller starts
+      initializeProgress(workout);
       initializeWorkoutController(workout);
 
       // Initialize orchestrator (connects state to UI)
@@ -591,6 +601,9 @@ const description = t('meta.description');
     function setupEventListeners() {
       // Exit button
       document.getElementById('exitButton')?.addEventListener('click', handleExit);
+
+      // Mode switch
+      document.getElementById('exploreModeLink')?.addEventListener('click', handleModeSwitch);
 
       // Logo navigation button
       document.getElementById('logoNavigationButton')?.addEventListener('click', () => {
@@ -808,6 +821,14 @@ const description = t('meta.description');
       }
     }
 
+    function handleModeSwitch() {
+      const session = workoutSession.get();
+      const isActive = session.workoutState !== 'IDLE' && session.workoutState !== 'WORKOUT_COMPLETE';
+      if (isActive && !session.isPaused) {
+        pauseWorkout();
+      }
+    }
+
     function handlePausePlay() {
       // Check if we're in a manual completion state (no active timer)
       import('../../stores/workoutController').then(({ workoutSession, currentExercise, completeCurrentExercise }) => {
@@ -958,6 +979,7 @@ const description = t('meta.description');
       if (savedSession) {
         import('../../stores/workoutController').then(({ resumeWorkout }) => {
           resumeWorkout(savedSession);
+          resumeFromPause();
         });
       }
     }

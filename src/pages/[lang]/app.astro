@@ -42,38 +42,34 @@ const references = getReferences(lang);
 
     <div class="max-w-4xl mx-auto px-4">
 
-      <!-- Guided Workout CTA -->
+      <!-- Guided mode navigation -->
       <div class="mt-6 mb-8">
         <a
           href={`/${lang}/workout`}
-          class="guided-workout-button block w-full overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
+          aria-label={t('workoutModes.switchToGuided')}
+          class="guided-workout-button block w-full overflow-hidden rounded-2xl border-2 border-indigo-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-indigo-500 hover:shadow-lg"
         >
           <div class="flex items-center justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="h-8 w-8 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h2 class="font-['Barriecito'] text-2xl font-bold text-white">
-                  {t('guidedWorkout.startButton')}
+                <h2 class="font-['Barriecito'] text-2xl font-bold text-gray-900">
+                  {t('workoutModes.guided.action')}
                 </h2>
               </div>
-              <p class="text-white/90 text-sm">
-                {t('guidedWorkout.startButtonSubtext')}
+              <p class="text-sm text-gray-600">
+                {t('workoutModes.guided.description')}
               </p>
             </div>
-            <svg class="h-6 w-6 text-white flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="ml-4 h-6 w-6 flex-shrink-0 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </div>
         </a>
 
-        <div class="mt-3 text-center">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            {t('guidedWorkout.viewOverview')} ↓
-          </p>
-        </div>
       </div>
 
       <!-- Phases -->

@@ -12,6 +12,21 @@
     "moreInfo": "Más información",
     "comingSoon": "Próximamente"
   },
+  "workoutModes": {
+    "title": "Elige tu entrenamiento",
+    "explore": {
+      "name": "Explorar ejercicios",
+      "description": "Muévete a tu ritmo y elige ejercicios individuales.",
+      "action": "Explorar ejercicios"
+    },
+    "guided": {
+      "name": "Entrenamiento guiado",
+      "description": "Sigue la rutina completa con temporizadores integrados.",
+      "action": "Iniciar entrenamiento guiado"
+    },
+    "switchToExplore": "Explorar ejercicios",
+    "switchToGuided": "Entrenamiento guiado"
+  },
   "levels": {
     "beginner": "Principiante",
     "intermediate": "Intermedio",
@@ -223,6 +238,7 @@
       "skip": "Saltar",
       "back": "Atrás",
       "exit": "Salir",
+      "exploreMode": "Modo explorar",
       "exitConfirm": "¿Seguro que quieres salir del entrenamiento?",
       "settings": "Ajustes"
     },

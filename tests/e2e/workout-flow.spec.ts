@@ -2,8 +2,14 @@ import { test, expect, type Page } from '@playwright/test';
 
 interface WorkoutSessionState {
   workoutState: string;
+  currentPhaseIndex: number;
   currentExerciseIndex: number;
   isPaused: boolean;
+  pausedTime: number | null;
+}
+
+interface ProgressState {
+  completed: string[];
 }
 
 function parseStoredJson<T>(value: string | null, key: string): T {
@@ -112,6 +118,62 @@ test.describe('Guided Workout Flow', () => {
     await page.locator('#resumeButton').click();
     await expect(page.locator('#resumeModal')).toBeHidden();
   }
+
+  test('should preserve an active session when switching to Explore mode', async ({ page }) => {
+    await restoreActiveWorkout(page, 1);
+
+    await page.getByRole('link', { name: 'Explore exercises' }).click();
+    await expect(page).toHaveURL('/en/app');
+
+    const preservedSession = parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    );
+    expect(preservedSession.currentPhaseIndex).toBe(0);
+    expect(preservedSession.currentExerciseIndex).toBe(1);
+    expect(preservedSession.workoutState).toBe('EXERCISE_ACTIVE');
+    expect(preservedSession.isPaused).toBe(true);
+    expect(preservedSession.pausedTime).not.toBeNull();
+
+    await page.getByRole('link', { name: 'Guided workout' }).click();
+    await expect(page.locator('#resumeModal')).toBeVisible();
+    await page.locator('#resumeButton').click();
+    await expect(page.locator('#fabTimer')).toHaveText('30');
+    await expect(page.locator('#fabTimer')).not.toHaveText('30', { timeout: 5_000 });
+  });
+
+  test('should share Guided completions with Explore progress', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('unslump-progress', JSON.stringify({
+        completed: ['fase1-pectoral'],
+        level: 'beginner',
+        sessionLocked: false,
+        lastSessionDate: new Date().toISOString(),
+      }));
+    });
+
+    await restoreActiveWorkout(page, 0);
+    await page.locator('#pausePlayButton').click();
+    await page.locator('#completeTimerButton').click();
+
+    await expect.poll(async () =>
+      parseStoredJson<ProgressState>(
+        await page.evaluate(() => localStorage.getItem('unslump-progress')),
+        'unslump-progress',
+      ).completed,
+    ).toEqual(expect.arrayContaining(['fase1-pectoral', 'fase1-suboccipital']));
+    const guidedSession = parseStoredJson<WorkoutSessionState>(
+      await page.evaluate(() => localStorage.getItem('unslump-workout-session')),
+      'unslump-workout-session',
+    );
+    expect(guidedSession.workoutState).toBe('REST_PERIOD');
+    expect(guidedSession.currentExerciseIndex).toBe(0);
+
+    await page.getByRole('link', { name: 'Explore exercises' }).click();
+    await expect(page).toHaveURL('/en/app');
+    await expect(page.locator('.exercise-card[data-exercise-id="suboccipital"]'))
+      .toHaveClass(/border-indigo-400/);
+  });
 
   test('should pause and resume workout', async ({ page }) => {
     await startActiveWorkout(page);
@@ -290,5 +352,6 @@ test.describe('Guided Workout Flow', () => {
 
     const langAttrES = await page.getAttribute('html', 'lang');
     expect(langAttrES).toBe('es');
+    await expect(page.getByRole('link', { name: 'Explorar ejercicios' })).toHaveAttribute('href', '/es/app');
   });
 });
