@@ -46,6 +46,9 @@ export interface WorkoutSession {
   currentSide: number; // for bilateral exercises (left=1, right=2)
   stepRevision?: number;
   restPurpose?: RestPurpose;
+  capturedPrepDuration?: number;
+  capturedRestDuration?: number;
+  capturedPhaseRestDuration?: number;
 }
 
 // Settings
@@ -105,6 +108,25 @@ function transition(session: WorkoutSession, updates: Partial<WorkoutSession>): 
     ...updates,
     stepRevision: (session.stepRevision ?? 0) + 1,
   };
+}
+
+function captureDurations(): Pick<WorkoutSession, 'capturedPrepDuration' | 'capturedRestDuration' | 'capturedPhaseRestDuration'> {
+  const settings = workoutSettings.get();
+  return {
+    capturedPrepDuration: settings.prepDuration,
+    capturedRestDuration: settings.restDuration,
+    capturedPhaseRestDuration: settings.phaseRestDuration,
+  };
+}
+
+function getDuration(session: WorkoutSession, key: 'prep' | 'rest' | 'phaseRest'): number {
+  const settings = workoutSettings.get();
+  const captured = {
+    prep: session.capturedPrepDuration,
+    rest: session.capturedRestDuration,
+    phaseRest: session.capturedPhaseRestDuration,
+  };
+  return captured[key] ?? settings[`${key}Duration` as keyof WorkoutSettings] as number;
 }
 
 /**
@@ -210,6 +232,7 @@ export function startWorkout(): void {
     currentSet: 1,
     currentSide: 1,
     stepRevision: 0,
+    ...captureDurations(),
   });
 
   saveSessionState();
@@ -219,11 +242,10 @@ export function startWorkout(): void {
  * Resume workout from saved state
  */
 export function resumeWorkout(savedSession: WorkoutSession): void {
-  workoutSession.set({
-    ...savedSession,
-    isPaused: false,
-    pausedTime: null,
-  });
+  invalidateCallbacks();
+  const session = normalizeSession(savedSession);
+  workoutSession.set({ ...session, isPaused: true, pausedTime: session.pausedTime ?? Date.now() });
+  saveSessionState();
 }
 
 /**
@@ -266,7 +288,7 @@ export function resumeFromPause(): void {
  */
 export function continueFromPhaseIntro(): void {
   const session = workoutSession.get();
-  const prepDuration = workoutSettings.get().prepDuration;
+  const prepDuration = getDuration(session, 'prep');
   const next = transition(session, {
     workoutState: 'EXERCISE_PREP',
     timeLeft: prepDuration,
@@ -364,7 +386,7 @@ export function completeCurrentStep(token?: CompletionToken, source: CompletionS
 
   const setCount = exercise.sets ?? 1;
   if (session.currentSet < setCount) {
-    const restDuration = workoutSettings.get().restDuration;
+    const restDuration = getDuration(session, 'rest');
     const next = transition(session, { workoutState: 'REST_PERIOD', currentSide: 1, timeLeft: restDuration, restPurpose: REST_PURPOSE.BETWEEN_SETS });
     workoutSession.set(next);
     startTimer(restDuration);
@@ -395,7 +417,7 @@ export function completeCurrentStep(token?: CompletionToken, source: CompletionS
     }
   } else {
     // Start rest period before next exercise
-    const restDuration = workoutSettings.get().restDuration;
+    const restDuration = getDuration(session, 'rest');
     workoutSession.set(transition(session, {
       workoutState: 'REST_PERIOD',
       timeLeft: restDuration,
@@ -450,7 +472,7 @@ function getExerciseAtIndex(phaseIndex: number, exerciseIndex: number) {
  */
 export function advanceToNextPhase(): void {
   const session = workoutSession.get();
-  const duration = workoutSettings.get().phaseRestDuration;
+  const duration = getDuration(session, 'phaseRest');
   workoutSession.set(transition(session, {
     workoutState: 'REST_PERIOD',
     timeLeft: duration,
@@ -488,7 +510,7 @@ export function skipExercise(): void {
       workoutSession.set({ ...session, workoutState: 'PHASE_COMPLETE' });
     }
   } else {
-    const restDuration = workoutSettings.get().restDuration;
+    const restDuration = getDuration(session, 'rest');
     workoutSession.set(transition(session, {
       workoutState: 'REST_PERIOD',
       timeLeft: restDuration,
@@ -625,7 +647,7 @@ export function incrementRep(): void {
     if (newReps >= repsPerSet) {
       // Completed a set
       if (session.currentSet < exercise.sets) {
-        const restDuration = workoutSettings.get().restDuration;
+        const restDuration = getDuration(session, 'rest');
         workoutSession.set(transition(session, {
           currentReps: 0,
           workoutState: 'REST_PERIOD',
@@ -752,10 +774,30 @@ export function loadSessionState(): WorkoutSession | null {
   if (!saved) return null;
 
   try {
-    return JSON.parse(saved);
+    return normalizeSession(JSON.parse(saved));
   } catch {
     return null;
   }
+}
+
+function normalizeSession(savedSession: WorkoutSession): WorkoutSession {
+  const session = { ...captureDurations(), ...savedSession };
+
+  if (session.workoutState !== 'REST_PERIOD' || session.restPurpose) return session;
+
+  const phase = getPhases()[session.currentPhaseIndex];
+  const exercise = phase?.phase.exercises[session.currentExerciseIndex];
+  if (!phase || !exercise) return session;
+
+  const restPurpose = session.currentSet < (exercise.sets ?? 1)
+    ? REST_PURPOSE.BETWEEN_SETS
+    : session.currentExerciseIndex < phase.phase.exercises.length - 1
+      ? REST_PURPOSE.BETWEEN_EXERCISES
+      : session.currentPhaseIndex < getPhases().length - 1
+        ? REST_PURPOSE.BETWEEN_PHASES
+        : undefined;
+
+  return { ...session, restPurpose };
 }
 
 function saveSettingsState(): void {

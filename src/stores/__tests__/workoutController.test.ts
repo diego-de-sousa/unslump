@@ -809,5 +809,106 @@ describe('workoutController', () => {
       expect(workoutSession.get()).toMatchObject({ workoutState: 'PHASE_COMPLETE' });
     });
 
+    it('keeps a restored paused timer frozen until explicit resume and preserves captured durations', () => {
+      const savedSession: WorkoutSession = {
+        ...workoutSession.get(),
+        isPaused: true,
+        pausedTime: Date.now(),
+        timeLeft: 4,
+        capturedPrepDuration: 5,
+        capturedRestDuration: 7,
+        capturedPhaseRestDuration: 10,
+      };
+
+      resumeWorkout(savedSession);
+      vi.advanceTimersByTime(5000);
+      expect(workoutSession.get()).toMatchObject({ isPaused: true, timeLeft: 4 });
+
+      updateSettings({ restDuration: 30 });
+      resumeFromPause();
+      vi.advanceTimersByTime(4000);
+      expect(workoutSession.get()).toMatchObject({
+        workoutState: 'REST_PERIOD',
+        restPurpose: 'between-exercises',
+        capturedPrepDuration: 5,
+        capturedRestDuration: 7,
+        capturedPhaseRestDuration: 10,
+      });
+    });
+
+    it('keeps saved durations when settings change before restoration', () => {
+      updateSettings({ prepDuration: 30, restDuration: 40, phaseRestDuration: 50 });
+
+      resumeWorkout({
+        ...workoutSession.get(),
+        capturedPrepDuration: 5,
+        capturedRestDuration: 7,
+        capturedPhaseRestDuration: 10,
+      });
+
+      expect(workoutSession.get()).toMatchObject({
+        capturedPrepDuration: 5,
+        capturedRestDuration: 7,
+        capturedPhaseRestDuration: 10,
+      });
+    });
+
+    it('assigns skipped-exercise rest a purpose and advances after expiry', () => {
+      skipExercise();
+      expect(workoutSession.get()).toMatchObject({
+        workoutState: 'REST_PERIOD',
+        restPurpose: 'between-exercises',
+      });
+
+      skipRest();
+      expect(workoutSession.get()).toMatchObject({
+        currentExerciseIndex: 1,
+        workoutState: 'EXERCISE_ACTIVE',
+      });
+    });
+
+    it('normalizes a compatible legacy rest snapshot before it resumes', () => {
+      resumeWorkout({
+        ...workoutSession.get(),
+        workoutState: 'REST_PERIOD',
+        currentExerciseIndex: 0,
+        restPurpose: undefined,
+      });
+
+      expect(workoutSession.get()).toMatchObject({
+        isPaused: true,
+        workoutState: 'REST_PERIOD',
+        restPurpose: 'between-exercises',
+      });
+
+      resumeFromPause();
+      skipRest();
+      expect(workoutSession.get()).toMatchObject({ currentExerciseIndex: 1, workoutState: 'EXERCISE_ACTIVE' });
+    });
+
+    it('rejects callbacks made stale by pause, restoration, replacement, and revision changes', () => {
+      const pauseStale = createCompletionCallback('timer');
+      pauseWorkout();
+      pauseStale();
+      expect(workoutSession.get()).toMatchObject({ isPaused: true, currentExerciseIndex: 0 });
+
+      const restoreStale = createCompletionCallback('timer');
+      resumeWorkout({ ...workoutSession.get(), isPaused: true });
+      restoreStale();
+      expect(progressStore.completeExercise).not.toHaveBeenCalled();
+
+      const replacementStale = createCompletionCallback('timer');
+      initializeWorkoutController(mockWorkout);
+      replacementStale();
+      expect(workoutSession.get()).toMatchObject({ workoutState: 'EXERCISE_ACTIVE', currentExerciseIndex: 0 });
+    });
+
+    it('leaves terminal states unchanged when completion replays', () => {
+      workoutSession.set({ ...workoutSession.get(), workoutState: 'WORKOUT_COMPLETE' });
+      completeCurrentStep(undefined, 'timer');
+
+      expect(workoutSession.get()).toMatchObject({ workoutState: 'WORKOUT_COMPLETE', currentExerciseIndex: 0 });
+      expect(progressStore.completeExercise).not.toHaveBeenCalled();
+    });
   });
 });
